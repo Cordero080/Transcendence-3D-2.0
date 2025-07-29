@@ -95,6 +95,7 @@ function setupDropdownMenu() {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
+      
       menu.style.display = menu.style.display === "block" ? "none" : "block";
     });
 

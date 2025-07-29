@@ -11,14 +11,30 @@
   text-align: center;
 }
 /* html element where we can determine vp behavior*/
-html {
-  height: 100vh;
+html, body {
+  height: 100%;
  height: auto;
-  width: 100vw;
-  
+  width: 100%;
+  margin:0;
+  padding:0;
+  overflow: hidden;
 }
 
+.scaling-root {
+  width: 1200px;
 
+  margin: 0 auto;
+  transform-origin: top left;
+  /* default: no scaling */
+  transform: scale(1);
+  
+}
+@media (max-width: 1200px) {
+  .scaling-root {
+    
+    transform: scale(calc(100vw / 1200));
+  }
+}
  body {
   font-family: "Doto", sans-serif;
   font-size: 3vh;
@@ -53,6 +69,7 @@ header h1 {
  align-items: center;
  height: 100%;
  width: 100%;
+ margin:0 auto;
  letter-spacing: 15px;
  font-weight: 500;
  font-size: 3.8rem;
@@ -62,11 +79,13 @@ header h1 {
 header {
   border: solid 2px rgb(205, 12, 226);
   background-color: rgba(0, 166, 255, 0.42);
- margin: 3vh 0;
+ margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   padding-top: 0 2vw;
+  margin-top: 4vh;
+  margin-bottom: 4vh;
   position: relative;
   width: 100%;
   height: 9vh;
@@ -110,9 +129,9 @@ header {
    DROPDOWN MENU SYSTEM
    ============================================================================ */
    .CornerRoundButton {
-  position: relative;
-  top: 0;
-  left: 0;
+  position: absolute;
+  top: .1rem;
+  left: .1em;
   width: 43px;
   height: 43px;
   background: #1e1eeb;
@@ -136,7 +155,7 @@ header {
 .dropdown-container {
   position: absolute;
   top: 0;
-  right: 35.6em;
+  right: 31.5em;
   left: auto;
   
   z-index: 10;
@@ -144,7 +163,7 @@ header {
 
 .dropdown-menu {
   box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-  animation: fadeIn 0.7s;
+  animation: fadeIn 0.9s;
   position: absolute;
   top: 100%;
   left: 0;
@@ -154,7 +173,7 @@ header {
   color: #fff;
   border-radius: 8px;
   padding: 12px 18px;
-  margin-top: 5px;
+  margin-top:30px;
   width: 922px;
   margin-left: -16px;
 }
@@ -171,13 +190,20 @@ header {
 
 .dropdown-menu li {
   padding: 3px 0;
+  padding-left: .5em;
   margin: 0;
   
-  color: #aefcfd !important;
+  color: #eafefe !important;
   display: list-item !important;
   text-align: left;
   line-height: 1.4;
   list-style: disc !important;
+}
+li::marker {
+  content:  "🧿";
+  position: relative;
+
+  
 }
 
 @keyframes fadeIn {
@@ -209,8 +235,11 @@ header {
 
 .infoBox {
   width: 100%;
-  height: 180px;
-  border: 3px solid rgb(255, 0, 255);
+  height: 160px;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap; 
+  border: 2px solid rgb(255, 0, 255);
   display: flex;
   font-size: clamp(1rem, 2vw, 1.5rem);
   padding: 0;
@@ -219,20 +248,42 @@ header {
 }
 
 .infoBox-controls {
- 
   display: flex;
-  width: 39%;
+  width: 50%;
+  max-width: 50%;
+  min-width: 300px;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: flex-start;
   padding: 20px;
-  gap: 14px;
+  gap: 10px;
+  align-items: flex-start;
   margin: 0;
- 
 }
-.buttons {
+
+.Buttons:hover
+{
+  transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  box-shadow: 0 12px 12px oklch(83.808% 0.20516 153.971 / 0.843), 0 2px 8px rgba(60, 0, 120, 0.18);
+  z-index: 2;
+}
+ 
+.infoBox_petChat {
+  border: solid rgba(44, 216, 44, 0.648) 1px;
+  width: 61%;
+  color: oklch(86.933% 0.23806 150.004 / 0.595);
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+  background-color: #3a3b8a4c;
+  justify-content: flex-start;
+  padding: 10px;
+  margin: 0;
+  
+}
+.Buttons {
   width: 200px;
-  height: 30px;
+  height: 0px;
   font-family: "Orbitron";
   color: rgb(246, 234, 13);
   background-color: blue;
@@ -250,17 +301,108 @@ header {
   box-sizing: border-box;
 }
 
-.infoBox_petChat {
-  border: solid rgb(12, 245, 12) 1px;
-  width: 61%;
+button.Buttons { 
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 10px;
-  margin: 0;
-  
+  padding: 0;
+  font-size: 0.4em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+} */
 
+.Buttons:hover,
+.Buttons:active,
+button.Buttons:hover,
+button.Buttons:active {
+  /* No transform or scale here */
+  box-shadow: 0 0 12px 2px #a6f3ff;
 }
+
+/* Disabled state for action buttons when game hasn't started */
+button.Buttons.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+  pointer-events: none;
+}
+
+button.Buttons.disabled:hover
+button.Buttons.disabled:active
+ {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Button container and timer display styles */
+.button-container {
+  height: 65px;
+  min-width: 110px;
+  max-width:110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.timer-display {
+  font-family: "doto";
+  font-size: 0.7em;
+  color: rgba(96, 241, 108, 0.923);
+  background-color: rgba(47, 6, 150, 0.31);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 50px;
+  font-weight: bold;
+  gap: 2px;
+}
+
+/* Color coding for different stat levels */
+.timer-display.low { color: #ff6b6b; }    /* Red for bad levels */
+.timer-display.medium { color: #ffd93d; } /* Yellow for medium levels */
+.timer-display.high { color: #6bcf7f; }   /* Green for good levels */
+/*=====================START/RESET======================*/
+.StartButton {
+  padding: 12px 36px;
+  font-size: 0.8em;
+  margin-top: 40px;
+  letter-spacing: 3px;
+  font-family: "Orbitron", sans-serif;
+  background: #1e1eeb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.ResetButton {
+  padding: 12px 36px;
+  font-size: 0.8em;
+  letter-spacing: 3px;
+  font-family: "Orbitron", sans-serif;
+  background: #9d1eeb;
+  color: #eaf8fd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.StartButton:hover,
+.ResetButton:hover {
+  transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  box-shadow: 0 12px 12px oklch(51.245% 0.27967 294.646), 0 2px 8px rgba(60, 0, 120, 0.18);
+  z-index: 2;
+}
+
+
   
 
 canvas {
