@@ -3,27 +3,58 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TextureLoader } from "three";
 console.log("✅ Three.js and FBXLoader loaded successfully!");
-let catModel = null;
-let time = 0;
-let activeAction;
-const animationActions = {}; //stores all animations
 
-//  Public function for app.js to trigger animations
-export function playAnimation(name) {
-  if (animationActions[name]) {
-    if (activeAction) activeAction.stop();
-    activeAction = animationActions[name];
-    activeAction.reset().play();
-
-    // Only reset orientation (rotation) — not position
-    if (catModel) {
-      catModel.rotation.set(-0.6, -Math.PI / 9, 0);
-    }
-  } else {
-    console.warn(`Animation "${name}" not found.`);
-  }
-}
 // Setup scene
+let activeModel = null;
+let mixer = null; // <-- NEW
+let time = 0;
+let currentPose = "";
+const clock = new THREE.Clock();
+
+function loadAndDisplayFBX(path, pose = {}) {
+  return new Promise((resolve) => {
+    const loader = new FBXLoader();
+
+    if (activeModel) {
+      scene.remove(activeModel);
+    }
+
+    loader.load(path, (fbx) => {
+      // Respect custom position fully
+
+      const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
+      fbx.scale.set(sx, sy, sz);
+
+      const scaleFactor = 0.001;
+      const defaultY = -2.35 * scaleFactor;
+
+      const [px = 0, py = defaultY, pz = 0.6] = pose.position || [];
+      fbx.position.set(px, py, pz);
+      fbx.rotation.y = pose.rotationY || 0;
+      fbx.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      activeModel = fbx;
+      scene.add(fbx);
+      currentPose = path;
+
+      mixer = new THREE.AnimationMixer(fbx);
+      const action = mixer.clipAction(fbx.animations[0]);
+      action.play();
+
+      // Resolve with animation duration in milliseconds
+      const duration = fbx.animations[0]?.duration || 2.5;
+      resolve(duration * 1000);
+    });
+  });
+}
+
+export { loadAndDisplayFBX };
+
 const scene = new THREE.Scene();
 // scene.background = new THREE.Color("black"); // Light gray background
 // Ambient light (softens all shadows, adds base brightness)
@@ -122,63 +153,15 @@ scene.add(light, ground, topLight, bottomLight, sideLight, directionalLight);
 // scene.add(new THREE.AxesHelper(1));
 
 // Orbit Controls
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
+//  loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
+//   scale: [0.01, 0.01, 0.01],
+//   position: [0, -2.5, 0],
+//   rotationY: Math.PI / 9
+// });
 
 // Animation
-let mixer;
-const clock = new THREE.Clock();
 
-// Load FBX
-// Load FBX model and animations
-const loader = new FBXLoader();
-loader.load(
-  "./models/cat_hip_hop.fbx",
-  (fbx) => {
-    console.log("✅ Base model loaded:", fbx);
-
-    const scaleY = PET_HEIGHT * 0.0014;
-    const scaleX = PET_WIDTH * 0.0014;
-    fbx.scale.set(scaleX / PET_WIDTH, scaleY / PET_HEIGHT, scaleX / PET_WIDTH);
-    fbx.position.y = 1;
-    fbx.rotation.x = -0.6;
-    fbx.rotation.y = -Math.PI / 9;
-
-    fbx.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-
-    scene.add(fbx);
-    catModel = fbx;
-    mixer = new THREE.AnimationMixer(fbx);
-
-    // Load additional animations
-    loadAnimation("dance", "./models/cat_hip_hop.fbx");
-    loadAnimation("sleep", "./models/cat_sleep.fbx");
-    loadAnimation("eat", "./models/cat_eats.fbx");
-    loadAnimation("idle-second", "./models/blue_cat_idle2.fbx");
-  },
-  null, // progress callback (optional)
-  (err) => console.error("❌ Failed to load model:", err)
-);
-
-// ✅ Only define this ONCE
-function loadAnimation(name, path) {
-  const animLoader = new FBXLoader();
-  animLoader.load(path, (anim) => {
-    const action = mixer.clipAction(anim.animations[0]);
-    animationActions[name] = action;
-
-    if (name === "dance") {
-      activeAction = action;
-      action.play();
-    }
-
-    console.log(`✅ ${name} animation loaded`);
-  });
-}
 // Scale model to fit container height
 
 //
@@ -188,14 +171,26 @@ function animate() {
   const delta = clock.getDelta();
   time += delta; // Increment time
 
-  if (mixer) mixer.update(delta);
-  if (catModel) {
-    // Return to original hip-hop dance bounce
-    // catModel.position.x = Math.sin(time * 0.5) * 0.5;
-    catModel.position.z = -0.5 + Math.cos(time * 0.4) * -0.1;
-    catModel.position.x = Math.sin(time) * 0.6; //side-side
-    catModel.position.y = -1.5; // this
+  // move the model if it's dancing
+  if (activeModel && currentPose.includes("cat_tut_dance")) {
+    activeModel.position.x = Math.sin(time) * 0.1;
+    activeModel.position.z = 0.2 + Math.cos(time * 0.4) * -0.1;
+    activeModel.position.y = 0;
   }
+
+  if (mixer) mixer.update(delta);
+  // if (catModel) {
+  // Return to original hip-hop dance bounce
+  // catModel.position.x = Math.sin(time * 0.5) * 0.5;
+  // catModel.position.z = -0.5 + Math.cos(time * 0.4) * -0.1;
+  // catModel.position.x = Math.sin(time) * 0.6; //side-side
+  // catModel.position.y = -1.5; // this
+
+  //   catModel.position.z = 0.4 + Math.cos(time * 0.4) * -0.1;
+  //   catModel.position.x = Math.sin(time) * 0.1; //side-side
+  //   catModel.position.y = -2.5; // this
+  //   catModel.rotation.y = 0.9;
+  // }
   // Always resize renderer and camera to fit container
   const newWidth = petContainer.offsetWidth || 900;
   const newHeight = petContainer.offsetHeight || 600;
@@ -210,3 +205,9 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
+  scale: [0.001, 0.001, 0.001],
+  position: [0, 0, 0], // move model up
+  rotationY: Math.PI / 7,
+});

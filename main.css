@@ -267,20 +267,7 @@ li::marker {
   box-shadow: 0 12px 12px oklch(83.808% 0.20516 153.971 / 0.843), 0 2px 8px rgba(60, 0, 120, 0.18);
   z-index: 2;
 }
- 
-.infoBox_petChat {
-  border: solid rgba(44, 216, 44, 0.648) 1px;
-  width: 61%;
-  color: oklch(86.933% 0.23806 150.004 / 0.595);
-  display: flex;
-  font-weight: bold;
-  align-items: center;
-  background-color: #3a3b8a4c;
-  justify-content: flex-start;
-  padding: 10px;
-  margin: 0;
-  
-}
+
 .Buttons {
   width: 200px;
   height: 0px;
@@ -334,6 +321,7 @@ button.Buttons.disabled:active
   transform: none;
   box-shadow: none;
 }
+
 
 /* Button container and timer display styles */
 .button-container {

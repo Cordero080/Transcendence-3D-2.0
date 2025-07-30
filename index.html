@@ -6,77 +6,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="main.css" />
-    <script defer src="app.js"></script>
+    <script type="module" src="app.js"></script>
     <title>Cat-scendence</title>
   </head>
   <body>
-    <div class ="scaling-root">
-    <!-- transcendence was here -->
+    <div class="scaling-root">
+      <!-- transcendence was here -->
 
-    <audio id="bg-music" src="music/radiance.mp3" autoplay loop>
-      <source src="music/bg-music.mp3" type="audio/mpeg" />
-    </audio>
+      <audio id="bg-music" src="music/radiance.mp3" autoplay loop>
+        <source src="music/bg-music.mp3" type="audio/mpeg" />
+      </audio>
 
-    <header>
-      <h1>TAMAGOTCHI</h1>
-    </header>
-    <!-- I gave main-wrapper an id, but it is still main, following David's example, although he didn't assign an id to it -->
-    <main id="main-wrapper">
-      <button class="CornerRoundButton" id="infoDropdownBtn">&#9776;</button>
-      <div class="dropdown-container">
-        <!-- Dropdown menu (hidden by default) -->
-        <div id="infoDropdownMenu" class="dropdown-menu" style="display: none">
-          <ul>
-            <li><strong>How to Transcend:</strong></li>
-            <li> Feed your pet when it hungers.</li>
-            <li>Dance to energize and uplift its spirits</li>
-            <li>Let it rest when it tires.</li>
-            <li>Stay balanced - joy, rest, and nourishment are the keys.</li>
-            <li>Each stage brings new color and form.</li>
-            <li>Final form leads to transcendence - the end of the cylce.</li>
-            <li>Press START to begin, RESET to start over</li>
-          </ul>
-        </div>
-      </div>
-
-      <span id="transcendence">TRANSCENDENCE</span>
-      <!-- pet parent is the "screen" compared to D's ie. -->
-
-      <div id="pet-container"></div>
-      <div class="infoBox">
-        <div class="infoBox-controls">
-          <div class="button-container">
-            <button class="Buttons" id="feed-button">FEED</button>
-            <div class="timer-display" id="hungerTimer">Hunger:0</div>
-          </div>
-          <div class="button-container">
-            <button class="Buttons" id="play-button">DANCE</button>
-            <div class="timer-display" id="funTimer">Fun:10</div>
-          </div>
-          <div class="button-container">
-            <button class="Buttons" id="sleep-button">SLEEP</button>
-            <div class="timer-display" id="sleepTimer">Sleep:0</div>
-          </div>
-          <div class="button-container">
-            <button class="Buttons" id="weak-button">TRAIN</button>
-            <div class="timer-display" id="power-timer">Power:10</div>
+      <header>
+        <h1>TAMAGOTCHI</h1>
+      </header>
+      <!-- I gave main-wrapper an id, but it is still main, following David's example, although he didn't assign an id to it -->
+      <main id="main-wrapper">
+        <button class="CornerRoundButton" id="infoDropdownBtn">&#9776;</button>
+        <div class="dropdown-container">
+          <!-- Dropdown menu (hidden by default) -->
+          <div
+            id="infoDropdownMenu"
+            class="dropdown-menu"
+            style="display: none"
+          >
+            <ul>
+              <li><strong>How to Transcend:</strong></li>
+              <li>Feed your pet when it hungers.</li>
+              <li>Dance to energize and uplift its spirits</li>
+              <li>Let it rest when it tires.</li>
+              <li>Stay balanced - joy, rest, and nourishment are the keys.</li>
+              <li>Each stage brings new color and form.</li>
+              <li>Final form leads to transcendence - the end of the cylce.</li>
+              <li>Press START to begin, RESET to start over</li>
+            </ul>
           </div>
         </div>
 
-        <div class="infoBox_petChat">Hello! turns out I'm your new pet!</div>
+        <span id="transcendence">TRANSCENDENCE</span>
+        <!-- pet parent is the "screen" compared to D's ie. -->
+
+        <div id="pet-container"></div>
+        <div class="infoBox">
+          <div class="infoBox-controls">
+            <div class="button-container">
+              <button class="Buttons" id="feed-button">FEED</button>
+              <div class="timer-display" id="hungerTimer">Hunger:0</div>
+            </div>
+            <div class="button-container">
+              <button class="Buttons" id="dance-button">DANCE</button>
+              <div class="timer-display" id="funTimer">Fun:10</div>
+            </div>
+            <div class="button-container">
+              <button class="Buttons" id="sleep-button">SLEEP</button>
+              <div class="timer-display" id="sleepTimer">Sleep:0</div>
+            </div>
+            <div class="button-container">
+              <button class="Buttons" id="power-button">TRAIN</button>
+              <div class="timer-display" id="power-timer">Power:10</div>
+            </div>
+          </div>
+
+          <div class="infoBox_petChat">Hello! turns out I'm your new pet!</div>
+        </div>
+      </main>
+
+      <script type="module" src="./main-test.js"></script>
+
+      <!-- scaling root end -->
+
+      <div class="startButtonContainer">
+        <button class="StartButton">START</button>
+        <button class="ResetButton">RESET</button>
+        <!-- scaling root end -->
       </div>
-    </main>
-
-    <script type="module" src="./main-test.js"></script>
-
-    
-<!-- scaling root end -->
-
-<div class="startButtonContainer">
-     <button class="StartButton">START</button>
-     <button class="ResetButton">RESET</button>
-     <!-- scaling root end -->
-   </div>
-    </div> 
+    </div>
   </body>
 </html>
