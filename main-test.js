@@ -31,6 +31,8 @@ function loadAndDisplayFBX(path, pose = {}) {
       const [px = 0, py = defaultY, pz = 0.6] = pose.position || [];
       fbx.position.set(px, py, pz);
       fbx.rotation.y = pose.rotationY || 0;
+      fbx.rotation.x = pose.rotationX || 0;
+
       fbx.traverse((child) => {
         if (child.isMesh) {
           child.castShadow = true;
@@ -78,6 +80,7 @@ scene.add(ambientLight);
 
 // Directional light (like sunlight)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.castShadow = true; // Enable shadow casting
 directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
@@ -172,10 +175,24 @@ function animate() {
   time += delta; // Increment time
 
   // move the model if it's dancing
-  if (activeModel && currentPose.includes("cat_tut_dance")) {
-    activeModel.position.x = Math.sin(time) * 0.1;
-    activeModel.position.z = 0.2 + Math.cos(time * 0.4) * -0.1;
-    activeModel.position.y = 0;
+  if (activeModel && currentPose.includes("White_thriller")) {
+    //===============TUT SETTING
+    // activeModel.position.x = Math.sin(time) * 0.1;
+    // activeModel.position.z = Math.cos(time * 0.4) * -0.1;
+    // activeModel.position.y = -0.1;
+    activeModel.position.x = 0.1;
+    activeModel.position.z = -3.5;
+    activeModel.position.y = -1;
+
+    // 🔁 Reposition light slightly above and in front to cast shadow behind
+    directionalLight.position.set(-2, 6, 8); // ↑ Y for overhead, -Z for front
+    directionalLight.target.position.set(0, 1, 0); // aim at cat
+    directionalLight.target.updateMatrixWorld();
+  } else {
+    // Reset after dancing
+    directionalLight.position.set(-2, 10, 6.5); // original
+    directionalLight.target.position.set(0, 0, 0);
+    directionalLight.target.updateMatrixWorld();
   }
 
   if (mixer) mixer.update(delta);

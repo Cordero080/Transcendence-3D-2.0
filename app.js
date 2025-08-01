@@ -1,4 +1,5 @@
 import { loadAndDisplayFBX } from "./main-test.js";
+import animationConfig from "./annimationConfig.js";
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
@@ -88,6 +89,9 @@ const timerMap = {
 const STAT_TYPES = ["hunger", "fun", "sleep", "power"];
 
 /*---------- Variables (state) ---------*/
+let currentStage = "yellow"; // second stage 
+
+
 let myPet;
 let gameStarted = false;
 let currentAnimationTimer = null;
@@ -98,6 +102,7 @@ let buttonTracker = {
   feed: false,
   dance: false,
   sleep: false,
+  train: false,
 };
 let evolutionTimeout = null;
 
@@ -106,18 +111,19 @@ let statTimers = {
   hunger: null,
   fun: null,
   sleep: null,
+  power: null,
 };
 let slowedTimers = {
   hunger: false,
   fun: false,
   sleep: false,
+  power: false,
 };
 let currentFastStat = null;
 
 /*----- Cached Element References  -----*/
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 const reasonElement = document.getElementById("gameOverReason");
-const sonicImage = document.getElementById("sonicImage");
 const petChat = document.querySelector(".infoBox_petChat");
 const hungerTimer = document.getElementById("hungerTimer");
 const funTimer = document.getElementById("funTimer");
@@ -140,11 +146,10 @@ const trainButton = buttons[3];
 const btn = document.getElementById("infoDropdownBtn");
 const menu = document.getElementById("infoDropdownMenu");
 const container = document.querySelector(".dropdown-container");
-const colorfulGlitchDiv = document.getElementById("colorfulGlitchDiv");
-const sonicContainer = document.querySelector(".sonic-container");
 const feedIndicator = document.querySelector("#hungerTimer");
 const danceIndicator = document.querySelector("#funTimer");
 const sleepIndicator = document.querySelector("#sleepTimer");
+const powerIndicator = document.querySelector("#powerTimer");
 // *---------------CACHED ELEMENTS ---------------------* \\
 
 // 🧬 Transcendence Pet Class
@@ -259,67 +264,96 @@ function setupDropdownMenu() {
 
 setupDropdownMenu();
 
+
+
+// ============ 🐾 Set Model Pose event listeners=============== \ \
+async function playAnimation(stage, action) {
+  const {file, pose} = animationConfig[stage][action];
+  const duration = await loadAndDisplayFBX(file, pose);
+  return duration;
+}
+  feedButton.addEventListener("click", async () =>{
+    const duration = await playAnimation(currentStage, "feed");
+    setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
+  });
+
+  danceButton.addEventListener("click", async () =>{
+    const duration = await playAnimation(currentStage, "dance");
+    setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration * 2);
+  });
+
+ sleepButton.addEventListener("click", async () =>{
+    const duration = await playAnimation(currentStage, "sleep");
+    setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration * 2);
+  });
+
+  trainButton.addEventListener("click", async () =>{
+    const duration = await playAnimation(currentStage, "train");
+    setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration * 2);
+  });
+
 // ============ 🐾 Set Model Pose event listeners=============== \\
-feedButton.addEventListener("click", async () => {
-  const duration = await loadAndDisplayFBX("./models/cat_eats.fbx", {
-    scale: [0.001, 0.001, 0.001],
-    position: [-1, 0.1, -1], // move model up
-    rotationY: -Math.PI / 3,
-  });
+// feedButton.addEventListener("click", async () => {
+//   const duration = await loadAndDisplayFBX("./models/FEED.fbx", {
+//     scale: [0.001, 0.001, 0.001],
+//     position: [-1, 0.1, -1], // move model up
+//     rotationY: -Math.PI / 3,
+//   });
 
-  setTimeout(() => {
-    loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-      scale: [0.001, 0.001, 0.001],
-      position: [0, 0, 0], // move model up
-      rotationY: -Math.PI / 9,
-    });
-  }, duration * 2);
-});
+//   setTimeout(() => {
+//     loadAndDisplayFBX("./models/blue_cat_idle2.fbx", {
+//       scale: [0.002, 0.002, 0.002],
+//       position: [0, -1.5, -3], // move model up
+//       // X = +right -left   Y = + UP - DOWN  Z = + TO CAM - AWAY CAM
+//       rotationY: -Math.PI / -7,
+//     });
+//   }, duration * 2);
+// });
 
-danceButton.addEventListener("click", async () => {
-  const duration = await loadAndDisplayFBX("./models/cat_tut_dance.fbx", {
-    scale: [0.001, 0.001, 0.001],
-    position: [0, 1, 0], // move model up
-    rotationY: Math.PI / 9,
-  });
+// danceButton.addEventListener("click", async () => {
+//   const duration = await loadAndDisplayFBX("./models/first_dance.fbx", {
+//     scale: [0.003, 0.003, 0.003],
+//     position: [0, -3, -6.3], // move model up
+//     rotationY: Math.PI / 9,
+//   });
 
-  setTimeout(() => {
-    loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-      scale: [0.002, 0.002, 0.002],
-      position: [2, -1.55, -4.5], // move model up
-      rotationY: Math.PI / 9, // rotation
-    });
-  }, duration);
-});
+//   setTimeout(() => {
+//     loadAndDisplayFBX("./models/blue_cat_idle2.fbx", {
+//       scale: [0.002, 0.002, 0.002],
+//       position: [0, -1.55, -3.5], // x y z positions
+//       rotationY: Math.PI / 5,
+//     });
+//   }, duration);
+// });
 
-sleepButton.addEventListener("click", async () => {
-  const duration = await loadAndDisplayFBX("./models/cat_sleep.fbx", {
-    scale: [0.001, 0.001, 0.001],
-    position: [0, 1, 0], // move model up
-    rotationY: Math.PI / 9,
-  });
+// sleepButton.addEventListener("click", async () => {
+//   const duration = await loadAndDisplayFBX("./models/SLEEP.fbx", {
+//     scale: [0.002, 0.002, 0.002],
+//     position: [-5.3, -2.8, -4.6], // move model up
+//     rotationY: Math.PI / 5,
+//   });
 
-  setTimeout(() => {
-    loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-      scale: [0.002, 0.002, 0.002],
-      position: [0, -1.55, -4.5], // move model up
-      rotationY: Math.PI / 9,
-    });
-  }, duration);
-});
+//   setTimeout(() => {
+//     loadAndDisplayFBX("./models/cat_warrior.fbx", {
+//       scale: [0.004, 0.004, 0.004],
+//       position: [-4, -1.55, -9.8], // move model up
+//       rotationY: Math.PI / 9,
+//     });
+//   }, duration * 4);
+// });
 
-trainButton.addEventListener("click", async () => {
-  const duration = await loadAndDisplayFBX("./models/cat_flip_upper.fbx", {
-    scale: [0.002, 0.002, 0.002],
-    position: [0, -1.55, -4.5], // move model up
-    rotationY: Math.PI / 9,
-  });
+// trainButton.addEventListener("click", async () => {
+//   const duration = await loadAndDisplayFBX("./models/cat_flip_upper.fbx", {
+//     scale: [0.002, 0.002, 0.002],
+//     position: [0, -1.55, -4.5], // move model up
+//     rotationY: Math.PI / 9,
+//   });
 
-  setTimeout(() => {
-    loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-      scale: [0.002, 0.002, 0.002],
-      position: [0, -1.55, -3.5], // x y z positions
-      rotationY: Math.PI / 3,
-    });
-  }, duration);
-});
+//   setTimeout(() => {
+//     loadAndDisplayFBX("./models/cat_warrior.fbx", {
+//       scale: [0.0044, 0.0044, 0.0044],
+//       position: [1, -1.55, -11], // move model up
+//       rotationY: Math.PI / 9.5,
+//     });
+//   }, duration);
+// });
