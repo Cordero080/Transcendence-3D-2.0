@@ -260,7 +260,25 @@ li::marker {
   align-items: flex-start;
   margin: 0;
 }
-
+ .infoBox_petChat {
+  width: 70%;
+  padding: 20px;
+  color: #00ffff;
+  font-family: 'Doto', sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  background: rgba(23, 31, 40, 0.35);
+  border-left: 2px solid #00ffff;
+  text-shadow: 0 0 6px #00ffff;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+       
+ 
 .Buttons:hover
 {
   transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);

@@ -314,12 +314,19 @@ danceButton.addEventListener("click", async () => {
   danceIndices[currentStage] = (index + 1) % danceList.length;
 
   const duration = await playAnimation(currentStage, danceKey);
-  setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration * 2);
+  let delay;
+  // 💚 Force Green's Dance 2 to last 15 seconds
+  if (currentStage === "green" && danceKey === "dance2") {
+    delay = 20000; 
+  } else {
+    delay = duration * 1000;
+  }
+  setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration);
 });
 
 sleepButton.addEventListener("click", async () => {
   const duration = await playAnimation(currentStage, "sleep");
-  setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration * 2);
+  setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration);
 });
 
 trainButton.addEventListener("click", async () => {
@@ -332,7 +339,7 @@ trainButton.addEventListener("click", async () => {
   // and set the next index for the next time
   trainIndices[currentStage] = (index + 1) % trainList.length;
 
-  setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration * 2);
+  setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration);
 });
 
 // ============ 🐾 Set Model Pose event listeners=============== \\

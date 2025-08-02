@@ -227,11 +227,11 @@ const animationConfig = {
       },
     },
     dance: {
-      file: "./models/Yellow_tut.fbx",
+      file: "./models/green_bboy_last.fbx",
       pose: {
-        scale: [0.003, 0.003, 0.003],
-        position: [0, -3, -6.3],
-        rotationY: Math.PI / 9,
+        scale: [0.0032, 0.0032, 0.0032],
+        position: [0, -1, -7],
+        rotationY: Math.PI / -2,
         rotationX: 0,
       },
     },
@@ -245,19 +245,19 @@ const animationConfig = {
       },
     },
     dance2: {
-      file: "./models/Yellow_tut.fbx",
+      file: "./models/green_thriller.fbx",
       pose: {
-        scale: [0.003, 0.003, 0.003],
-        position: [0, -3, -6.3],
-        rotationY: Math.PI / 9,
-        rotationX: 0,
+        scale: [0.0064, 0.0064, 0.0064],
+        position: [-1, -3.8, -18],
+        rotationY: Math.PI / 15,
+        rotationX: -0.1,
       },
     },
 
     train: {
       file: "./models/green_butterfly.fbx",
       pose: {
-        scale: [0.004, 0.004, 0.004],
+        scale: [0.0042, 0.0042, 0.0042],
         position: [-1, -1.55, -11],
         rotationY: Math.PI / 6,
         rotationX: 0,
@@ -283,7 +283,7 @@ const animationConfig = {
     },
 
     idleAfterFeed: {
-      file: "./models/green_victory.fbx",
+      file: "./models/green_cocky.fbx",
       pose: {
         scale: [0.004, 0.004, 0.004],
         position: [0, -1, -9],
@@ -292,10 +292,10 @@ const animationConfig = {
       },
     },
     idleAfterDance: {
-      file: "./models/yellow_spin_idle.fbx",
+      file: "./models/green_cocky.fbx",
       pose: {
         scale: [0.0035, 0.0035, 0.0035],
-        position: [0, -1.55, -8],
+        position: [0, -5, -8],
         rotationY: Math.PI / 10,
         rotationX: 0,
       },

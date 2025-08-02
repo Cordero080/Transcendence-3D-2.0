@@ -275,8 +275,8 @@ animate();
 //   rotationY: Math.PI / 7,
 
 loadAndDisplayFBX('./models/green_drunk.fbx', {
-  scale: [0.004, 0.004, 0.004],
-  position: [0, -5, -9.5],
+  scale: [0.0015, 0.0015, 0.0015],
+  position: [0, -1, -1.5],
   rotationY: Math.PI / 9,
 });
 
