@@ -21,7 +21,19 @@ function loadAndDisplayFBX(path, pose = {}) {
     const loader = new FBXLoader();
 
     if (activeModel) {
-      scene.remove(activeModel);
+    scene.remove(activeModel);
+      activeModel.traverse((child) => {
+        if (child.isMesh) {
+          child.geometry.dispose();
+          if (Array.isArray(child.material)) {
+            child.material.forEach((mat) => mat.dispose());
+          } else {
+            child.material.dispose();
+          }
+        }
+      });
+      activeModel = null;
+      mixer = null;
     }
 
     loader.load(path, (fbx) => {
@@ -274,9 +286,9 @@ animate();
 //   position: [0, 0, 0], // move model up
 //   rotationY: Math.PI / 7,
 
-loadAndDisplayFBX('./models/green_drunk.fbx', {
-  scale: [0.0015, 0.0015, 0.0015],
-  position: [0, -1, -1.5],
-  rotationY: Math.PI / 9,
-});
+// loadAndDisplayFBX('./models/green_drunk.fbx', {
+//   scale: [0.0015, 0.0015, 0.0015],
+//   position: [0, -1, -1.5],
+//   rotationY: Math.PI / 9,
+// });
 

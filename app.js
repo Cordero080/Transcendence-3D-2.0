@@ -122,7 +122,11 @@ const trainIndices = {
 };
 
 /*---------- Variables (state) ---------*/
-let currentStage = "green"; // second stage
+let currentStage ="white"; // second stage
+loadAndDisplayFBX(
+  animationConfig[currentStage].idle.file,
+  animationConfig[currentStage].idle.pose
+);
 
 let myPet;
 let gameStarted = false;
@@ -296,114 +300,82 @@ function setupDropdownMenu() {
 setupDropdownMenu();
 
 // ============ 🐾 Set Model Pose event listeners=============== \ \
-async function playAnimation(stage, action) {
-  const { file, pose } = animationConfig[stage][action];
-  const duration = await loadAndDisplayFBX(file, pose);
-  return duration;
-}
-feedButton.addEventListener("click", async () => {
-  const duration = await playAnimation(currentStage, "feed");
-  setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
+// setting position for evolution. Comment out bottom functiona temporarily
+
+// TEMP: Test Blue Idle
+feedButton.addEventListener("click", () => {
+  loadAndDisplayFBX(
+    animationConfig["blue"].idle.file,
+    animationConfig["blue"].idle.pose
+  );
 });
 
-danceButton.addEventListener("click", async () => {
-  const danceList = danceMap[currentStage];
-  const index = danceIndices[currentStage];
-  const danceKey = danceList[index];
-
-  danceIndices[currentStage] = (index + 1) % danceList.length;
-
-  const duration = await playAnimation(currentStage, danceKey);
-  let delay;
-  // 💚 Force Green's Dance 2 to last 15 seconds
-  if (currentStage === "green" && danceKey === "dance2") {
-    delay = 20000; 
-  } else {
-    delay = duration * 1000;
-  }
-  setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration);
+// TEMP: Test Yellow Idle
+danceButton.addEventListener("click", () => {
+  loadAndDisplayFBX(
+    animationConfig["yellow"].idle.file,
+    animationConfig["yellow"].idle.pose
+  );
 });
 
-sleepButton.addEventListener("click", async () => {
-  const duration = await playAnimation(currentStage, "sleep");
-  setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration);
+// TEMP: Test Red Idle
+sleepButton.addEventListener("click", () => {
+  loadAndDisplayFBX(
+    animationConfig["red"].idle.file,
+    animationConfig["red"].idle.pose
+  );
 });
 
-trainButton.addEventListener("click", async () => {
-  const trainList = trainMap[currentStage];
-  const index = trainIndices[currentStage];
-  const trainKey = trainList[index];
-
-  const duration = await playAnimation(currentStage, trainKey);
-  // now play the next train animation
-  // and set the next index for the next time
-  trainIndices[currentStage] = (index + 1) % trainList.length;
-
-  setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration);
+// TEMP: Test White Idle
+trainButton.addEventListener("click", () => {
+  loadAndDisplayFBX(
+    animationConfig["white"].idle.file,
+    animationConfig["white"].idle.pose
+  );
 });
 
-// ============ 🐾 Set Model Pose event listeners=============== \\
+// async function playAnimation(stage, action) {
+//   const { file, pose } = animationConfig[stage][action];
+//   const duration = await loadAndDisplayFBX(file, pose);
+//   return duration;
+// }
 // feedButton.addEventListener("click", async () => {
-//   const duration = await loadAndDisplayFBX("./models/FEED.fbx", {
-//     scale: [0.001, 0.001, 0.001],
-//     position: [-1, 0.1, -1], // move model up
-//     rotationY: -Math.PI / 3,
-//   });
-
-//   setTimeout(() => {
-//     loadAndDisplayFBX("./models/blue_cat_idle2.fbx", {
-//       scale: [0.002, 0.002, 0.002],
-//       position: [0, -1.5, -3], // move model up
-//       // X = +right -left   Y = + UP - DOWN  Z = + TO CAM - AWAY CAM
-//       rotationY: -Math.PI / -7,
-//     });
-//   }, duration * 2);
+//   const duration = await playAnimation(currentStage, "feed");
+//   setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
 // });
 
 // danceButton.addEventListener("click", async () => {
-//   const duration = await loadAndDisplayFBX("./models/first_dance.fbx", {
-//     scale: [0.003, 0.003, 0.003],
-//     position: [0, -3, -6.3], // move model up
-//     rotationY: Math.PI / 9,
-//   });
+//   const danceList = danceMap[currentStage];
+//   const index = danceIndices[currentStage];
+//   const danceKey = danceList[index];
 
-//   setTimeout(() => {
-//     loadAndDisplayFBX("./models/blue_cat_idle2.fbx", {
-//       scale: [0.002, 0.002, 0.002],
-//       position: [0, -1.55, -3.5], // x y z positions
-//       rotationY: Math.PI / 5,
-//     });
-//   }, duration);
+//   danceIndices[currentStage] = (index + 1) % danceList.length;
+
+//   const duration = await playAnimation(currentStage, danceKey);
+//   let delay;
+//   // 💚 Force Green's Dance 2 to last 15 seconds
+//   if (currentStage === "green" && danceKey === "dance2") {
+//     delay = 20000;
+//   } else {
+//     delay = duration * 1000;
+//   }
+//   setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration);
 // });
 
 // sleepButton.addEventListener("click", async () => {
-//   const duration = await loadAndDisplayFBX("./models/SLEEP.fbx", {
-//     scale: [0.002, 0.002, 0.002],
-//     position: [-5.3, -2.8, -4.6], // move model up
-//     rotationY: Math.PI / 5,
-//   });
-
-//   setTimeout(() => {
-//     loadAndDisplayFBX("./models/cat_warrior.fbx", {
-//       scale: [0.004, 0.004, 0.004],
-//       position: [-4, -1.55, -9.8], // move model up
-//       rotationY: Math.PI / 9,
-//     });
-//   }, duration * 4);
+//   const duration = await playAnimation(currentStage, "sleep");
+//   setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration);
 // });
 
 // trainButton.addEventListener("click", async () => {
-//   const duration = await loadAndDisplayFBX("./models/cat_flip_upper.fbx", {
-//     scale: [0.002, 0.002, 0.002],
-//     position: [0, -1.55, -4.5], // move model up
-//     rotationY: Math.PI / 9,
-//   });
+//   const trainList = trainMap[currentStage];
+//   const index = trainIndices[currentStage];
+//   const trainKey = trainList[index];
 
-//   setTimeout(() => {
-//     loadAndDisplayFBX("./models/cat_warrior.fbx", {
-//       scale: [0.0044, 0.0044, 0.0044],
-//       position: [1, -1.55, -11], // move model up
-//       rotationY: Math.PI / 9.5,
-//     });
-//   }, duration);
+//   const duration = await playAnimation(currentStage, trainKey);
+//   // now play the next train animation
+//   // and set the next index for the next time
+//   trainIndices[currentStage] = (index + 1) % trainList.length;
+
+//   setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration);
 // });
