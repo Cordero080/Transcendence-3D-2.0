@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TextureLoader } from "three";
+
 console.log("✅ Three.js and FBXLoader loaded successfully!");
 
 // Setup scene
@@ -9,6 +10,10 @@ let activeModel = null;
 let mixer = null; // <-- NEW
 let time = 0;
 let currentPose = "";
+let jumpForwardActive = false;
+let jumpStartTime = 0;
+let jumpStartPosition = { x: 0, Z: 0 };
+
 const clock = new THREE.Clock();
 
 function loadAndDisplayFBX(path, pose = {}) {
@@ -43,7 +48,16 @@ function loadAndDisplayFBX(path, pose = {}) {
       activeModel = fbx;
       scene.add(fbx);
       currentPose = path;
-
+      if (currentPose.includes("yellow_jump_front_k")) {
+        jumpForwardActive = true;
+        jumpStartTime = time;
+        // Define where jump begins
+        jumpStartPosition = {
+          x: 2,
+          y: -1.55,
+          z: -1,
+        };
+      }
       mixer = new THREE.AnimationMixer(fbx);
       const action = mixer.clipAction(fbx.animations[0]);
       action.play();
@@ -174,6 +188,38 @@ function animate() {
   const delta = clock.getDelta();
   time += delta; // Increment time
 
+  if (activeModel && jumpForwardActive) {
+    const elapsed = time - jumpStartTime;
+
+    // set STARTING POSITION only in beginning
+    if (elapsed < 0.05) {
+      activeModel.position.set(
+        jumpStartPosition.x,
+        jumpStartPosition.y,
+        jumpStartPosition.z
+      );
+      activeModel.rotation.y = Math.PI / -7; // force right angle
+    }
+
+    if (elapsed < 1.2) {
+      const angle = activeModel.rotation.y;
+      const distance = elapsed * 5; // adjust speed
+      activeModel.position.x =
+        jumpStartPosition.x - 1 + Math.sin(angle) * distance;
+      activeModel.position.z =
+        jumpStartPosition.z - 14.5 + Math.cos(angle) * distance;
+    } else {
+      jumpForwardActive = false; // Stop pushing after 1.2 seconds
+    }
+
+    activeModel.position.y = -1.55; // lock Y height
+  }
+
+  // move the model if it's dancing
+
+  if (activeModel && currentPose.includes("yellow_capo_wind")) {
+    activeModel.position.x = Math.sin(time * 1) * 3; //slide left-right
+  }
   // move the model if it's dancing
   if (activeModel && currentPose.includes("White_thriller")) {
     //===============TUT SETTING
@@ -223,8 +269,14 @@ function animate() {
 }
 animate();
 
-loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-  scale: [0.001, 0.001, 0.001],
-  position: [0, 0, 0], // move model up
-  rotationY: Math.PI / 7,
+// loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
+//   scale: [0.001, 0.001, 0.001],
+//   position: [0, 0, 0], // move model up
+//   rotationY: Math.PI / 7,
+
+loadAndDisplayFBX('./models/green_drunk.fbx', {
+  scale: [0.004, 0.004, 0.004],
+  position: [0, -5, -9.5],
+  rotationY: Math.PI / 9,
 });
+

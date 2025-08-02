@@ -88,9 +88,41 @@ const timerMap = {
 };
 const STAT_TYPES = ["hunger", "fun", "sleep", "power"];
 
-/*---------- Variables (state) ---------*/
-let currentStage = "yellow"; // second stage 
+// ===============ANIMATION MAPS ====================\\
 
+const danceMap = {
+  blue: ["dance", "dance2"],
+  yellow: ["dance", "dance2"],
+  green: ["dance", "dance2", "dance3"],
+  red: ["dance", "dance2", "dance3"],
+  white: ["dance", "dance2", "dance3", "dance4"],
+};
+const trainMap = {
+  blue: ["train", "train2"],
+  yellow: ["train", "train2"],
+  green: ["train", "train2"],
+  red: ["train", "train2", "train3"],
+  white: ["train", "train2", "train3", "train4"],
+};
+
+// ==========KEEPS TRACK OF EACH MOVE YOUR ON FOR EACH STAGE======= \\
+const danceIndices = {
+  blue: 0,
+  yellow: 0,
+  green: 0,
+  red: 0,
+  white: 0,
+};
+const trainIndices = {
+  blue: 0,
+  yellow: 0,
+  green: 0,
+  red: 0,
+  white: 0,
+};
+
+/*---------- Variables (state) ---------*/
+let currentStage = "green"; // second stage
 
 let myPet;
 let gameStarted = false;
@@ -119,7 +151,6 @@ let slowedTimers = {
   sleep: false,
   power: false,
 };
-let currentFastStat = null;
 
 /*----- Cached Element References  -----*/
 const gameOverOverlay = document.getElementById("gameOverOverlay");
@@ -264,33 +295,45 @@ function setupDropdownMenu() {
 
 setupDropdownMenu();
 
-
-
 // ============ 🐾 Set Model Pose event listeners=============== \ \
 async function playAnimation(stage, action) {
-  const {file, pose} = animationConfig[stage][action];
+  const { file, pose } = animationConfig[stage][action];
   const duration = await loadAndDisplayFBX(file, pose);
   return duration;
 }
-  feedButton.addEventListener("click", async () =>{
-    const duration = await playAnimation(currentStage, "feed");
-    setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
-  });
+feedButton.addEventListener("click", async () => {
+  const duration = await playAnimation(currentStage, "feed");
+  setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
+});
 
-  danceButton.addEventListener("click", async () =>{
-    const duration = await playAnimation(currentStage, "dance");
-    setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration * 2);
-  });
+danceButton.addEventListener("click", async () => {
+  const danceList = danceMap[currentStage];
+  const index = danceIndices[currentStage];
+  const danceKey = danceList[index];
 
- sleepButton.addEventListener("click", async () =>{
-    const duration = await playAnimation(currentStage, "sleep");
-    setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration * 2);
-  });
+  danceIndices[currentStage] = (index + 1) % danceList.length;
 
-  trainButton.addEventListener("click", async () =>{
-    const duration = await playAnimation(currentStage, "train");
-    setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration * 2);
-  });
+  const duration = await playAnimation(currentStage, danceKey);
+  setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration * 2);
+});
+
+sleepButton.addEventListener("click", async () => {
+  const duration = await playAnimation(currentStage, "sleep");
+  setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration * 2);
+});
+
+trainButton.addEventListener("click", async () => {
+  const trainList = trainMap[currentStage];
+  const index = trainIndices[currentStage];
+  const trainKey = trainList[index];
+
+  const duration = await playAnimation(currentStage, trainKey);
+  // now play the next train animation
+  // and set the next index for the next time
+  trainIndices[currentStage] = (index + 1) % trainList.length;
+
+  setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration * 2);
+});
 
 // ============ 🐾 Set Model Pose event listeners=============== \\
 // feedButton.addEventListener("click", async () => {
