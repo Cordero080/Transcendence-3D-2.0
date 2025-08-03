@@ -122,7 +122,7 @@ const trainIndices = {
 };
 
 /*---------- Variables (state) ---------*/
-let currentStage ="white"; // second stage
+let currentStage = "green"; // second stage
 loadAndDisplayFBX(
   animationConfig[currentStage].idle.file,
   animationConfig[currentStage].idle.pose
@@ -305,32 +305,32 @@ setupDropdownMenu();
 // TEMP: Test Blue Idle
 feedButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["blue"].idle.file,
-    animationConfig["blue"].idle.pose
+    animationConfig["white"].feed.file,
+    animationConfig["white"].feed.pose
   );
 });
 
 // TEMP: Test Yellow Idle
 danceButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["yellow"].idle.file,
-    animationConfig["yellow"].idle.pose
+    animationConfig["green"].dance.file,
+    animationConfig["green"].dance.pose
   );
 });
 
 // TEMP: Test Red Idle
 sleepButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["red"].idle.file,
-    animationConfig["red"].idle.pose
+    animationConfig["green"].sleep.file,
+    animationConfig["green"].sleep.pose
   );
 });
 
 // TEMP: Test White Idle
 trainButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["white"].idle.file,
-    animationConfig["white"].idle.pose
+    animationConfig["green"].train.file,
+    animationConfig["green"].train.pose
   );
 });
 

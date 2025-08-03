@@ -10,9 +10,15 @@ let activeModel = null;
 let mixer = null; // <-- NEW
 let time = 0;
 let currentPose = "";
-let jumpForwardActive = false;
-let jumpStartTime = 0;
-let jumpStartPosition = { x: 0, Z: 0 };
+// let jumpForwardActive = false;
+// let jumpStartTime = 0;
+// let jumpStartPosition = { x: 0, Z: 0 };
+// let redUppercutActive = false;
+// let redUppercutStartTime = 0;
+// let redUppercutStartX = 0;
+// let redUppercutStartZ = 0;
+// let redUppercutDelayStart = 0;
+// let redUppercutStopTime = 0;
 
 const clock = new THREE.Clock();
 
@@ -20,8 +26,9 @@ function loadAndDisplayFBX(path, pose = {}) {
   return new Promise((resolve) => {
     const loader = new FBXLoader();
 
+    // Remove any existing model
     if (activeModel) {
-    scene.remove(activeModel);
+      scene.remove(activeModel);
       activeModel.traverse((child) => {
         if (child.isMesh) {
           child.geometry.dispose();
@@ -37,18 +44,16 @@ function loadAndDisplayFBX(path, pose = {}) {
     }
 
     loader.load(path, (fbx) => {
-      // Respect custom position fully
+      // Apply pose settings
+      const [sx, sy, sz] = pose.scale || [0.0025, 0.0025, 0.0025];
+      const [px = 0, py = -0.00235, pz = 0.6] = pose.position || [];
+      const rotationY = pose.rotationY || 0;
+      const rotationX = pose.rotationX || 0;
 
-      const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
       fbx.scale.set(sx, sy, sz);
-
-      const scaleFactor = 0.001;
-      const defaultY = -2.35 * scaleFactor;
-
-      const [px = 0, py = defaultY, pz = 0.6] = pose.position || [];
       fbx.position.set(px, py, pz);
-      fbx.rotation.y = pose.rotationY || 0;
-      fbx.rotation.x = pose.rotationX || 0;
+      fbx.rotation.y = rotationY;
+      fbx.rotation.x = rotationX;
 
       fbx.traverse((child) => {
         if (child.isMesh) {
@@ -60,22 +65,41 @@ function loadAndDisplayFBX(path, pose = {}) {
       activeModel = fbx;
       scene.add(fbx);
       currentPose = path;
-      if (currentPose.includes("yellow_jump_front_k")) {
-        jumpForwardActive = true;
-        jumpStartTime = time;
-        // Define where jump begins
-        jumpStartPosition = {
-          x: 2,
-          y: -1.55,
-          z: -1,
-        };
-      }
+
+      // Setup animation
       mixer = new THREE.AnimationMixer(fbx);
       const action = mixer.clipAction(fbx.animations[0]);
       action.play();
 
-      // Resolve with animation duration in milliseconds
-      const duration = fbx.animations[0]?.duration || 2.5;
+      const duration = fbx.animations[0]?.duration || 2.5; //this
+
+      // 🔴🔴🔴🔴🔴🔴🔴🔴 RED UPPERCUT LOGIC🔴🔴🔴🔴🔴🔴🔴🔴🔴
+
+      // if (currentPose.includes("red_uppercut")) {
+      //   redUppercutActive = true;
+      //   redUppercutStartTime = time;
+
+      //   redUppercutStartX = fbx.position.x;
+      //   redUppercutStartZ = fbx.position.z;
+
+      //   redUppercutDelayStart = time + 1; // Delay before sliding starts
+      //   redUppercutStopTime = redUppercutDelayStart + duration;
+      // }
+
+      // 💛 YELLOW CAPO WIND SCALE
+      if (currentPose.includes("yellow_capo_wind")) {
+        fbx.scale.set(0.0034, 0.0034, 0.0034);
+      }
+
+      // // 💛 YELLOW JUMP FORWARD
+      // if (currentPose.includes("yellow_jump_front_k")) {
+      //   fbx.scale.set(0.0028, 0.0028, 0.0028);
+      //   jumpForwardActive = true;
+      //   jumpStartTime = time;
+      //   jumpStartPosition = { x: 2, y: -1.55, z: -1 };
+      // }
+
+      // ✅ Finish: resolve with animation duration in milliseconds
       resolve(duration * 1000);
     });
   });
@@ -90,16 +114,7 @@ const bgLoader = new TextureLoader();
 bgLoader.load("./models/cyberpunk-room2 .png", function (texture) {
   scene.background = texture;
 });
-// 🔲 Dark overlay to dim background image
-// const darkOverlayGeometry = new THREE.PlaneGeometry(20, 30);
-// const darkOverlayMaterial = new THREE.MeshBasicMaterial({
-//   color: 0x000000,
-//   transparent: true,
-//   opacity: 0.2 // You can adjust this to control darkness
-// });
-// // const darkOverlay = new THREE.Mesh(darkOverlayGeometry, darkOverlayMaterial);
-// // // darkOverlay.position.z = -5; // Push it behind everything
-// // scene.add(darkOverlay);
+
 
 const ambientLight = new THREE.AmbientLight(0x000ff, 1.4); // Soft purple ambient light
 scene.add(ambientLight);
@@ -200,38 +215,80 @@ function animate() {
   const delta = clock.getDelta();
   time += delta; // Increment time
 
-  if (activeModel && jumpForwardActive) {
-    const elapsed = time - jumpStartTime;
+  // if (activeModel && jumpForwardActive) {
+  //   const elapsed = time - jumpStartTime;
 
-    // set STARTING POSITION only in beginning
-    if (elapsed < 0.05) {
-      activeModel.position.set(
-        jumpStartPosition.x,
-        jumpStartPosition.y,
-        jumpStartPosition.z
-      );
-      activeModel.rotation.y = Math.PI / -7; // force right angle
-    }
+  //   // set STARTING POSITION only in beginning
+  //   if (elapsed < 0.05) {
+  //     activeModel.position.set(
+  //       jumpStartPosition.x,
+  //       jumpStartPosition.y,
+  //       jumpStartPosition.z
+  //     );
+  //     activeModel.rotation.y = Math.PI / -7; // force right angle
+  //   }
 
-    if (elapsed < 1.2) {
-      const angle = activeModel.rotation.y;
-      const distance = elapsed * 5; // adjust speed
-      activeModel.position.x =
-        jumpStartPosition.x - 1 + Math.sin(angle) * distance;
-      activeModel.position.z =
-        jumpStartPosition.z - 14.5 + Math.cos(angle) * distance;
-    } else {
-      jumpForwardActive = false; // Stop pushing after 1.2 seconds
-    }
+  //   if (elapsed < 1.2) {
+  //     const angle = activeModel.rotation.y;
+  //     const distance = elapsed * 5; // adjust speed
+  //     activeModel.position.x =
+  //       jumpStartPosition.x - 1 + Math.sin(angle) * distance;
+  //     activeModel.position.z =
+  //       jumpStartPosition.z - 14.5 + Math.cos(angle) * distance;
+  //   } else {
+  //     jumpForwardActive = false; // Stop pushing after 1.2 seconds
+  //   }
 
-    activeModel.position.y = -1.55; // lock Y height
-  }
+  //   activeModel.position.y = -1.55; // lock Y height
+  // }
 
-  // move the model if it's dancing
+  // 🔴 RED UPPERCUT
+ // 🔴 RED UPPERCUT MOVEMENT
+// if (
+//   activeModel &&
+//   currentPose.includes("red_uppercut") &&
+//   redUppercutActive
+// ) {
+//   const now = time;
+
+//   if (now >= redUppercutStopTime) {
+//     redUppercutActive = false;
+
+//     // 🚫 Stop sliding by fixing the final position
+//     const finalDistance = (redUppercutStopTime - redUppercutDelayStart) * 2.2;
+//     const angle = activeModel.rotation.y;
+//     activeModel.position.x = redUppercutStartX + Math.sin(angle) * finalDistance;
+//     activeModel.position.z = redUppercutStartZ + Math.cos(angle) * finalDistance;
+//     return;
+//   }
+
+//   if (now >= redUppercutDelayStart) {
+//     const elapsed = now - redUppercutDelayStart;
+//     const slideSpeed = 3; // ← tweak this to cover more or less
+
+//     const distance = elapsed * slideSpeed;
+//     const angle = activeModel.rotation.y;
+
+//     activeModel.position.x = redUppercutStartX + Math.sin(angle) * distance;
+//     activeModel.position.z = redUppercutStartZ + Math.cos(angle) * distance;
+//     activeModel.position.y = -1.55;
+//   }
+// }
 
   if (activeModel && currentPose.includes("yellow_capo_wind")) {
-    activeModel.position.x = Math.sin(time * 1) * 3; //slide left-right
+    activeModel.position.x = Math.sin(time * 1) * 1; //slide left-right
   }
+  //  💚 ✅ Green salsa dancing- side to side 💚 ✅
+   if (activeModel && currentPose.includes("green_salsa")) {
+    activeModel.position.x = Math.sin(time * .5) * 2; // tweak rang/speed
+    activeModel.position.y = -1.55; // Lock Y if needed
+   }
+//  💚 ✅ Green Thriller - side to side 💚 ✅
+   if (activeModel && currentPose.includes("green_thriller")) {
+    activeModel.position.x = Math.sin(time * -.8) * .8; // tweak rang/speed
+    activeModel.position.y = -2; // Lock Y if needed
+
+   }
   // move the model if it's dancing
   if (activeModel && currentPose.includes("White_thriller")) {
     //===============TUT SETTING
@@ -291,4 +348,3 @@ animate();
 //   position: [0, -1, -1.5],
 //   rotationY: Math.PI / 9,
 // });
-
