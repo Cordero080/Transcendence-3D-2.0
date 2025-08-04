@@ -26,7 +26,6 @@ function loadAndDisplayFBX(path, pose = {}) {
   return new Promise((resolve) => {
     const loader = new FBXLoader();
 
-    // Remove any existing model
     if (activeModel) {
       scene.remove(activeModel);
       activeModel.traverse((child) => {
@@ -44,16 +43,13 @@ function loadAndDisplayFBX(path, pose = {}) {
     }
 
     loader.load(path, (fbx) => {
-      // Apply pose settings
-      const [sx, sy, sz] = pose.scale || [0.0025, 0.0025, 0.0025];
-      const [px = 0, py = -0.00235, pz = 0.6] = pose.position || [];
+      const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
+      const [px = 0, py = -1, pz = 0] = pose.position || [];
       const rotationY = pose.rotationY || 0;
-      const rotationX = pose.rotationX || 0;
 
       fbx.scale.set(sx, sy, sz);
       fbx.position.set(px, py, pz);
       fbx.rotation.y = rotationY;
-      fbx.rotation.x = rotationX;
 
       fbx.traverse((child) => {
         if (child.isMesh) {
@@ -66,40 +62,11 @@ function loadAndDisplayFBX(path, pose = {}) {
       scene.add(fbx);
       currentPose = path;
 
-      // Setup animation
       mixer = new THREE.AnimationMixer(fbx);
       const action = mixer.clipAction(fbx.animations[0]);
       action.play();
 
-      const duration = fbx.animations[0]?.duration || 2.5; //this
-
-      // 🔴🔴🔴🔴🔴🔴🔴🔴 RED UPPERCUT LOGIC🔴🔴🔴🔴🔴🔴🔴🔴🔴
-
-      // if (currentPose.includes("red_uppercut")) {
-      //   redUppercutActive = true;
-      //   redUppercutStartTime = time;
-
-      //   redUppercutStartX = fbx.position.x;
-      //   redUppercutStartZ = fbx.position.z;
-
-      //   redUppercutDelayStart = time + 1; // Delay before sliding starts
-      //   redUppercutStopTime = redUppercutDelayStart + duration;
-      // }
-
-      // 💛 YELLOW CAPO WIND SCALE
-      if (currentPose.includes("yellow_capo_wind")) {
-        fbx.scale.set(0.0034, 0.0034, 0.0034);
-      }
-
-      // // 💛 YELLOW JUMP FORWARD
-      // if (currentPose.includes("yellow_jump_front_k")) {
-      //   fbx.scale.set(0.0028, 0.0028, 0.0028);
-      //   jumpForwardActive = true;
-      //   jumpStartTime = time;
-      //   jumpStartPosition = { x: 2, y: -1.55, z: -1 };
-      // }
-
-      // ✅ Finish: resolve with animation duration in milliseconds
+      const duration = fbx.animations[0]?.duration || 2.5;
       resolve(duration * 1000);
     });
   });
@@ -114,7 +81,6 @@ const bgLoader = new TextureLoader();
 bgLoader.load("./models/cyberpunk-room2 .png", function (texture) {
   scene.background = texture;
 });
-
 
 const ambientLight = new THREE.AmbientLight(0x000ff, 1.4); // Soft purple ambient light
 scene.add(ambientLight);
@@ -215,80 +181,21 @@ function animate() {
   const delta = clock.getDelta();
   time += delta; // Increment time
 
-  // if (activeModel && jumpForwardActive) {
-  //   const elapsed = time - jumpStartTime;
-
-  //   // set STARTING POSITION only in beginning
-  //   if (elapsed < 0.05) {
-  //     activeModel.position.set(
-  //       jumpStartPosition.x,
-  //       jumpStartPosition.y,
-  //       jumpStartPosition.z
-  //     );
-  //     activeModel.rotation.y = Math.PI / -7; // force right angle
-  //   }
-
-  //   if (elapsed < 1.2) {
-  //     const angle = activeModel.rotation.y;
-  //     const distance = elapsed * 5; // adjust speed
-  //     activeModel.position.x =
-  //       jumpStartPosition.x - 1 + Math.sin(angle) * distance;
-  //     activeModel.position.z =
-  //       jumpStartPosition.z - 14.5 + Math.cos(angle) * distance;
-  //   } else {
-  //     jumpForwardActive = false; // Stop pushing after 1.2 seconds
-  //   }
-
-  //   activeModel.position.y = -1.55; // lock Y height
-  // }
-
-  // 🔴 RED UPPERCUT
- // 🔴 RED UPPERCUT MOVEMENT
-// if (
-//   activeModel &&
-//   currentPose.includes("red_uppercut") &&
-//   redUppercutActive
-// ) {
-//   const now = time;
-
-//   if (now >= redUppercutStopTime) {
-//     redUppercutActive = false;
-
-//     // 🚫 Stop sliding by fixing the final position
-//     const finalDistance = (redUppercutStopTime - redUppercutDelayStart) * 2.2;
-//     const angle = activeModel.rotation.y;
-//     activeModel.position.x = redUppercutStartX + Math.sin(angle) * finalDistance;
-//     activeModel.position.z = redUppercutStartZ + Math.cos(angle) * finalDistance;
-//     return;
-//   }
-
-//   if (now >= redUppercutDelayStart) {
-//     const elapsed = now - redUppercutDelayStart;
-//     const slideSpeed = 3; // ← tweak this to cover more or less
-
-//     const distance = elapsed * slideSpeed;
-//     const angle = activeModel.rotation.y;
-
-//     activeModel.position.x = redUppercutStartX + Math.sin(angle) * distance;
-//     activeModel.position.z = redUppercutStartZ + Math.cos(angle) * distance;
-//     activeModel.position.y = -1.55;
-//   }
-// }
+  
 
   if (activeModel && currentPose.includes("yellow_capo_wind")) {
     activeModel.position.x = Math.sin(time * 1) * 1; //slide left-right
   }
   //  💚 ✅ Green salsa dancing- side to side 💚 ✅
-   if (activeModel && currentPose.includes("green_salsa")) {
-    activeModel.position.x = Math.sin(time * .5) * 2; // tweak rang/speed
+  if (activeModel && currentPose.includes("green_salsa")) {
+    activeModel.position.x = Math.sin(time * 0.5) * 2; // tweak rang/speed
     activeModel.position.y = -1.55; // Lock Y if needed
-   }
-//  💚 ✅ Green Thriller - side to side 💚 ✅
-   if (activeModel && currentPose.includes("green_thriller")) {
-    activeModel.position.x = Math.sin(time * -.8) * .8; // tweak rang/speed
+  }
+  //  💚 ✅ Green Thriller - side to side 💚 ✅
+  if (activeModel && currentPose.includes("green_thriller")) {
+    activeModel.position.x = Math.sin(time * -0.8) * 0.8; // tweak rang/speed
     activeModel.position.y = -2; // Lock Y if needed
-
-   }
+  }
   // move the model if it's dancing
   if (activeModel && currentPose.includes("White_thriller")) {
     //===============TUT SETTING

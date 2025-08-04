@@ -122,7 +122,7 @@ const trainIndices = {
 };
 
 /*---------- Variables (state) ---------*/
-let currentStage = "green"; // second stage
+let currentStage = "red"; // second stage
 loadAndDisplayFBX(
   animationConfig[currentStage].idle.file,
   animationConfig[currentStage].idle.pose
@@ -300,21 +300,61 @@ function setupDropdownMenu() {
 setupDropdownMenu();
 
 // ============ 🐾 Set Model Pose event listeners=============== \ \
+
+// ===================IDLE AFTER TESTING
+//11
+// TEMPORARY: Press number keys 1–5 to test idleAfterFeed animations per color
+document.addEventListener("keydown", (e) => {
+  if (e.key === "1") {
+    loadAndDisplayFBX(
+      animationConfig["red"].idleAfterTrain.file,
+      animationConfig["red"].idleAfterTrain.pose
+    );
+  }
+  if (e.key === "2") {
+    loadAndDisplayFBX(
+      animationConfig["yellow"].idleAfterSleep.file,
+      animationConfig["yellow"].idleAfterSleep.pose
+    );
+  }
+  if (e.key === "3") {
+    loadAndDisplayFBX(
+      animationConfig["green"].idleAfterFeed.file,
+      animationConfig["green"].idleAfterFeed.pose
+    );
+  }
+  if (e.key === "4") {
+    loadAndDisplayFBX(
+      animationConfig["red"].idleAfterFeed.file,
+      animationConfig["red"].idleAfterFeed.pose
+    );
+  }
+  if (e.key === "5") {
+    loadAndDisplayFBX(
+      animationConfig["white"].idleAfterFeed.file,
+      animationConfig["white"].idleAfterFeed.pose
+    );
+  }
+});11
+
 // setting position for evolution. Comment out bottom functiona temporarily
 
-// TEMP: Test Blue Idle
+
+
+
+//TEMP: Test Blue Idle
 feedButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["white"].feed.file,
-    animationConfig["white"].feed.pose
+    animationConfig["red"].feed.file,
+    animationConfig["red"].feed.pose
   );
 });
 
 // TEMP: Test Yellow Idle
 danceButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["green"].dance.file,
-    animationConfig["green"].dance.pose
+    animationConfig["red"].dance2.file,
+    animationConfig["red"].dance2.pose
   );
 });
 
@@ -333,6 +373,23 @@ trainButton.addEventListener("click", () => {
     animationConfig["green"].train.pose
   );
 });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "d") {
+    console.log("🌀 Dissolve test triggered!");
+    loadAndDisplayFBX("models/WHITE_emission_2.fbx", {
+      scale: [0.001, 0.001, 0.001],
+      position: [0, -1.6, -1],
+      rotationY: 0,
+    });
+  }
+});
+
+
+
+
+
+//=================TO USE IN GAME
 
 // async function playAnimation(stage, action) {
 //   const { file, pose } = animationConfig[stage][action];
