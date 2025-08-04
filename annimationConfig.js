@@ -39,7 +39,7 @@ const animationConfig = {
     train: {
       file: "./models/cat_punch_kick.fbx",
       pose: {
-        scale: [0.00188, 0.00188, 0.00188],
+        scale: [0.00189, 0.00189, 0.00189],
         position: [0, -1.9, -4],
         rotationY: Math.PI / 9,
         rotationX: 0,
@@ -57,7 +57,7 @@ const animationConfig = {
     idle: {
       file: "./models/blue_happy_idle.fbx",
       pose: {
-        scale: [0.00162, 0.00162, 0.00162],
+        scale: [0.00163, 0.00163, 0.00163],
         position: [0, 0.2, -3],
         rotationY: -Math.PI / -16,
         rotationX: 0,
@@ -94,8 +94,8 @@ const animationConfig = {
     idleAfterTrain: {
       file: "./models/blue_offensive.fbx",
       pose: {
-        scale: [0.00378, 0.00378, 0.00378],
-        position: [0, -5, -11.3],
+        scale: [0.00379, 0.0039, 0.00379],
+        position: [0, -5, -11.1],
         rotationY: Math.PI / 35,
         rotationX: 0,
       },
@@ -323,11 +323,11 @@ const animationConfig = {
       },
     },
     dance: {
-      file: "./models/red_bboy.fbx",
+      file: "./models/red_break2.fbx",
       pose: {
-        scale: [0.00252, 0.00252, 0.00252],
-        position: [0.7, -2.6, -6.3],
-        rotationY: Math.PI / -3,
+        scale: [0.0025, 0.0025, 0.0025],
+        position: [0.3, -2.6, -5.3],
+        rotationY: Math.PI / -14,
         rotationX: 0,
       },
     },
@@ -343,7 +343,7 @@ const animationConfig = {
     dance2: {
       file: "./models/red_salsa.fbx",
       pose: {
-         scale: [0.0019, 0.0019, 0.0019],
+        scale: [0.0018, 0.0018, 0.0018],
         position: [-1, -1.4, -3],
         rotationY: -Math.PI / -24,
         rotationX: 0,
@@ -354,7 +354,7 @@ const animationConfig = {
       file: "./models/red_uppercut.fbx",
       pose: {
         scale: [0.0072, 0.0072, 0.0072],
-        position: [-2, -9, -21],
+        position: [-3, -9, -22],
         rotationY: Math.PI / 6,
         rotationX: 0,
       },
@@ -390,7 +390,7 @@ const animationConfig = {
     idleAfterDance: {
       file: "./models/red_ready.fbx",
       pose: {
-        scale: [0.00412, 0.00412, 0.00412],
+        scale: [0.0042, 0.0042, 0.0042],
         position: [0, -5, -10.5],
         rotationY: Math.PI / 22,
         rotationX: 0,
@@ -399,7 +399,7 @@ const animationConfig = {
     idleAfterSleep: {
       file: "./models/red_hadouken.fbx",
       pose: {
-        scale: [0.0041, 0.0041, 0.0041],
+        scale: [0.004, 0.004, 0.004],
         position: [0, -5, -11],
         rotationY: Math.PI / -22,
         rotationX: 0,
@@ -428,11 +428,11 @@ const animationConfig = {
       },
     },
     dance: {
-      file: "./models/green_bboy_last.fbx",
+      file: "./models/white_thriller.fbx",
       pose: {
-        scale: [0.0032, 0.0032, 0.0032],
-        position: [0, -1, -7],
-        rotationY: Math.PI / -2,
+        scale: [0.0023, 0.0023, 0.0023],
+        position: [-2, -2, -8],
+        rotationY: -Math.PI / -7,
         rotationX: 0,
       },
     },
@@ -456,10 +456,10 @@ const animationConfig = {
     },
 
     train: {
-      file: "./models/green_butterfly.fbx",
+      file: "./models/white_fly.fbx",
       pose: {
         scale: [0.0042, 0.0042, 0.0042],
-        position: [-1, -1.55, -11],
+        position: [-13, 0, -30],
         rotationY: Math.PI / 6,
         rotationX: 0,
       },
@@ -476,8 +476,8 @@ const animationConfig = {
     idle: {
       file: "./models/SLOW_QI.fbx",
       pose: {
-        scale: [0.0021, 0.00209, 0.00209],
-        position: [0, -1.5, -3.5],
+        scale: [0.002, 0.002, 0.002],
+        position: [0, -1.5, -3],
         rotationY: -Math.PI / -6,
         rotationX: 0,
       },

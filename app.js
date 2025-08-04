@@ -122,7 +122,7 @@ const trainIndices = {
 };
 
 /*---------- Variables (state) ---------*/
-let currentStage = "red"; // second stage
+let currentStage = "white"; // second stage
 loadAndDisplayFBX(
   animationConfig[currentStage].idle.file,
   animationConfig[currentStage].idle.pose
@@ -313,14 +313,14 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key === "2") {
     loadAndDisplayFBX(
-      animationConfig["yellow"].idleAfterSleep.file,
-      animationConfig["yellow"].idleAfterSleep.pose
+      animationConfig["red"].idleAfterSleep.file,
+      animationConfig["red"].idleAfterSleep.pose
     );
   }
-  if (e.key === "3") {
+  if (e.key === "3") {33
     loadAndDisplayFBX(
-      animationConfig["green"].idleAfterFeed.file,
-      animationConfig["green"].idleAfterFeed.pose
+      animationConfig["red"].idleAfterDance.file,
+      animationConfig["red"].idleAfterDance.pose
     );
   }
   if (e.key === "4") {
@@ -353,24 +353,24 @@ feedButton.addEventListener("click", () => {
 // TEMP: Test Yellow Idle
 danceButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["red"].dance2.file,
-    animationConfig["red"].dance2.pose
+    animationConfig["white"].dance.file,
+    animationConfig["white"].dance.pose
   );
 });
 
 // TEMP: Test Red Idle
 sleepButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["green"].sleep.file,
-    animationConfig["green"].sleep.pose
+    animationConfig["red"].sleep.file,
+    animationConfig["red"].sleep.pose
   );
 });
 
 // TEMP: Test White Idle
 trainButton.addEventListener("click", () => {
   loadAndDisplayFBX(
-    animationConfig["green"].train.file,
-    animationConfig["green"].train.pose
+    animationConfig["white"].train.file,
+    animationConfig["white"].train.pose
   );
 });
 
