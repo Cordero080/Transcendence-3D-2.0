@@ -305,24 +305,46 @@ class Pet {
     );
   }
 }
+// ✅ Then define this after the class ends
+function hideGlitchEgg() {
+  const glitchDiv = document.getElementById("colorfulGlitchDiv");
+  if (glitchDiv) {
+    glitchDiv.classList.add("hatching");
+    setTimeout(() => {
+      glitchDiv.style.display = "none";
+    }, 1500);
+  }
+}
 
 function startGame() {
-  myPet = new Pet("Coco"); // Create the pet
-  currentStage = "blue"; // Start at blue stage
-  loadAndDisplayFBX(
-    animationConfig[currentStage].idle.file,
-    animationConfig[currentStage].idle.pose
-  );
-  resetButtonTracker();
-  gameStarted = true;
-// *=======================TIMERS============================* \\
-  statTimers.hunger = myPet.createStatTimer(
-    "hunger",
-    gameSettings.baseDecayRate
-  );
-  statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
-  statTimers.sleep = myPet.createStatTimer("sleep", gameSettings.baseDecayRate);
-  statTimers.power = myPet.createStatTimer("power", gameSettings.baseDecayRate);
+  return new Promise((resolve) => {
+    myPet = new Pet("Coco");
+    currentStage = "blue";
+
+    loadAndDisplayFBX(
+      animationConfig[currentStage].idle.file,
+      animationConfig[currentStage].idle.pose
+    ).then(() => {
+      resetButtonTracker();
+      gameStarted = true;
+
+      statTimers.hunger = myPet.createStatTimer(
+        "hunger",
+        gameSettings.baseDecayRate
+      );
+      statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
+      statTimers.sleep = myPet.createStatTimer(
+        "sleep",
+        gameSettings.baseDecayRate
+      );
+      statTimers.power = myPet.createStatTimer(
+        "power",
+        gameSettings.baseDecayRate
+      );
+
+      resolve(); // ✅ tell the overlay it’s safe to hide the egg
+    });
+  });
 }
 
 function setupDropdownMenu() {
@@ -370,9 +392,23 @@ async function playActionThenShareIdle(actionType, stage) {
 
 // *================EVENT LISTENERS ===================* \\
 
-overlayStartBtn.addEventListener("click", () => {
-  startGame();
+overlayStartBtn.addEventListener("click", async () => {
   overlay.style.display = "none"; // Hide intro screen
+  // 🧿 Show the Glitch Egg when game starts
+  const glitchEgg = document.getElementById("colorfulGlitchDiv");
+  glitchEgg.style.display = "flex"; // Show glitch egg
+  glitchEgg.classList.add("hatching"); // Start animation
+  console.log("🧿 Glitch egg shown...");
+
+  // Load pet while glitch egg animates
+  await startGame(); // Now returns a Promise after FBX idle loads
+
+  // Wait 5s before hiding glitch egg to ensure it plays fully
+  setTimeout(() => {
+    glitchEgg.classList.remove("hatching");
+    glitchEgg.style.display = "none";
+    console.log("✨ Glitch egg hidden");
+  }, 5000);
 });
 
 feedButton.addEventListener("click", async () => {

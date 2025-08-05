@@ -75,6 +75,7 @@ header h1 {
  font-size: 3.8rem;
  white-space: normal;
  text-overflow: unset;
+ animation: floatUpDown 3s ease-in-out infinite;
 }
 header {
   border: solid 2px rgb(205, 12, 226);
@@ -96,12 +97,12 @@ header {
 
 #transcendence {
   background: linear-gradient(45deg, 
-    #ff6bb3,     /* Pink */
-    #80b3ff,     /* Light blue */
-    #b380ff,     /* Purple */
-    #66ff99,     /* Green */
-    #ffb366,     /* Orange */
-    #ff6bb3      /* Pink again for seamless loop */
+    oklch(73.033% 0.19383 352.633),     /* Pink */
+    oklch(76.162% 0.1228 258.17),     /* Light blue */
+    oklch(70.428% 0.18362 300.278),     /* Purple */
+    oklch(89.385% 0.19155 151.458),     /* Green */
+    oklch(82.405% 0.12878 64.68),     /* Orange */
+    oklch(73.033% 0.19383 352.633)      /* Pink again for seamless loop */
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -109,9 +110,9 @@ header {
   font-weight: bold;
   /* Subtle glow effect behind the gradient */
   text-shadow: 
-    0 0 10px rgba(255, 107, 179, 0.3),    /* Pink glow */
-    0 0 15px rgba(128, 179, 255, 0.3),    /* Blue glow */
-    0 0 20px rgba(179, 128, 255, 0.3);    /* Purple glow */
+    0 0 10px oklch(73.033% 0.19383 352.633 / 0.3),    /* Pink glow */
+    0 0 15px oklch(76.162% 0.1228 258.17 / 0.3),    /* Blue glow */
+    0 0 20px oklch(70.428% 0.18362 300.278 / 0.3);    /* Purple glow */
   /* Animate the gradient for extra visual appeal */
   animation: gradientShift 2.5s ease infinite;
 }
@@ -298,12 +299,12 @@ li::marker {
   word-wrap: break-word;
   hyphens: auto;
    background: linear-gradient(45deg, 
-    #ff6bb3,     /* Pink */
-    #80b3ff,     /* Light blue */
-    #b380ff,     /* Purple */
-    #66ff99,     /* Green */
-    #ffb366,     /* Orange */
-    #ff6bb3      /* Pink again for seamless loop */
+    oklch(73.033% 0.19383 352.633),     /* Pink */
+    oklch(76.162% 0.1228 258.17),     /* Light blue */
+    oklch(70.428% 0.18362 300.278),     /* Purple */
+    oklch(89.385% 0.19155 151.458),     /* Green */
+    oklch(82.405% 0.12878 64.68),     /* Orange */
+    oklch(73.033% 0.19383 352.633)      /* Pink again for seamless loop */
   );
   background-size: 200% 200%;
   background-clip: text;
@@ -398,7 +399,7 @@ button.Buttons.disabled:active
   font-family: "doto";
   font-size: 0.7em;
   color: rgba(96, 241, 108, 0.923);
-  background-color: rgba(47, 6, 150, 0.31);
+  background-color: rgba(67, 118, 200, 0.479);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -428,6 +429,40 @@ button.Buttons.disabled:active
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  position:relative;
+}
+
+@property --angle{
+  syntax:"<angle>" ;
+  initial-value: 0deg;
+  inherits: false;
+}
+.StartButton::after, .StartButton::before {
+ content:"";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: conic-gradient(from var(--angle), transparent 5%, oklch(65.964% 0.27558 349.688), oklch(73.035% 0.15018 232.981), oklch(69.854% 0.17452 153.965), oklch(48.131% 0.28662 278.604), oklch(59.72% 0.27737 321.28), oklch(65.964% 0.27558 349.688)  );
+  top: 50%;
+  left:50%;
+  translate: -50% -50%;
+  z-index: -1;
+  padding: 3px;
+  border-radius: 8px;
+  animation: 3s spin linear infinite;
+}
+.StartButton::before {
+  filter: blur(1.5rem);
+  opacity: 0.5;
+}
+
+@keyframes spin{
+  from{
+--angle: 0deg;
+  }
+  to{
+--angle: 360deg;
+  }
 }
 
 .ResetButton {
@@ -441,12 +476,14 @@ button.Buttons.disabled:active
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  
 }
+
 
 .StartButton:hover,
 .ResetButton:hover {
   transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
-  box-shadow: 0 12px 12px oklch(51.245% 0.27967 294.646), 0 2px 8px rgba(60, 0, 120, 0.18);
+  box-shadow: 0 12px 12px oklch(51.245% 0.27967 294.646), 0 2px 8px oklch(30.8% 0.16816 296.076 / 0.18);
   z-index: 2;
 }
 
@@ -484,15 +521,15 @@ canvas {
 .overlay-content h2 {
   /* Animated rainbow gradient, matches infoBox_petChat */
   background: linear-gradient(45deg, 
-    #ff0000, /* Red */
-    #ff9900, /* Orange */
-    #ff00a2db, /* Yellow */
-    #33ff00, /* Green */
-    #00ffee, /* Cyan */
-    #0066ff, /* Blue */
-    #cc00ff, /* Violet */
-    #ff0080, /* Magenta */
-    #ff0000  /* Red again for seamless loop */
+    oklch(62.793% 0.25768 29.223), /* Red */
+    oklch(77.194% 0.17376 64.545), /* Orange */
+    oklch(65.657% 0.2721 352.034 / 0.859), /* Yellow */
+    oklch(87.027% 0.28955 141.531), /* Green */
+    oklch(89.994% 0.15767 186.289), /* Cyan */
+    oklch(56.347% 0.24089 260.834), /* Blue */
+    oklch(62.733% 0.30691 316.377), /* Violet */
+    oklch(64.532% 0.26038 2.454), /* Magenta */
+    oklch(62.793% 0.25768 29.223)  /* Red again for seamless loop */
   );
   background-size: 100% 100%;
   background-clip: text;
@@ -521,7 +558,7 @@ canvas {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(41, 43, 63, 0.198);
+  background-color: rgba(45, 54, 147, 0.58);
   z-index: -1;
   border-radius: inherit;
 }
@@ -854,6 +891,15 @@ canvas {
 @keyframes pageLoadFadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+@keyframes floatUpDown {
+  0%, 100% { 
+    transform: translateY(0px);
+  }
+  50% { 
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes gradientShift {
