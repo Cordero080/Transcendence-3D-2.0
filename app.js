@@ -122,16 +122,17 @@ const trainIndices = {
 };
 
 /*---------- Variables (state) ---------*/
-let currentStage = "white"; // second stage
-loadAndDisplayFBX(
-  animationConfig[currentStage].idle.file,
-  animationConfig[currentStage].idle.pose
-);
+let currentStage; // second stage
+// loadAndDisplayFBX(
+//   animationConfig[currentStage].idle.file,
+//   animationConfig[currentStage].idle.pose
+// );
 
 let myPet;
 let gameStarted = false;
 let currentAnimationTimer = null;
 let backgroundMusic;
+let actionInProgress = false;
 
 // Evolution System Variables
 let buttonTracker = {
@@ -141,6 +142,28 @@ let buttonTracker = {
   train: false,
 };
 let evolutionTimeout = null;
+
+function allCareActionsCompleted() {
+  return Object.values(buttonTracker).every(Boolean);
+}
+
+function resetButtonTracker() {
+  buttonTracker = { feed: false, dance: false, sleep: false, train: false };
+}
+
+function checkForEvolution() {
+  if (allCareActionsCompleted()) {
+    console.log("⚡️⚡️⚡️All care actions complete. Evolving in 5 seconds...");
+    evolutionTimeout = setTimeout(() => {
+      myPet.evolveToNextStage();
+      loadAndDisplayFBX(
+        animationConfig[currentStage].idle.file,
+        animationConfig[currentStage].idle.pose
+      );
+      resetButtonTracker();
+    }, 5000);
+  }
+}
 
 // Timer System Variables
 let statTimers = {
@@ -195,6 +218,7 @@ class Pet {
     this.hunger = 0;
     this.fun = 10;
     this.sleep = 0;
+    this.power = 10;
     this.stage = "egg"; // starts as glitch egg
     this.evolutionLevel = 0;
 
@@ -226,8 +250,8 @@ class Pet {
     console.log(`${this.name} is sleeping. Sleep: ${this.sleep}`);
     this.render();
   }
-  tain() {
-    this.power = Math.max(10, this.power + 2);
+  train() {
+    this.power = Math.min(10, this.power + 2);
     console.log(`${this.name} is sleeping. Sleep: ${this.power}`);
     this.render();
   }
@@ -282,6 +306,25 @@ class Pet {
   }
 }
 
+function startGame() {
+  myPet = new Pet("Coco"); // Create the pet
+  currentStage = "blue"; // Start at blue stage
+  loadAndDisplayFBX(
+    animationConfig[currentStage].idle.file,
+    animationConfig[currentStage].idle.pose
+  );
+  resetButtonTracker();
+  gameStarted = true;
+// *=======================TIMERS============================* \\
+  statTimers.hunger = myPet.createStatTimer(
+    "hunger",
+    gameSettings.baseDecayRate
+  );
+  statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
+  statTimers.sleep = myPet.createStatTimer("sleep", gameSettings.baseDecayRate);
+  statTimers.power = myPet.createStatTimer("power", gameSettings.baseDecayRate);
+}
+
 function setupDropdownMenu() {
   if (btn && menu && container) {
     btn.addEventListener("click", (e) => {
@@ -300,94 +343,174 @@ function setupDropdownMenu() {
 setupDropdownMenu();
 
 // ============ 🐾 Set Model Pose event listeners=============== \ \
+async function playActionThenShareIdle(actionType, stage) {
+  const variants = [`${actionType}`, `${actionType}2`]; // don't break space betwen 2 and bracket
+  const selectedAction = variants[Math.floor(Math.random() * variants.length)];
+
+  const anim = animationConfig[stage][selectedAction];
+  const duration = await loadAndDisplayFBX(anim.file, anim.pose);
+
+  let idleKey = "";
+
+  if (["dance", "dance2"].includes(selectedAction)) {
+    idleKey = "idleAfterDance";
+  } else if (["train", "train2"].includes(selectedAction)) {
+    idleKey = "idleAfterTrain";
+  } else {
+    idleKey = "idle";
+  }
+
+  setTimeout(() => {
+    const idleAnim = animationConfig[stage][idleKey];
+    if (idleAnim) {
+      loadAndDisplayFBX(idleAnim.file, idleAnim.pose);
+    }
+  }, duration * 1000); //or use custom delay
+}
+
+// *================EVENT LISTENERS ===================* \\
+
+overlayStartBtn.addEventListener("click", () => {
+  startGame();
+  overlay.style.display = "none"; // Hide intro screen
+});
+
+feedButton.addEventListener("click", async () => {
+  if (actionInProgress) return;
+  actionInProgress = true;
+
+  try {
+    myPet.feed(); //update hunger stat
+    buttonTracker.feed = true;
+    await playActionThenShareIdle("feed", currentStage);
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+  }
+});
+
+danceButton.addEventListener("click", async () => {
+  if (actionInProgress) return;
+  actionInProgress = true;
+
+  try {
+    myPet.dance(); //update hunger stat
+    buttonTracker.dance = true;
+    await playActionThenShareIdle("dance", currentStage);
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+  }
+});
+
+sleepButton.addEventListener("click", async () => {
+  if (actionInProgress) return;
+  actionInProgress = true;
+
+  try {
+    myPet.sleepRest(); //update hunger stat
+    buttonTracker.sleep = true;
+    await playActionThenShareIdle("sleep", currentStage);
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+  }
+});
+
+trainButton.addEventListener("click", async () => {
+  if (actionInProgress) return;
+  actionInProgress = true;
+
+  try {
+    myPet.train(); //update hunger stat
+    buttonTracker.train = true;
+    await playActionThenShareIdle("train", currentStage);
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+  }
+});
 
 // ===================IDLE AFTER TESTING
 //11
 // TEMPORARY: Press number keys 1–5 to test idleAfterFeed animations per color
-document.addEventListener("keydown", (e) => {
-  if (e.key === "1") {
-    loadAndDisplayFBX(
-      animationConfig["red"].idleAfterTrain.file,
-      animationConfig["red"].idleAfterTrain.pose
-    );
-  }
-  if (e.key === "2") {
-    loadAndDisplayFBX(
-      animationConfig["red"].idleAfterSleep.file,
-      animationConfig["red"].idleAfterSleep.pose
-    );
-  }
-  if (e.key === "3") {33
-    loadAndDisplayFBX(
-      animationConfig["red"].idleAfterDance.file,
-      animationConfig["red"].idleAfterDance.pose
-    );
-  }
-  if (e.key === "4") {
-    loadAndDisplayFBX(
-      animationConfig["red"].idleAfterFeed.file,
-      animationConfig["red"].idleAfterFeed.pose
-    );
-  }
-  if (e.key === "5") {
-    loadAndDisplayFBX(
-      animationConfig["white"].idleAfterFeed.file,
-      animationConfig["white"].idleAfterFeed.pose
-    );
-  }
-});11
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "1") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterTrain.file,
+//       animationConfig["red"].idleAfterTrain.pose
+//     );
+//   }
+//   if (e.key === "2") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterSleep.file,
+//       animationConfig["red"].idleAfterSleep.pose
+//     );
+//   }
+//   if (e.key === "3") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterDance.file,
+//       animationConfig["red"].idleAfterDance.pose
+//     );
+//   }
+//   if (e.key === "4") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterFeed.file,
+//       animationConfig["red"].idleAfterFeed.pose
+//     );
+//   }
+//   if (e.key === "5") {
+//     loadAndDisplayFBX(
+//       animationConfig["white"].idleAfterFeed.file,
+//       animationConfig["white"].idleAfterFeed.pose
+//     );
+//   }
+// });
 
-// setting position for evolution. Comment out bottom functiona temporarily
+// // setting position for evolution. Comment out bottom functiona temporarily
 
+// //TEMP: Test Blue Idle
+// feedButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["red"].feed.file,
+//     animationConfig["red"].feed.pose
+//   );
+// });
 
+// // TEMP: Test Yellow Idle
+// danceButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["white"].dance.file,
+//     animationConfig["white"].dance.pose
+//   );
+// });
 
+// // TEMP: Test Red Idle
+// sleepButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["red"].sleep.file,
+//     animationConfig["red"].sleep.pose
+//   );
+// });
 
-//TEMP: Test Blue Idle
-feedButton.addEventListener("click", () => {
-  loadAndDisplayFBX(
-    animationConfig["red"].feed.file,
-    animationConfig["red"].feed.pose
-  );
-});
+// // TEMP: Test White Idle
+// trainButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["white"].train.file,
+//     animationConfig["white"].train.pose
+//   );
+// });
 
-// TEMP: Test Yellow Idle
-danceButton.addEventListener("click", () => {
-  loadAndDisplayFBX(
-    animationConfig["white"].dance.file,
-    animationConfig["white"].dance.pose
-  );
-});
-
-// TEMP: Test Red Idle
-sleepButton.addEventListener("click", () => {
-  loadAndDisplayFBX(
-    animationConfig["red"].sleep.file,
-    animationConfig["red"].sleep.pose
-  );
-});
-
-// TEMP: Test White Idle
-trainButton.addEventListener("click", () => {
-  loadAndDisplayFBX(
-    animationConfig["white"].train.file,
-    animationConfig["white"].train.pose
-  );
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "d") {
-    console.log("🌀 Dissolve test triggered!");
-    loadAndDisplayFBX("models/WHITE_emission_2.fbx", {
-      scale: [0.001, 0.001, 0.001],
-      position: [0, -1.6, -1],
-      rotationY: 0,
-    });
-  }
-});
-
-
-
-
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "d") {
+//     console.log("🌀 Dissolve test triggered!");
+//     loadAndDisplayFBX("models/WHITE_emission_2.fbx", {
+//       scale: [0.001, 0.001, 0.001],
+//       position: [0, -1.6, -1],
+//       rotationY: 0,
+//     });
+//   }
+// });
 
 //=================TO USE IN GAME
 

@@ -25,6 +25,16 @@ const animationConfig = {
         position: [-1.5, -3, -6.7],
         rotationY: Math.PI / 7,
         rotationX: 18.7,
+        
+      },
+    },
+    idleAfterDance: {
+      file: "./models/blue_happy_idle.fbx",
+      pose: {
+        scale: [0.0016, 0.0016, 0.0016],
+        position: [0, 0.2, -3],
+        rotationY: -Math.PI / -16,
+        rotationX: 0,
       },
     },
     sleep: {
@@ -54,6 +64,15 @@ const animationConfig = {
         rotationX: -0.15,
       },
     },
+    idleAfterTrain: {
+      file: "./models/blue_offensive.fbx",
+      pose: {
+        scale: [0.00379, 0.0039, 0.00379],
+        position: [0, -5, -11.1],
+        rotationY: Math.PI / 35,
+        rotationX: 0,
+      },
+    },
     idle: {
       file: "./models/blue_happy_idle.fbx",
       pose: {
@@ -73,30 +92,12 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    idleAfterDance: {
-      file: "./models/blue_happy_idle.fbx",
-      pose: {
-        scale: [0.0016, 0.0016, 0.0016],
-        position: [0, 0.2, -3],
-        rotationY: -Math.PI / -16,
-        rotationX: 0,
-      },
-    },
     idleAfterSleep: {
       file: "./models/cat_warrior.fbx",
       pose: {
         scale: [0.00374, 0.00374, 0.00374],
         position: [0, -1.55, -10.9],
         rotationY: Math.PI / 29,
-        rotationX: 0,
-      },
-    },
-    idleAfterTrain: {
-      file: "./models/blue_offensive.fbx",
-      pose: {
-        scale: [0.00379, 0.0039, 0.00379],
-        position: [0, -5, -11.1],
-        rotationY: Math.PI / 35,
         rotationX: 0,
       },
     },
@@ -122,21 +123,30 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    sleep: {
-      file: "./models/yellow_sleep.fbx",
-      pose: {
-        scale: [0.0021, 0.0021, 0.0021],
-        position: [-5.9, -2.8, -4.9],
-        rotationY: Math.PI / 10,
-        rotationX: 0,
-      },
-    },
     dance2: {
       file: "./models/Yellow_tut.fbx",
       pose: {
         scale: [0.0031, 0.0031, 0.0031],
         position: [0, -3.3, -7.2],
         rotationY: Math.PI / 9,
+        rotationX: 0,
+      },
+    },
+     idleAfterDance: {
+      file: "./models/yellow_spin_idle.fbx",
+      pose: {
+        scale: [0.0035, 0.0035, 0.0035],
+        position: [0, -1.55, -8],
+        rotationY: Math.PI / 10,
+        rotationX: 0,
+      },
+    },
+    sleep: {
+      file: "./models/yellow_sleep.fbx",
+      pose: {
+        scale: [0.0021, 0.0021, 0.0021],
+        position: [-5.9, -2.8, -4.9],
+        rotationY: Math.PI / 10,
         rotationX: 0,
       },
     },
@@ -155,6 +165,15 @@ const animationConfig = {
         scale: [0.0035, 0.0035, 0.0035],
         position: [-1, -4.55, -9.7],
         rotationY: Math.PI / 9,
+        rotationX: 0,
+      },
+    },
+    idleAfterTrain: {
+      file: "./models/yellow_agree.fbx",
+      pose: {
+        scale: [0.00395, 0.00395, 0.00395],
+        position: [0, -4.9, -11],
+        rotationY: Math.PI / 16,
         rotationX: 0,
       },
     },
@@ -177,30 +196,12 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    idleAfterDance: {
-      file: "./models/yellow_spin_idle.fbx",
-      pose: {
-        scale: [0.0035, 0.0035, 0.0035],
-        position: [0, -1.55, -8],
-        rotationY: Math.PI / 10,
-        rotationX: 0,
-      },
-    },
     idleAfterSleep: {
       file: "./models/yellow_looking.fbx",
       pose: {
         scale: [0.0039, 0.0039, 0.0039],
         position: [0, -5, -11],
         rotationY: Math.PI / 21,
-        rotationX: 0,
-      },
-    },
-    idleAfterTrain: {
-      file: "./models/yellow_agree.fbx",
-      pose: {
-        scale: [0.00395, 0.00395, 0.00395],
-        position: [0, -4.9, -11],
-        rotationY: Math.PI / 16,
         rotationX: 0,
       },
     },
@@ -226,15 +227,6 @@ const animationConfig = {
         rotationX: -0.2,
       },
     },
-    sleep: {
-      file: "./models/green_sleep.fbx",
-      pose: {
-        scale: [0.00539, 0.00539, 0.00539],
-        position: [-14.3, -3.5, -15.9],
-        rotationY: Math.PI / 5,
-        rotationX: 0,
-      },
-    },
     dance2: {
       file: "./models/green_thrille4.fbx",
       pose: {
@@ -244,7 +236,24 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-
+    idleAfterDance: {
+      file: "./models/green_cocky.fbx",
+      pose: {
+        scale: [0.00425, 0.00425, 0.00425],
+        position: [0, -5, -11],
+        rotationY: Math.PI / 21,
+        rotationX: 0,
+      },
+    },
+    sleep: {
+      file: "./models/green_sleep.fbx",
+      pose: {
+        scale: [0.00539, 0.00539, 0.00539],
+        position: [-14.3, -3.5, -15.9],
+        rotationY: Math.PI / 5,
+        rotationX: 0,
+      },
+    },
     train: {
       file: "./models/green_butterfly.fbx",
       pose: {
@@ -260,6 +269,15 @@ const animationConfig = {
         scale: [0.0112, 0.0112, 0.0112],
         position: [10, -16, -43],
         rotationY: Math.PI / -7,
+        rotationX: 0,
+      },
+    },
+    idleAfterTrain: {
+      file: "./models/green_smoke.fbx",
+      pose: {
+        scale: [0.00412, 0.00412, 0.00412],
+        position: [0, -5.5, -11],
+        rotationY: Math.PI / 12,
         rotationX: 0,
       },
     },
@@ -282,30 +300,12 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    idleAfterDance: {
-      file: "./models/green_cocky.fbx",
-      pose: {
-        scale: [0.00425, 0.00425, 0.00425],
-        position: [0, -5, -11],
-        rotationY: Math.PI / 21,
-        rotationX: 0,
-      },
-    },
     idleAfterSleep: {
       file: "./models/green_teeter.fbx",
       pose: {
         scale: [0.00321, 0.00321, 0.00321],
         position: [-7.5, -3.72, -9.8],
         rotationY: Math.PI / 3,
-        rotationX: 0,
-      },
-    },
-    idleAfterTrain: {
-      file: "./models/green_smoke.fbx",
-      pose: {
-        scale: [0.00412, 0.00412, 0.00412],
-        position: [0, -5.5, -11],
-        rotationY: Math.PI / 12,
         rotationX: 0,
       },
     },
@@ -331,15 +331,6 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    sleep: {
-      file: "./models/red_sleep.fbx",
-      pose: {
-        scale: [0.0022, 0.0022, 0.0022],
-        position: [-5.5, -1, -4.7],
-        rotationY: Math.PI / 5,
-        rotationX: 0,
-      },
-    },
     dance2: {
       file: "./models/red_salsa.fbx",
       pose: {
@@ -349,7 +340,24 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-
+    idleAfterDance: {
+      file: "./models/red_ready.fbx",
+      pose: {
+        scale: [0.0042, 0.0042, 0.0042],
+        position: [0, -5, -10.5],
+        rotationY: Math.PI / 22,
+        rotationX: 0,
+      },
+    },
+    sleep: {
+      file: "./models/red_sleep.fbx",
+      pose: {
+        scale: [0.0022, 0.0022, 0.0022],
+        position: [-5.5, -1, -4.7],
+        rotationY: Math.PI / 5,
+        rotationX: 0,
+      },
+    },
     train: {
       file: "./models/red_uppercut.fbx",
       pose: {
@@ -365,6 +373,15 @@ const animationConfig = {
         scale: [0.011, 0.011, 0.011],
         position: [5, -16, -47],
         rotationY: Math.PI / -7,
+        rotationX: 0,
+      },
+    },
+    idleAfterTrain: {
+      file: "./models/red_bounce.fbx",
+      pose: {
+        scale: [0.0041, 0.0041, 0.0041],
+        position: [0, -5, -10],
+        rotationY: Math.PI / 7,
         rotationX: 0,
       },
     },
@@ -387,15 +404,6 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    idleAfterDance: {
-      file: "./models/red_ready.fbx",
-      pose: {
-        scale: [0.0042, 0.0042, 0.0042],
-        position: [0, -5, -10.5],
-        rotationY: Math.PI / 22,
-        rotationX: 0,
-      },
-    },
     idleAfterSleep: {
       file: "./models/red_hadouken.fbx",
       pose: {
@@ -405,28 +413,19 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    idleAfterTrain: {
-      file: "./models/red_bounce.fbx",
-      pose: {
-        scale: [0.0041, 0.0041, 0.0041],
-        position: [0, -5, -10],
-        rotationY: Math.PI / 7,
-        rotationX: 0,
-      },
-    },
   },
 
   // ================WHITE==================== \\
   white: {
-    feed: {
-      file: "./models/yellow_eats.fbx",
-      pose: {
-        scale: [0.0028, 0.0028, 0.0028],
-        position: [-3.9, -1, -9],
-        rotationY: -Math.PI / 3,
-        rotationX: 0,
-      },
-    },
+    // feed: {
+    //   file: "./models/yellow_eats.fbx",
+    //   pose: {
+    //     scale: [0.0028, 0.0028, 0.0028],
+    //     position: [-3.9, -1, -9],
+    //     rotationY: -Math.PI / 3,
+    //     rotationX: 0,
+    //   },
+    // },
     dance: {
       file: "./models/white_thriller.fbx",
       pose: {
@@ -436,24 +435,24 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    sleep: {
-      file: "./models/yellow_sleep.fbx",
-      pose: {
-        scale: [0.002, 0.002, 0.002],
-        position: [-5.3, -2.8, -4.6],
-        rotationY: Math.PI / 5,
-        rotationX: 0,
-      },
-    },
-    dance2: {
-      file: "./models/green_thriller.fbx",
-      pose: {
-        scale: [0.0064, 0.0064, 0.0064],
-        position: [-1, -3.8, -18],
-        rotationY: Math.PI / 15,
-        rotationX: -0.1,
-      },
-    },
+    // sleep: {
+    //   file: "./models/yellow_sleep.fbx",
+    //   pose: {
+    //     scale: [0.002, 0.002, 0.002],
+    //     position: [-5.3, -2.8, -4.6],
+    //     rotationY: Math.PI / 5,
+    //     rotationX: 0,
+    //   },
+    // },
+    // dance2: {
+    //   file: "./models/green_thriller.fbx",
+    //   pose: {
+    //     scale: [0.0064, 0.0064, 0.0064],
+    //     position: [-1, -3.8, -18],
+    //     rotationY: Math.PI / 15,
+    //     rotationX: -0.1,
+    //   },
+    // },
 
     train: {
       file: "./models/white_fly.fbx",
@@ -464,15 +463,15 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    train2: {
-      file: "./models/green_back_k.fbx",
-      pose: {
-        scale: [0.011, 0.011, 0.011],
-        position: [5, -16, -39],
-        rotationY: Math.PI / -7,
-        rotationX: 0,
-      },
-    },
+    // train2: {
+    //   file: "./models/green_back_k.fbx",
+    //   pose: {
+    //     scale: [0.011, 0.011, 0.011],
+    //     position: [5, -16, -39],
+    //     rotationY: Math.PI / -7,
+    //     rotationX: 0,
+    //   },
+    // },
     idle: {
       file: "./models/SLOW_QI.fbx",
       pose: {
@@ -483,42 +482,42 @@ const animationConfig = {
       },
     },
 
-    idleAfterFeed: {
-      file: "./models/green_cocky.fbx",
-      pose: {
-        scale: [0.004, 0.004, 0.004],
-        position: [0, -1, -9],
-        rotationY: Math.PI / -7,
-        rotationX: 0,
-      },
-    },
-    idleAfterDance: {
-      file: "./models/green_cocky.fbx",
-      pose: {
-        scale: [0.0035, 0.0035, 0.0035],
-        position: [0, -5, -8],
-        rotationY: Math.PI / 10,
-        rotationX: 0,
-      },
-    },
-    idleAfterSleep: {
-      file: "./models/green_drunk.fbx",
-      pose: {
-        scale: [0.004, 0.004, 0.004],
-        position: [-4, -1.55, -9.8],
-        rotationY: Math.PI / 9,
-        rotationX: 0,
-      },
-    },
-    idleAfterTrain: {
-      file: "./models/green_drunk.fbx",
-      pose: {
-        scale: [0.0044, 0.0044, 0.0044],
-        position: [1, -5.5, -11],
-        rotationY: Math.PI / 12,
-        rotationX: 0,
-      },
-    },
+    // idleAfterFeed: {
+    //   file: "./models/green_cocky.fbx",
+    //   pose: {
+    //     scale: [0.004, 0.004, 0.004],
+    //     position: [0, -1, -9],
+    //     rotationY: Math.PI / -7,
+    //     rotationX: 0,
+    //   },
+    // },
+    // idleAfterDance: {
+    //   file: "./models/green_cocky.fbx",
+    //   pose: {
+    //     scale: [0.0035, 0.0035, 0.0035],
+    //     position: [0, -5, -8],
+    //     rotationY: Math.PI / 10,
+    //     rotationX: 0,
+    //   },
+    // },
+    // idleAfterSleep: {
+    //   file: "./models/green_drunk.fbx",
+    //   pose: {
+    //     scale: [0.004, 0.004, 0.004],
+    //     position: [-4, -1.55, -9.8],
+    //     rotationY: Math.PI / 9,
+    //     rotationX: 0,
+    //   },
+    // },
+    // idleAfterTrain: {
+    //   file: "./models/green_drunk.fbx",
+    //   pose: {
+    //     scale: [0.0044, 0.0044, 0.0044],
+    //     position: [1, -5.5, -11],
+    //     rotationY: Math.PI / 12,
+    //     rotationX: 0,
+    //   },
+    // },
   },
 };
 
