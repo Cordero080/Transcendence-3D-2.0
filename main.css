@@ -1,6 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Honk&family=Monoton&family=Poiret+One&family=Splash&family=Tektur:wght@400..900&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, 
+    #ff006e,    /* Hot pink */
+    #8338ec,    /* Purple */
+    #3a86ff,    /* Blue */
+    #06ffa5,    /* Mint green */
+    #ffbe0b,    /* Yellow */
+    #fb5607     /* Orange */
+  );
+  border-radius: 8px;
+  border: 2px solid #000;
+}
+
 /* respects width/height allowance*/
 * {
   box-sizing: border-box;
@@ -125,7 +149,7 @@ header h1 {
  margin:0 auto;
  letter-spacing: 15px;
  font-weight: 500;
- font-size: clamp(3rem, 4vw, 3.8rem);
+ font-size: clamp(2rem, 4vw, 3.8rem);
  white-space: normal;
  text-overflow: unset;
  animation: floatUpDown 3s ease-in-out infinite;

@@ -25,7 +25,6 @@ const animationConfig = {
         position: [-1.5, -3, -6.7],
         rotationY: Math.PI / 7,
         rotationX: 18.7,
-        
       },
     },
     idleAfterDance: {
@@ -101,6 +100,15 @@ const animationConfig = {
         rotationX: 0,
       },
     },
+    death: {
+      file: "./models/cat_dies.fbx",
+      pose: {
+        scale: [0.00176, 0.00176, 0.00176],
+        position: [0.1, -1.5, -3.7],
+        rotationY: -Math.PI / -30,
+        rotationX: 0,
+      },
+    },
   },
 
   // ================YELOW==================== \\
@@ -132,7 +140,7 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-     idleAfterDance: {
+    idleAfterDance: {
       file: "./models/yellow_spin_idle.fbx",
       pose: {
         scale: [0.0035, 0.0035, 0.0035],
@@ -202,6 +210,15 @@ const animationConfig = {
         scale: [0.0039, 0.0039, 0.0039],
         position: [0, -5, -11],
         rotationY: Math.PI / 21,
+        rotationX: 0,
+      },
+    },
+    death: {
+      file: "./models/yellow_dies.fbx",
+      pose: {
+        scale: [0.00161, 0.00161, 0.00161],
+        position: [0.1, -1.1, -2.5],
+        rotationY: -Math.PI / -30,
         rotationX: 0,
       },
     },
@@ -309,6 +326,15 @@ const animationConfig = {
         rotationX: 0,
       },
     },
+    death: {
+      file: "./models/green_dies.fbx",
+      pose: {
+        scale: [0.00186, 0.00186, 0.00186],
+        position: [0.1, -1.5, -3.2],
+        rotationY: -Math.PI / -50,
+        rotationX: 0,
+      },
+    },
   },
 
   // ================RED==================== \\
@@ -413,6 +439,15 @@ const animationConfig = {
         rotationX: 0,
       },
     },
+    death: {
+      file: "./models/red_dies.fbx",
+      pose: {
+        scale: [0.0019, 0.0019, 0.0019],
+        position: [0, -1.4, -3],
+        rotationY: -Math.PI / -35,
+        rotationX: 0,
+      },
+    },
   },
 
   // ================WHITE==================== \\
@@ -482,42 +517,52 @@ const animationConfig = {
       },
     },
 
-    // idleAfterFeed: {
-    //   file: "./models/green_cocky.fbx",
-    //   pose: {
-    //     scale: [0.004, 0.004, 0.004],
-    //     position: [0, -1, -9],
-    //     rotationY: Math.PI / -7,
-    //     rotationX: 0,
-    //   },
-    // },
-    // idleAfterDance: {
-    //   file: "./models/green_cocky.fbx",
-    //   pose: {
-    //     scale: [0.0035, 0.0035, 0.0035],
-    //     position: [0, -5, -8],
-    //     rotationY: Math.PI / 10,
-    //     rotationX: 0,
-    //   },
-    // },
-    // idleAfterSleep: {
-    //   file: "./models/green_drunk.fbx",
-    //   pose: {
-    //     scale: [0.004, 0.004, 0.004],
-    //     position: [-4, -1.55, -9.8],
-    //     rotationY: Math.PI / 9,
-    //     rotationX: 0,
-    //   },
-    // },
-    // idleAfterTrain: {
-    //   file: "./models/green_drunk.fbx",
-    //   pose: {
-    //     scale: [0.0044, 0.0044, 0.0044],
-    //     position: [1, -5.5, -11],
-    //     rotationY: Math.PI / 12,
-    //     rotationX: 0,
-    //   },
-    // },
+    death: {
+      file: "./models/white_dies.fbx",
+      pose: {
+        scale: [0.00203, 0.00203, 0.00203],
+        position: [0, -1.5, -3.2],
+        rotationY: -Math.PI / -50,
+        rotationX: 0,
+
+        // idleAfterFeed: {
+        //   file: "./models/green_cocky.fbx",
+        //   pose: {
+        //     scale: [0.004, 0.004, 0.004],
+        //     position: [0, -1, -9],
+        //     rotationY: Math.PI / -7,
+        //     rotationX: 0,
+        //   },
+        // },
+        // idleAfterDance: {
+        //   file: "./models/green_cocky.fbx",
+        //   pose: {
+        //     scale: [0.0035, 0.0035, 0.0035],
+        //     position: [0, -5, -8],
+        //     rotationY: Math.PI / 10,
+        //     rotationX: 0,
+        //   },
+        // },
+        // idleAfterSleep: {
+        //   file: "./models/green_drunk.fbx",
+        //   pose: {
+        //     scale: [0.004, 0.004, 0.004],
+        //     position: [-4, -1.55, -9.8],
+        //     rotationY: Math.PI / 9,
+        //     rotationX: 0,
+        //   },
+        // },
+        // idleAfterTrain: {
+        //   file: "./models/green_drunk.fbx",
+        //   pose: {
+        //     scale: [0.0044, 0.0044, 0.0044],
+        //     position: [1, -5.5, -11],
+        //     rotationY: Math.PI / 12,
+        //     rotationX: 0,
+        //   },
+        // },
+      },
+    },
   },
 };
 

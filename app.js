@@ -48,6 +48,15 @@ console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 // +------------------------------+
 
 /*-------------- Constants -------------*/
+// DEATH MAP TESTS
+// const deathTestMap = {
+//   "1": "blue",
+//   "2": "yellow",
+//   "3": "green",
+//   "4": "red",
+//   "5": "white",
+
+// }
 
 const gameSettings = {
   ageInterval: 20000,
@@ -122,7 +131,7 @@ const trainIndices = {
 };
 
 /*---------- Variables (state) ---------*/
-let currentStage; // second stage
+let currentStage; //
 // loadAndDisplayFBX(
 //   animationConfig[currentStage].idle.file,
 //   animationConfig[currentStage].idle.pose
@@ -133,6 +142,7 @@ let gameStarted = false;
 let currentAnimationTimer = null;
 let backgroundMusic;
 let actionInProgress = false;
+let careCycles = 0;
 
 // Evolution System Variables
 let buttonTracker = {
@@ -153,15 +163,26 @@ function resetButtonTracker() {
 
 function checkForEvolution() {
   if (allCareActionsCompleted()) {
-    console.log("⚡️⚡️⚡️All care actions complete. Evolving in 5 seconds...");
-    evolutionTimeout = setTimeout(() => {
-      myPet.evolveToNextStage();
-      loadAndDisplayFBX(
-        animationConfig[currentStage].idle.file,
-        animationConfig[currentStage].idle.pose
+    careCycles++;
+
+    console.log(`✅ Care cycle complete! (${careCycles} total)`);
+
+    if (careCycles >= 1) {
+      console.log(
+        "⚡️⚡️⚡️ All care actions complete. Evolving in 5 seconds..."
       );
-      resetButtonTracker();
-    }, 5000);
+      evolutionTimeout = setTimeout(() => {
+        myPet.evolveToNextStage();
+        loadAndDisplayFBX(
+          animationConfig[currentStage].idle.file,
+          animationConfig[currentStage].idle.pose
+        );
+        careCycles = 0; // Reset after evolution
+        resetButtonTracker();
+      }, 5000);
+    } else {
+      resetButtonTracker(); // Ready for next cycle
+    }
   }
 }
 
@@ -252,7 +273,7 @@ class Pet {
   }
   train() {
     this.power = Math.min(10, this.power + 2);
-    console.log(`${this.name} is sleeping. Sleep: ${this.power}`);
+    console.log(`${this.name} is training. Power: ${this.power}`);
     this.render();
   }
 
@@ -262,6 +283,7 @@ class Pet {
       this.evolutionLevel++;
       const stages = ["blue", "yellow", "green", "red", "white"];
       this.stage = stages[this.evolutionLevel];
+      currentStage = this.stage; // SYNC GLOBAL currentStage
       console.log(`🌟 ${this.name} evolved to ${this.stage} form!`);
       this.render();
     }
@@ -466,6 +488,30 @@ trainButton.addEventListener("click", async () => {
     actionInProgress = false;
   }
 });
+
+// ===================TESTING DEATH ANIMATIONS
+
+// document.addEventListener("keydown", (e) =>{
+//   const stage = deathTestMap[e.key];
+//   if (stage && animationConfig[stage]?.death) {
+//     currentStage = stage;
+//     console.log(`Testing DEATH: ${stage.toUpperCase()}`);
+//     loadAndDisplayFBX(
+//       animationConfig[stage].death.file,
+//       animationConfig[stage].death.pose
+//     );
+//   }
+// });
+
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "q") {
+//     console.log(`🧪 Previewing IDLE for ${currentStage.toUpperCase()}`);
+//     const idleAnim = animationConfig[currentStage]?.idle;
+//     if (idleAnim) {
+//       loadAndDisplayFBX(idleAnim.file, idleAnim.pose);
+//     }
+//   }
+// });
 
 // ===================IDLE AFTER TESTING
 //11
