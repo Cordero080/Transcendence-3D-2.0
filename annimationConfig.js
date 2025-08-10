@@ -10,9 +10,9 @@ const animationConfig = {
       },
     },
     dance: {
-      file: "./models/first_dance.fbx",
+      file: "./models/blue_robot.fbx",
       pose: {
-        scale: [0.00245, 0.00245, 0.00245],
+        scale: [0.00247, 0.00247, 0.00247],
         position: [0, -3, -6.5],
         rotationY: Math.PI / 9,
         rotationX: 0,
@@ -189,7 +189,7 @@ const animationConfig = {
       file: "./models/yellow_spin_idle.fbx",
       pose: {
         scale: [0.001615, 0.001615, 0.001615],
-        position: [0, 0.3, -2.7],
+        position: [0, 0.3, -3.1],
         rotationY: -Math.PI / -30,
         rotationX: 0,
       },
@@ -358,11 +358,11 @@ const animationConfig = {
       },
     },
     dance2: {
-      file: "./models/red_salsa.fbx",
+      file: "./models/red_bboy.fbx",
       pose: {
         scale: [0.0018, 0.0018, 0.0018],
         position: [-1, -1.4, -3],
-        rotationY: -Math.PI / -24,
+        rotationY: -Math.PI / -10,
         rotationX: 0,
       },
     },
@@ -407,7 +407,7 @@ const animationConfig = {
       pose: {
         scale: [0.0041, 0.0041, 0.0041],
         position: [0, -5, -10],
-        rotationY: Math.PI / 7,
+        rotationY: Math.PI / 14,
         rotationX: 0,
       },
     },
@@ -435,7 +435,7 @@ const animationConfig = {
       pose: {
         scale: [0.004, 0.004, 0.004],
         position: [0, -5, -11],
-        rotationY: Math.PI / -22,
+        rotationY: Math.PI / 14,
         rotationX: 0,
       },
     },
@@ -490,23 +490,23 @@ const animationConfig = {
     // },
 
     train: {
-      file: "./models/white_fly.fbx",
+      file: "./models/white_spell.fbx",
       pose: {
-        scale: [0.0042, 0.0042, 0.0042],
-        position: [-13, 0, -30],
-        rotationY: Math.PI / 6,
+        scale: [0.0021, 0.0021, 0.0021],
+        position: [0, -1.5, -3.5],
+        rotationY: -Math.PI / -11,
         rotationX: 0,
       },
     },
-    // train2: {
-    //   file: "./models/green_back_k.fbx",
-    //   pose: {
-    //     scale: [0.011, 0.011, 0.011],
-    //     position: [5, -16, -39],
-    //     rotationY: Math.PI / -7,
-    //     rotationX: 0,
-    //   },
-    // },
+    train2: {
+      file: "./white_spell.fbx",
+      pose: {
+       scale: [0.003, 0.003, 0.003],
+        position: [0, -1.5, -11],
+        rotationY: -Math.PI / -6,
+        rotationX: 0,
+      },
+    },
     idle: {
       file: "./models/SLOW_QI.fbx",
       pose: {
@@ -520,7 +520,7 @@ const animationConfig = {
     death: {
       file: "./models/white_dies.fbx",
       pose: {
-        scale: [0.00203, 0.00203, 0.00203],
+        scale: [0.002, 0.002, 0.002],
         position: [0, -1.5, -3.2],
         rotationY: -Math.PI / -50,
         rotationX: 0,

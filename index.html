@@ -1,17 +1,18 @@
+<audio id="woosh" src="music/woosh.mp3" preload="auto"></audio>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <link href="https://unpkg.com/@csstools/normalize.css" rel="stylesheet" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="main.css" />
     <script type="module" src="app.js"></script>
-    
+
     <title>Cat-scendence</title>
   </head>
   <body>
-    
     <!-- Page overlay - dims everything until Start is clicked -->
     <div id="pageOverlay" class="page-overlay">
       <div class="overlay-content">
@@ -53,9 +54,34 @@
     <div class="scaling-root">
       <!-- transcendence was here -->
 
-      <audio id="bg-music" src="music/radiance.mp3" autoplay loop>
-        <source src="music/bg-music.mp3" type="audio/mpeg" />
+      <audio id="bg-music" src="music/radiance.mp3" autoplay loop></audio>
+      <audio
+        id="transcend-3"
+        src="music/transcend_3.wav"
+        preload="auto"
+      ></audio>
+      <audio
+        id="transcend-4"
+        src="music/transcend_4.wav"
+        preload="auto"
+      ></audio>
+      <script>
+        window.addEventListener("DOMContentLoaded", function () {
+          var bgMusic = document.getElementById("bg-music");
+          if (bgMusic) {
+            bgMusic.volume = 0.3;
+            console.log("bg-music volume set to", bgMusic.volume);
+          }
+        });
+      </script>
+      <audio id="evolution-sound" src="music/evolution.wav" preload="auto">
+        <source src="music/evolution.wav" type="audio/wav" />
       </audio>
+      <audio
+        id="space-engine"
+        src="music/space_engine.wav"
+        preload="auto"
+      ></audio>
       <span id="transcendence">TRANSCENDENCE</span>
       <header>
         <h1>TAMAGOTCHI</h1>
@@ -84,9 +110,9 @@
         </div>
 
         <span class="glow-eye">🧿</span>
-      
-      <!-- Sonic gif - hidden initially, shown after start button -->
-     
+
+        <!-- Sonic gif - hidden initially, shown after start button -->
+
         <!-- pet parent is the "screen" compared to D's ie. -->
 
         <div id="pet-container">
@@ -97,24 +123,41 @@
             <div class="colorful-glitch-particles"></div>
             <div class="colorful-glitch-border"></div>
           </div>
+
+          <!-- Glitch stutter overlay for animation transitions -->
+          <div id="glitchStutterOverlay" class="glitch-stutter-overlay">
+            <div class="stutter-scanlines"></div>
+            <div class="stutter-static"></div>
+            <div class="stutter-flash"></div>
+          </div>
+
+          <!-- Second glitch overlay layer with inverted colors -->
+          <div
+            id="glitchStutterOverlay2"
+            class="glitch-stutter-overlay glitch-inverted"
+          >
+            <div class="stutter-scanlines"></div>
+            <div class="stutter-static"></div>
+            <div class="stutter-flash"></div>
+          </div>
         </div>
         <div class="infoBox">
           <div class="infoBox-controls">
             <div class="button-container">
               <button class="Buttons" id="feed-button">FEED</button>
-              <div class="timer-display" id="hungerTimer">Hunger:0</div>
+              <div class="timer-display" id="hungerTimer">Hunger: 0</div>
             </div>
             <div class="button-container">
               <button class="Buttons" id="dance-button">DANCE</button>
-              <div class="timer-display" id="funTimer">Fun:10</div>
+              <div class="timer-display" id="funTimer">Fun: 10</div>
             </div>
             <div class="button-container">
               <button class="Buttons" id="sleep-button">SLEEP</button>
-              <div class="timer-display" id="sleepTimer">Sleep:0</div>
+              <div class="timer-display" id="sleepTimer">Sleep: 0</div>
             </div>
             <div class="button-container">
               <button class="Buttons" id="power-button">TRAIN</button>
-              <div class="timer-display" id="powerTimer">Power:10</div>
+              <div class="timer-display" id="powerTimer">Power: 10</div>
             </div>
           </div>
 
@@ -125,6 +168,18 @@
       <script type="module" src="./main-test.js"></script>
 
       <!-- scaling root end -->
+      <!-- Game Over Overlay -->
+      <div id="gameOverOverlay" class="game-over-overlay" style="display: none">
+        <div class="game-over-content">
+          <h2 class="glitch-text">GAME OVER</h2>
+          <p id="gameOverReason">Your pet has transcended...</p>
+          <div class="game-over-buttons">
+            <button class="game-over-button" onclick="resetGame()">
+              TRY AGAIN
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div class="startButtonContainer">
         <button class="StartButton">START</button>
@@ -132,5 +187,6 @@
         <!-- scaling root end -->
       </div>
     </div>
+  <audio id="stutterMask" src="music/stutterMask.wav" preload="auto"></audio>
   </body>
 </html>

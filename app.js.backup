@@ -1,0 +1,1159 @@
+import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
+import animationConfig from "./annimationConfig.js";
+import { mul } from "three/tsl";
+
+console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
+
+// ⚠️ BALANCED EVOLUTION AND SURVIVAL SYSTEM ⚠️
+// - Game over triggers when: hunger ≥ 10, fun ≤ 0, sleep ≥ 10, power >= 0
+// - Evolution: Press all 3 buttons → wait 5 seconds → evolve
+// - Stat decay: Base 7s, Fast 2s (gives time for evolution)
+// - Balance: Manage stats while working toward evolution!
+
+// *-------------------------METHODS ----------------*  \\
+//   - Inside petClss (what pet can do)
+//   - Only availabe after you do myPet= new Pet("name")
+
+// +-------------------------+
+// |       Pet Class         |   ← 🐾 Controls PET behavior and state
+// +-------------------------+
+// | - name                 |
+// | - age                  |   ← Tracks stats
+// | - hunger               |
+// | - fun                  |
+// | - sleep
+// | - power       |
+// | - evolutionStage       |
+// +-------------------------+
+// | 🧠 Methods:              |
+// |  • feed()              | ← Pet eats
+// |  • dance()             | ← Pet has fun
+// |  • sleep()             | ← Pet rests
+// |  • render()            | ← Updates UI
+// |  • createStatTimer()   | ← Starts stat decay
+// |  • stopAllTimers()     | ← Stops stat decay
+// |  • triggerGameOver()   | ← Ends the game
+// |  • evolveToNextStage() | ← Evolves pet
+// +-------------------------+
+// *---------------------FUNCTIONS-----------------------* \\
+//  Run indipendentally from Pet Class(outside petClass). Affect game logic or interface globally------- *
+// +------------------------------+
+// |     Global Functions         |   ← 🎮 Controls GAME
+// +------------------------------+
+// |  • startGame()              | ← Sets up new pet and timers
+// |  • resetGame()              | ← Clears everything and restarts
+// |  • updatePetVisual(stage)   | ← Changes how pet looks
+// |  • updateTimers()           | ← Updates hunger/fun/sleep on screen
+// |  • Event Listeners          | ← Detects clicks (feed, dance, sleep)
+// |  • setInterval (age ticker) | ← Tracks cosmetic age
+// +------------------------------+
+
+/*-------------- Constants -------------*/
+// DEATH MAP TESTS
+// const deathTestMap = {
+//   "1": "blue",
+//   "2": "yellow",
+//   "3": "green",
+//   "4": "red",
+//   "5": "white",
+
+// }
+
+const gameSettings = {
+  ageInterval: 20000,
+  baseDecayRate: 14000,
+  fastDecayRate: 6000,
+};
+const stageMap = {
+  0: {
+    stage: "blue",
+    message: " I've evolved into Blue Form! So, this is life!",
+  },
+  1: {
+    stage: "yellow",
+    message: " Yellow form! The wise grow joy under their feet!",
+  },
+  2: { stage: "green", message: "Green form! Growing stronger!" },
+  3: {
+    stage: "red",
+    message: " 🔥 Red form! FURY and POWER surge through me!",
+  },
+  4: {
+    stage: "white",
+    message: "⚪ I have transcended to White Form! Ready for the beyond...",
+  },
+};
+const stageEmojis = {
+  blue: "🔵",
+  yellow: "🟡",
+  green: "🟢",
+  red: "🔴",
+  white: "⚪",
+};
+const timerMap = {
+  feed: "hunger",
+  dance: "fun",
+  sleep: "sleep",
+  train: "power",
+};
+const STAT_TYPES = ["hunger", "fun", "sleep", "power"];
+
+// ===============ANIMATION MAPS ====================\\
+
+const danceMap = {
+  blue: ["dance", "dance2"],
+  yellow: ["dance", "dance2"],
+  green: ["dance", "dance2", "dance3"],
+  red: ["dance", "dance2", "dance3"],
+  white: ["dance", "dance2", "dance3", "dance4"],
+};
+const trainMap = {
+  blue: ["train", "train2"],
+  yellow: ["train", "train2"],
+  green: ["train", "train2"],
+  red: ["train", "train2", "train3"],
+  white: ["train", "train2", "train3", "train4"],
+};
+
+// ==========KEEPS TRACK OF EACH MOVE YOUR ON FOR EACH STAGE======= \\
+const danceIndices = {
+  blue: 0,
+  yellow: 0,
+  green: 0,
+  red: 0,
+  white: 0,
+};
+const trainIndices = {
+  blue: 0,
+  yellow: 0,
+  green: 0,
+  red: 0,
+  white: 0,
+};
+
+/*---------- Variables (state) ---------*/
+let currentStage; //
+// loadAndDisplayFBX(
+//   animationConfig[currentStage].idle.file,
+//   animationConfig[currentStage].idle.pose
+// );
+
+let myPet;
+let gameStarted = false;
+let currentAnimationTimer = null;
+let backgroundMusic;
+let actionInProgress = false;
+let careCycles = 0;
+let gameOverTriggered = false;
+
+// Evolution System Variables
+let buttonTracker = {
+  feed: false,
+  dance: false,
+  dance2: false,
+  sleep: false,
+  train: false,
+  train2: false,
+};
+let evolutionTimeout = null;
+let evolutionInProgress = false;
+
+function allCareActionsCompleted() {
+  // White stage is final - no evolution needed
+  if (myPet && myPet.stage === "white") {
+    return false; // White stage never evolves
+  }
+
+  // Require all 6 actions: feed, dance, dance2, sleep, train, train2
+  const completed =
+    buttonTracker.feed &&
+    buttonTracker.dance &&
+    buttonTracker.dance2 &&
+    buttonTracker.sleep &&
+    buttonTracker.train &&
+    buttonTracker.train2;
+  console.log(
+    `🔍 Care actions status:`,
+    buttonTracker,
+    `All completed: ${completed}`
+  );
+  return completed;
+}
+
+function resetButtonTracker() {
+  console.log(
+    `🔄 RESETTING button tracker - Previous state:`,
+    JSON.parse(JSON.stringify(buttonTracker))
+  );
+  buttonTracker = {
+    feed: false,
+    dance: false,
+    dance2: false,
+    sleep: false,
+    train: false,
+    train2: false,
+  };
+  console.log(`🔄 Button tracker RESET - New state:`, buttonTracker);
+}
+
+function checkForEvolution() {
+  // Prevent multiple evolution checks while one is in progress
+  if (evolutionInProgress) {
+    console.log(`⏳ Evolution already in progress, skipping check`);
+    return;
+  }
+
+  console.log(
+    `🔍 Checking evolution - Current stage: ${myPet.stage} (${myPet.evolutionLevel}), Button tracker:`,
+    buttonTracker
+  );
+
+  if (allCareActionsCompleted()) {
+    careCycles++;
+
+    console.log(
+      `✅ Care cycle complete! (${careCycles} total) - Current evolution level: ${myPet.evolutionLevel}`
+    );
+
+    // Only evolve if not at max level (4 = white)
+    if (careCycles >= 1 && myPet.evolutionLevel < 4) {
+      evolutionInProgress = true; // Block further evolution checks
+      console.log(
+        `⚡️⚡️⚡️ All care actions complete. Evolving from ${myPet.stage} (level ${myPet.evolutionLevel}) in 5 seconds...`
+      );
+      evolutionTimeout = setTimeout(() => {
+        // Trigger cyberpunk magical evolution effect
+        triggerCyberpunkEvolutionEffect(6000);
+        
+        // Additional regular glitch stutter for layered effect
+        setTimeout(() => {
+          triggerGlitchStutter(150);
+        }, 1000);
+
+        // Evolution with slight delay to sync with magical effect
+        setTimeout(() => {
+          const oldStage = myPet.stage;
+          myPet.evolveToNextStage();
+          console.log(
+            `🔄 Evolution completed: ${oldStage} → ${myPet.stage} (currentStage: ${currentStage})`
+          );
+
+          // Make sure currentStage is synced before loading animation
+          // Trigger glitch masking for evolution idle transition
+          triggerGlitchStutter(80);
+          
+          // Small delay to let masking effect start
+          setTimeout(() => {
+            loadAndDisplayFBX(
+              animationConfig[currentStage].idle.file,
+              animationConfig[currentStage].idle.pose
+            ).then(() => {
+              console.log(`🎬 Evolution idle animation loaded for ${currentStage} stage with masking`);
+            });
+          }, 20);
+
+          // Reset AFTER evolution completes to prevent race conditions
+          careCycles = 0;
+          resetButtonTracker();
+          evolutionInProgress = false; // Allow next evolution cycle
+          console.log(
+            `🔄 Post-evolution reset: careCycles=${careCycles}, buttonTracker reset for next evolution cycle`
+          );
+        }, 3000); // Wait 3 seconds for magical effect to build up
+      }, 5000);
+    } else if (myPet.evolutionLevel >= 4) {
+      console.log(
+        `✨ ${myPet.name} has reached maximum evolution (${myPet.stage})! No further evolution possible.`
+      );
+      careCycles = 0; // Reset care cycles but don't evolve
+      resetButtonTracker();
+    } else {
+      resetButtonTracker(); // Ready for next cycle
+    }
+  }
+}
+
+// Timer System Variables
+let statTimers = {
+  hunger: null,
+  fun: null,
+  sleep: null,
+  power: null,
+};
+let slowedTimers = {
+  hunger: false,
+  fun: false,
+  sleep: false,
+  power: false,
+};
+
+/*----- Cached Element References  -----*/
+const gameOverOverlay = document.getElementById("gameOverOverlay");
+const reasonElement = document.getElementById("gameOverReason");
+const petChat = document.querySelector(".infoBox_petChat");
+const hungerTimer = document.getElementById("hungerTimer");
+const funTimer = document.getElementById("funTimer");
+const sleepTimer = document.getElementById("sleepTimer");
+const powerTimer = document.getElementById("powerTimer");
+const overlayTexts = document.querySelectorAll(
+  ".overlay-content h2, .overlay-content p"
+);
+const overlay = document.getElementById("pageOverlay");
+const overlayStartBtn = document.getElementById("overlayStartButton");
+const regularStartBtn = document.querySelector(
+  ".startButtonContainer .StartButton"
+);
+const resetBtn = document.querySelector(".ResetButton");
+const buttons = document.querySelectorAll(".Buttons");
+const feedButton = buttons[0];
+const danceButton = buttons[1];
+const sleepButton = buttons[2];
+const trainButton = buttons[3];
+const btn = document.getElementById("infoDropdownBtn");
+const menu = document.getElementById("infoDropdownMenu");
+const container = document.querySelector(".dropdown-container");
+const feedIndicator = document.querySelector("#hungerTimer");
+const danceIndicator = document.querySelector("#funTimer");
+const sleepIndicator = document.querySelector("#sleepTimer");
+const powerIndicator = document.querySelector("#powerTimer");
+const glitchStutterOverlay = document.getElementById("glitchStutterOverlay");
+// *---------------CACHED ELEMENTS ---------------------* \\
+
+// 🧬 Transcendence Pet Class
+class Pet {
+  constructor(petName = "Coco") {
+    this.name = petName;
+    this.age = 0;
+    this.hunger = 0;
+    this.fun = 10;
+    this.sleep = 0;
+    this.power = 10;
+    this.stage = "blue"; // starts as blue after hatching
+    this.evolutionLevel = 0; // 0=blue, 1=yellow, 2=green, 3=red, 4=white
+
+    // Flags for visual messaging
+    this.showingEvolutionMessage = false;
+    this.showingActionMessage = false;
+
+    // Internal timers
+    this.ageInterval = null;
+  }
+
+  // 🥚 Feed Action
+  feed() {
+    this.hunger = Math.max(0, this.hunger - 2);
+    console.log(`${this.name} is eating. Hunger: ${this.hunger}`);
+    this.render();
+  }
+
+  // 🎶 Dance Action
+  dance() {
+    this.fun = Math.min(10, this.fun + 2);
+    console.log(`${this.name} is dancing. Fun: ${this.fun}`);
+    this.render();
+  }
+
+  // 💤 Sleep Action
+  sleepRest() {
+    this.sleep = Math.max(0, this.sleep - 2);
+    console.log(`${this.name} is sleeping. Sleep: ${this.sleep}`);
+    this.render();
+  }
+  train() {
+    this.power = Math.min(10, this.power + 2);
+    console.log(`${this.name} is training. Power: ${this.power}`);
+    this.render();
+  }
+
+  // 🌱 Trigger Evolution
+  evolveToNextStage() {
+    console.log(
+      `🔄 Evolution attempt: Current level ${this.evolutionLevel} (${this.stage})`
+    );
+
+    if (this.evolutionLevel < 4) {
+      // Can evolve up to level 4 (white)
+      const oldStage = this.stage;
+      const oldLevel = this.evolutionLevel;
+
+      this.evolutionLevel++;
+      const stages = ["blue", "yellow", "green", "red", "white"];
+      this.stage = stages[this.evolutionLevel];
+      currentStage = this.stage; // SYNC GLOBAL currentStage
+
+      console.log(
+        `🌟 ${this.name} evolved from ${oldStage} (Level ${oldLevel}) to ${this.stage} (Level ${this.evolutionLevel})!`
+      );
+      console.log(
+        `📊 Evolution progression: blue(0) → yellow(1) → green(2) → red(3) → white(4)`
+      );
+
+      this.age += 5;
+      console.log(`🐱 ${this.name} has aged to ${this.age} years old`);
+      this.render();
+    } else {
+      console.log(
+        `✨ ${this.name} has reached the final form: ${this.stage} (Level ${this.evolutionLevel})! No further evolution possible.`
+      );
+    }
+  }
+
+  // PET AGES
+  startAging() {
+    this.ageInterval = setInterval(() => {
+      this.age++;
+      console.log(`🐱 ${this.name} aged to ${this.age} year sold`);
+      this.render();
+    }, gameSettings.ageInterval);
+  }
+  // ⚰️ Game Over
+  triggerGameOver(reason) {
+    console.log(`💀 GAME OVER: ${reason}`); // Prevent multiple triggers
+    gameOverTriggered = true;
+
+    console.log(`💀 GAME OVER: ${reason}`);
+
+    // Show game over overlay
+    gameOverOverlay.style.display = "flex";
+    reasonElement.textContent = `⚠️ ${reason}`;
+
+    // LOAD DEATH ANIMATION BEFORE STOPPING TIMERS
+    const deathAnim = animationConfig[currentStage]?.death;
+    if (deathAnim) {
+      loadAndDisplayFBX(deathAnim.file, deathAnim.pose);
+    }
+
+    // Stop stat decay timers
+    this.stopAllTimers();
+    gameStarted = false;
+
+    this.render(); // UPDATE FINAL STAT DISPLAY
+  }
+
+  // ⏳ Stat decay
+  createStatTimer(type, interval = 7000) {
+    const timer = setInterval(() => {
+      if (type === "hunger") this.hunger++;
+      if (type === "fun") this.fun--;
+      if (type === "sleep") this.sleep++;
+      if (type === "power") this.power--;
+      this.render();
+
+      // Game over conditions
+      if (this.hunger >= 10) this.triggerGameOver("Starved");
+      if (this.fun <= 0) this.triggerGameOver("Bored to death");
+      if (this.sleep >= 10) this.triggerGameOver("Collapsed from exhaustion");
+      if (this.power <= 0) this.triggerGameOver("Collapsed from weakness");
+    }, interval);
+
+    // Store the timer in the pet instance
+    this[`${type}Timer`] = timer;
+    return timer;
+  }
+
+  // 🛑 Stop all stat timers
+  stopAllTimers() {
+    clearInterval(this.hungerTimer);
+    clearInterval(this.funTimer);
+    clearInterval(this.sleepTimer);
+    clearInterval(this.powerTimer);
+    clearInterval(this.ageInterval);
+  }
+
+  // 🖥️ Update UI or log state (placeholder)
+  render() {
+    console.log(
+      `🧾 ${this.name} | Age: ${this.age} | Hunger: ${this.hunger} | Fun: ${this.fun} | Sleep: ${this.sleep} |Power: ${this.power} |  Stage: ${this.stage}`
+    );
+
+    // UPDATE visible stat bars or timers
+    hungerTimer.textContent = `Hunger: ${this.hunger}`;
+    funTimer.textContent = `Fun: ${this.fun}`;
+    sleepTimer.textContent = `Sleep: ${this.sleep}`;
+    powerTimer.textContent = `Power: ${this.power}`;
+
+    petChat.textContent = `${stageEmojis[this.stage]} ${
+      this.name
+    } is evolving...`;
+  }
+}
+
+// END OF PET CLASS
+
+// ✅ Then define this after the class ends
+function hideGlitchEgg() {
+  const glitchDiv = document.getElementById("colorfulGlitchDiv");
+  if (glitchDiv) {
+    glitchDiv.classList.add("hatching");
+    setTimeout(() => {
+      glitchDiv.style.display = "none";
+    }, 1500);
+  }
+}
+
+function startGame() {
+  return new Promise((resolve) => {
+    myPet = new Pet("Coco");
+    currentStage = "blue";
+    evolutionInProgress = false; // Initialize evolution flag
+
+    // Trigger glitch masking for initial game start
+    triggerGlitchStutter(70);
+    
+    // Small delay to let masking effect start
+    setTimeout(() => {
+      loadAndDisplayFBX(
+        animationConfig[currentStage].idle.file,
+        animationConfig[currentStage].idle.pose
+      ).then(() => {
+        resetButtonTracker();
+        gameStarted = true;
+
+        document.querySelector(".infoBox").style.display = "flex";
+
+        myPet.render();
+
+      statTimers.hunger = myPet.createStatTimer(
+        "hunger",
+        gameSettings.baseDecayRate
+      );
+      statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
+      statTimers.sleep = myPet.createStatTimer(
+        "sleep",
+        gameSettings.baseDecayRate
+      );
+      statTimers.power = myPet.createStatTimer(
+        "power",
+        gameSettings.baseDecayRate
+      );
+
+      resolve(); // ✅ tell the overlay it’s safe to hide the egg
+    });
+  });
+}
+
+function resetGame() {
+  // 1. Clear all timers
+  clearInterval(statTimers.hunger);
+  clearInterval(statTimers.fun);
+  clearInterval(statTimers.sleep);
+  clearInterval(statTimers.power);
+  clearInterval(myPet.ageInterval);
+
+  // 2. Reset state variables
+  myPet = new Pet("Coco");
+  currentStage = "blue";
+  careCycles = 0;
+  resetButtonTracker();
+  gameOverTriggered = false;
+  actionInProgress = false;
+  evolutionInProgress = false; // Reset evolution flag
+
+  // 3. Hide Game Over overlay
+  gameOverOverlay.style.display = "none";
+
+  // 4. Load Blue stage idle animation
+  loadAndDisplayFBX(
+    animationConfig[currentStage].idle.file,
+    animationConfig[currentStage].idle.pose
+  );
+
+  // 5. Restart stat timers
+  statTimers.hunger = myPet.createStatTimer(
+    "hunger",
+    gameSettings.baseDecayRate
+  );
+  statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
+  statTimers.sleep = myPet.createStatTimer("sleep", gameSettings.baseDecayRate);
+  statTimers.power = myPet.createStatTimer("power", gameSettings.baseDecayRate);
+
+  // 6. REFRESH UI TO SHOW STARTING STAT VALUES AGAIN
+  myPet.render();
+}
+
+// Make resetGame available globally for the HTML onclick
+window.resetGame = resetGame;
+
+// ============ ⚡ CYBERPUNK EVOLUTION EFFECT SYSTEM ============ \\
+function triggerCyberpunkEvolutionEffect(duration = 3000) {
+  if (glitchStutterOverlay) {
+    console.log("🌟✨ Cyberpunk magical evolution effect triggered");
+
+    // Get the current cat position and dimensions
+    const catData = getCatMaskData();
+
+    if (catData) {
+      // Position the effect around the cat
+      glitchStutterOverlay.style.left = `${catData.x}px`;
+      glitchStutterOverlay.style.top = `${catData.y}px`;
+      glitchStutterOverlay.style.width = `${catData.width * 1.5}px`; // Larger for particles
+      glitchStutterOverlay.style.height = `${catData.height * 1.5}px`;
+      glitchStutterOverlay.style.transform = "translate(-50%, -50%)";
+
+      // Create cyberpunk magical glow mask with particles ONLY (no radial glow)
+      glitchStutterOverlay.style.webkitMask = `
+        radial-gradient(circle 8px at 25% 30%, black 0%, transparent 50%),
+        radial-gradient(circle 6px at 75% 25%, black 0%, transparent 50%),
+        radial-gradient(circle 10px at 35% 70%, black 0%, transparent 50%),
+        radial-gradient(circle 7px at 65% 75%, black 0%, transparent 50%),
+        radial-gradient(circle 5px at 85% 50%, black 0%, transparent 50%),
+        radial-gradient(circle 9px at 15% 60%, black 0%, transparent 50%)
+      `;
+      glitchStutterOverlay.style.mask = `
+        radial-gradient(circle 8px at 25% 30%, black 0%, transparent 50%),
+        radial-gradient(circle 6px at 75% 25%, black 0%, transparent 50%),
+        radial-gradient(circle 10px at 35% 70%, black 0%, transparent 50%),
+        radial-gradient(circle 7px at 65% 75%, black 0%, transparent 50%),
+        radial-gradient(circle 5px at 85% 50%, black 0%, transparent 50%),
+        radial-gradient(circle 9px at 15% 60%, black 0%, transparent 50%)
+      `;
+
+      console.log(`✨ Cyberpunk evolution particles applied around cat`);
+    }
+
+    // Add evolution-specific class for enhanced effect
+    glitchStutterOverlay.classList.add("active", "evolution");
+    
+    // Create pulsing effect with multiple phases
+    let pulseCount = 0;
+    const pulseInterval = setInterval(() => {
+      pulseCount++;
+      
+      // Alternate between intense glow and particle burst
+      if (pulseCount % 2 === 0) {
+        // Intense glow phase
+        glitchStutterOverlay.style.filter = `
+          brightness(300%) 
+          contrast(200%) 
+          hue-rotate(${Math.random() * 60}deg) 
+          saturate(400%)
+          drop-shadow(0 0 20px #00ffff)
+          drop-shadow(0 0 40px #ff00ff)
+          drop-shadow(0 0 60px #ffff00)
+        `;
+      } else {
+        // Particle burst phase
+        glitchStutterOverlay.style.filter = `
+          brightness(500%) 
+          contrast(300%) 
+          hue-rotate(${180 + Math.random() * 60}deg) 
+          saturate(600%)
+          drop-shadow(0 0 30px #ff0080)
+          drop-shadow(0 0 50px #0080ff)
+          drop-shadow(0 0 70px #80ff00)
+        `;
+      }
+      
+      if (pulseCount >= 12) { // 6 seconds of pulsing
+        clearInterval(pulseInterval);
+      }
+    }, 500);
+
+    // Remove the effect after specified duration
+    setTimeout(() => {
+      glitchStutterOverlay.classList.remove("active", "evolution");
+      clearInterval(pulseInterval);
+      
+      // Reset all styles after effect
+      setTimeout(() => {
+        glitchStutterOverlay.style.left = "50%";
+        glitchStutterOverlay.style.top = "50%";
+        glitchStutterOverlay.style.width = "280px";
+        glitchStutterOverlay.style.height = "380px";
+        glitchStutterOverlay.style.webkitMask = "";
+        glitchStutterOverlay.style.mask = "";
+        glitchStutterOverlay.style.filter = "";
+      }, 100);
+      console.log("✨ Cyberpunk magical evolution effect ended");
+    }, duration);
+  }
+}
+
+// ============ ⚡ GLITCH STUTTER EFFECT SYSTEM ============ \\
+function triggerGlitchStutter(duration = 120) {
+  if (glitchStutterOverlay) {
+    console.log("⚡ Dynamic cat-shaped glitch stutter triggered");
+
+    // Get the current cat position and dimensions
+    const catData = getCatMaskData();
+
+    if (catData) {
+      // Apply dynamic positioning and sizing based on cat's actual position
+      glitchStutterOverlay.style.left = `${catData.x}px`;
+      glitchStutterOverlay.style.top = `${catData.y}px`;
+      glitchStutterOverlay.style.width = `${catData.width}px`;
+      glitchStutterOverlay.style.height = `${catData.height}px`;
+      glitchStutterOverlay.style.transform = "translate(-50%, -50%)";
+
+      // Adjust mask shape based on current pose
+      if (catData.pose.includes("sleep")) {
+        // Sleeping cat - wider, shorter shape
+        glitchStutterOverlay.style.webkitMask = `
+          radial-gradient(ellipse 50% 35% at 50% 55%, black 0%, black 70%, transparent 80%)
+        `;
+        glitchStutterOverlay.style.mask = `
+          radial-gradient(ellipse 50% 35% at 50% 55%, black 0%, black 70%, transparent 80%)
+        `;
+      } else if (
+        catData.pose.includes("dance") ||
+        catData.pose.includes("salsa")
+      ) {
+        // Dancing cat - more dynamic shape with extended limbs
+        glitchStutterOverlay.style.webkitMask = `
+          radial-gradient(ellipse 45% 55% at 50% 45%, black 0%, black 65%, transparent 75%),
+          radial-gradient(ellipse 12% 18% at 35% 25%, black 0%, transparent 70%),
+          radial-gradient(ellipse 12% 18% at 65% 25%, black 0%, transparent 70%)
+        `;
+        glitchStutterOverlay.style.mask = `
+          radial-gradient(ellipse 45% 55% at 50% 45%, black 0%, black 65%, transparent 75%),
+          radial-gradient(ellipse 12% 18% at 35% 25%, black 0%, transparent 70%),
+          radial-gradient(ellipse 12% 18% at 65% 25%, black 0%, transparent 70%)
+        `;
+      } else {
+        // Default cat shape
+        glitchStutterOverlay.style.webkitMask = `
+          radial-gradient(ellipse 40% 50% at 50% 45%, black 0%, black 60%, transparent 70%),
+          radial-gradient(ellipse 15% 20% at 35% 25%, black 0%, transparent 70%),
+          radial-gradient(ellipse 15% 20% at 65% 25%, black 0%, transparent 70%)
+        `;
+        glitchStutterOverlay.style.mask = `
+          radial-gradient(ellipse 40% 50% at 50% 45%, black 0%, black 60%, transparent 70%),
+          radial-gradient(ellipse 15% 20% at 35% 25%, black 0%, transparent 70%),
+          radial-gradient(ellipse 15% 20% at 65% 25%, black 0%, transparent 70%)
+        `;
+      }
+
+      console.log(
+        `✅ Dynamic cat mask applied - Position: (${catData.x}, ${catData.y}), Size: ${catData.width}x${catData.height}, Pose: ${catData.pose}`
+      );
+    }
+
+    // Add active class to trigger the effect
+    glitchStutterOverlay.classList.add("active");
+
+    // Remove the effect after specified duration
+    setTimeout(() => {
+      glitchStutterOverlay.classList.remove("active");
+      // Reset positioning after effect
+      setTimeout(() => {
+        glitchStutterOverlay.style.left = "50%";
+        glitchStutterOverlay.style.top = "50%";
+        glitchStutterOverlay.style.width = "280px";
+        glitchStutterOverlay.style.height = "380px";
+        glitchStutterOverlay.style.webkitMask = "";
+        glitchStutterOverlay.style.mask = "";
+      }, 50);
+      console.log("⚡ Dynamic cat-shaped glitch stutter effect ended");
+    }, duration);
+  }
+}
+
+// Enhanced animation transition with cat-shaped glitch stutter masking
+async function playAnimationWithStutterMask(actionType, stage) {
+  // Trigger glitch stutter effect ONCE at the start of each action
+  triggerGlitchStutter(90);
+
+  // Small delay to let stutter effect start
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  // Play the actual animation and wait for the entire sequence to complete
+  const result = await playActionThenShareIdle(actionType, stage);
+
+  return result;
+}
+
+function setupDropdownMenu() {
+  if (btn && menu && container) {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!container.contains(e.target)) menu.style.display = "none";
+    });
+  }
+}
+
+setupDropdownMenu();
+
+// ============ 🐾 Set Model Pose event listeners=============== \ \
+async function playActionThenShareIdle(actionType, stage) {
+  return new Promise(async (resolve) => {
+    // Remove duplicate glitch trigger - it's already called in playAnimationWithStutterMask
+    
+    const variants = [`${actionType}`, `${actionType}2`];
+
+    // Filter variants to only include those that exist for this stage
+    const availableVariants = variants.filter(
+      (variant) => animationConfig[stage] && animationConfig[stage][variant]
+    );
+
+    // If no variants available, skip this action
+    if (availableVariants.length === 0) {
+      console.log(`⚠️ No ${actionType} animations available for ${stage} stage`);
+      resolve(actionType); // Return the base action type
+      return;
+    }
+
+    const selectedAction =
+      availableVariants[Math.floor(Math.random() * availableVariants.length)];
+    console.log(
+      `🎬 Playing ${actionType} animation: ${selectedAction} for ${stage} stage (${availableVariants.length} variants available)`
+    );
+
+    const anim = animationConfig[stage][selectedAction];
+    const baseDurationMs = await loadAndDisplayFBX(anim.file, anim.pose);
+
+    // Define loop counts for different actions
+    let loopCount = 1; // Default to 1 loop
+    if (actionType === "sleep") {
+      loopCount = 3; // Sleep loops 3 times
+    } else if (actionType === "feed") {
+      loopCount = 3; // Feed/eat loops 3 times
+    } else if (actionType === "dance") {
+      loopCount = 2; // Dance loops 2 times
+    } else if (actionType === "train") {
+      loopCount = 1; // Train loops 1 time (default)
+    }
+
+    // Calculate total duration based on loop count
+    const totalDurationMs = baseDurationMs * loopCount;
+    console.log(`🔄 Animation will loop ${loopCount} times, total duration: ${totalDurationMs}ms`);
+
+    let idleKey = "";
+
+    if (["dance", "dance2"].includes(selectedAction)) {
+      idleKey = "idleAfterDance";
+    } else if (["train", "train2"].includes(selectedAction)) {
+      idleKey = "idleAfterTrain";
+    } else if (["sleep"].includes(selectedAction)) {
+      idleKey = "idleAfterSleep";
+    } else if (["feed"].includes(selectedAction)) {
+      idleKey = "idleAfterFeed";
+    } else {
+      idleKey = "idle";
+    }
+
+    // Wait for all loops to complete before transitioning to idle
+    setTimeout(() => {
+      // Trigger glitch stutter masking for idle transition
+      triggerGlitchStutter(60); // Shorter duration for idle transition
+      
+      // Small delay to sync with action completion and let stutter effect start
+      setTimeout(() => {
+        // Use current stage (might have evolved since action started)
+        const currentActiveStage = myPet.stage;
+        const idleAnim = animationConfig[currentActiveStage][idleKey];
+        if (idleAnim) {
+          console.log(
+            `🎬 Transitioning to ${idleKey} for ${currentActiveStage} stage (action was ${stage}) with glitch masking`
+          );
+          loadAndDisplayFBX(idleAnim.file, idleAnim.pose).then(() => {
+            // Resolve the promise after idle animation starts
+            resolve(selectedAction);
+          });
+        } else {
+          resolve(selectedAction);
+        }
+      }, 25);
+    }, totalDurationMs);
+  });
+}
+
+// *================EVENT LISTENERS ===================* \\
+
+resetBtn.addEventListener("click", () => {
+  resetGame();
+});
+
+overlayStartBtn.addEventListener("click", async () => {
+  overlay.style.display = "none"; // Hide intro screen
+  // 🧿 Show the Glitch Egg when game starts
+  const glitchEgg = document.getElementById("colorfulGlitchDiv");
+  glitchEgg.style.display = "flex"; // Show glitch egg
+  glitchEgg.classList.add("hatching"); // Start animation
+  console.log("🧿 Glitch egg shown...");
+
+  // Load pet while glitch egg animates
+  await startGame(); // Now returns a Promise after FBX idle loads
+
+  // Wait 5s before hiding glitch egg to ensure it plays fully
+  setTimeout(() => {
+    glitchEgg.classList.remove("hatching");
+    glitchEgg.style.display = "none";
+    console.log("✨ Glitch egg hidden");
+  }, 5000);
+});
+
+feedButton.addEventListener("click", async () => {
+  if (actionInProgress || gameOverTriggered) return;
+
+  actionInProgress = true;
+  console.log("🔒 Feed button pressed - Action locked");
+
+  try {
+    // Check if feed animation exists for current stage
+    if (!animationConfig[currentStage]?.feed) {
+      console.log(`⚠️ Feed action not available for ${currentStage} stage`);
+      actionInProgress = false;
+      return;
+    }
+
+    myPet.feed(); //update hunger stat
+    buttonTracker.feed = true;
+    console.log(
+      `🍽️ Feed action completed. Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
+      buttonTracker
+    );
+    await playAnimationWithStutterMask("feed", currentStage);
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+    console.log("🔓 Feed button unlocked - Action available");
+  }
+});
+
+danceButton.addEventListener("click", async () => {
+  if (actionInProgress || gameOverTriggered) return;
+  actionInProgress = true;
+  console.log("🔒 Dance button pressed - Action locked");
+
+  try {
+    myPet.dance(); //update fun stat
+
+    // Get which dance variant was performed
+    const selectedAction = await playAnimationWithStutterMask(
+      "dance",
+      currentStage
+    );
+
+    if (selectedAction === "dance") {
+      buttonTracker.dance = true;
+    } else if (selectedAction === "dance2") {
+      buttonTracker.dance2 = true;
+    }
+
+    console.log(
+      `💃 Dance action completed (${selectedAction}). Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
+      buttonTracker
+    );
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+    console.log("🔓 Dance button unlocked - Action available");
+  }
+});
+
+sleepButton.addEventListener("click", async () => {
+  if (actionInProgress || gameOverTriggered) return;
+  actionInProgress = true;
+  console.log("🔒 Sleep button pressed - Action locked");
+
+  try {
+    // Check if sleep animation exists for current stage
+    if (!animationConfig[currentStage]?.sleep) {
+      console.log(`⚠️ Sleep action not available for ${currentStage} stage`);
+      actionInProgress = false;
+      return;
+    }
+
+    myPet.sleepRest(); //update sleep stat
+    buttonTracker.sleep = true;
+    console.log(
+      `😴 Sleep action completed. Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
+      buttonTracker
+    );
+    await playAnimationWithStutterMask("sleep", currentStage);
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+    console.log("🔓 Sleep button unlocked - Action available");
+  }
+});
+
+trainButton.addEventListener("click", async () => {
+  if (actionInProgress || gameOverTriggered) return;
+  actionInProgress = true;
+  console.log("🔒 Train button pressed - Action locked");
+
+  try {
+    myPet.train(); //update power stat
+
+    // Get which train variant was performed
+    const selectedAction = await playAnimationWithStutterMask(
+      "train",
+      currentStage
+    );
+
+    if (selectedAction === "train") {
+      buttonTracker.train = true;
+    } else if (selectedAction === "train2") {
+      buttonTracker.train2 = true;
+    }
+
+    console.log(
+      `💪 Train action completed (${selectedAction}). Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
+      buttonTracker
+    );
+    checkForEvolution();
+  } finally {
+    actionInProgress = false;
+    console.log("🔓 Train button unlocked - Action available");
+  }
+});
+
+// ===================TESTING DEATH ANIMATIONS
+
+// document.addEventListener("keydown", (e) =>{
+//   const stage = deathTestMap[e.key];
+//   if (stage && animationConfig[stage]?.death) {
+//     currentStage = stage;
+//     console.log(`Testing DEATH: ${stage.toUpperCase()}`);
+//     loadAndDisplayFBX(
+//       animationConfig[stage].death.file,
+//       animationConfig[stage].death.pose
+//     );
+//   }
+// });
+
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "q") {
+//     console.log(`🧪 Previewing IDLE for ${currentStage.toUpperCase()}`);
+//     const idleAnim = animationConfig[currentStage]?.idle;
+//     if (idleAnim) {
+//       loadAndDisplayFBX(idleAnim.file, idleAnim.pose);
+//     }
+//   }
+// });
+
+// ===================IDLE AFTER TESTING
+//11
+// TEMPORARY: Press number keys 1–5 to test idleAfterFeed animations per color
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "1") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterTrain.file,
+//       animationConfig["red"].idleAfterTrain.pose
+//     );
+//   }
+//   if (e.key === "2") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterSleep.file,
+//       animationConfig["red"].idleAfterSleep.pose
+//     );
+//   }
+//   if (e.key === "3") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterDance.file,
+//       animationConfig["red"].idleAfterDance.pose
+//     );
+//   }
+//   if (e.key === "4") {
+//     loadAndDisplayFBX(
+//       animationConfig["red"].idleAfterFeed.file,
+//       animationConfig["red"].idleAfterFeed.pose
+//     );
+//   }
+//   if (e.key === "5") {
+//     loadAndDisplayFBX(
+//       animationConfig["white"].idleAfterFeed.file,
+//       animationConfig["white"].idleAfterFeed.pose
+//     );
+//   }
+// });
+
+// // setting position for evolution. Comment out bottom functiona temporarily
+
+// //TEMP: Test Blue Idle
+// feedButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["red"].feed.file,
+//     animationConfig["red"].feed.pose
+//   );
+// });
+
+// // TEMP: Test Yellow Idle
+// danceButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["white"].dance.file,
+//     animationConfig["white"].dance.pose
+//   );
+// });
+
+// // TEMP: Test Red Idle
+// sleepButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["red"].sleep.file,
+//     animationConfig["red"].sleep.pose
+//   );
+// });
+
+// // TEMP: Test White Idle
+// trainButton.addEventListener("click", () => {
+//   loadAndDisplayFBX(
+//     animationConfig["white"].train.file,
+//     animationConfig["white"].train.pose
+//   );
+// });
+
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "d") {
+//     console.log("🌀 Dissolve test triggered!");
+//     loadAndDisplayFBX("models/WHITE_emission_2.fbx", {
+//       scale: [0.001, 0.001, 0.001],
+//       position: [0, -1.6, -1],
+//       rotationY: 0,
+//     });
+//   }
+// });
+
+//=================TO USE IN GAME
+
+// async function playAnimation(stage, action) {
+//   const { file, pose } = animationConfig[stage][action];
+//   const duration = await loadAndDisplayFBX(file, pose);
+//   return duration;
+// }
+// feedButton.addEventListener("click", async () => {
+//   const duration = await playAnimation(currentStage, "feed");
+//   setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
+// });
+
+// danceButton.addEventListener("click", async () => {
+//   const danceList = danceMap[currentStage];
+//   const index = danceIndices[currentStage];
+//   const danceKey = danceList[index];
+
+//   danceIndices[currentStage] = (index + 1) % danceList.length;
+
+//   const duration = await playAnimation(currentStage, danceKey);
+//   let delay;
+//   // 💚 Force Green's Dance 2 to last 15 seconds
+//   if (currentStage === "green" && danceKey === "dance2") {
+//     delay = 20000;
+//   } else {
+//     delay = duration * 1000;
+//   }
+//   setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration);
+// });
+
+// sleepButton.addEventListener("click", async () => {
+//   const duration = await playAnimation(currentStage, "sleep");
+//   setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration);
+// });
+
+// trainButton.addEventListener("click", async () => {
+//   const trainList = trainMap[currentStage];
+//   const index = trainIndices[currentStage];
+//   const trainKey = trainList[index];
+
+//   const duration = await playAnimation(currentStage, trainKey);
+//   // now play the next train animation
+//   // and set the next index for the next time
+//   trainIndices[currentStage] = (index + 1) % trainList.length;
+
+//   setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration);
+// });

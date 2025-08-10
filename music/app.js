@@ -1,15 +1,20 @@
-
-
-
-
-
-window.addEventListener('scroll', function() {
+window.addEventListener("scroll", function () {
   const scrolled = window.pageYOffset;
-  document.getElementById('pet-parent').style.transform = `translateY(${scrolled * 0.3}px)`;
+  document.getElementById("pet-parent").style.transform = `translateY(${
+    scrolled * 0.3
+  }px)`;
 });
 
-
 window.addEventListener("DOMContentLoaded", function () {
+  // Lower radiance.mp3 music volume by 20% on page load
+  const radianceMusic = document.getElementById("radiance-music");
+  if (radianceMusic) {
+    radianceMusic.volume = 0.9; // Set directly to 70% volume
+  }
+  // Lower music volume by 10% on page load
+  if (bgMusic) {
+    bgMusic.volume = Math.max(0, bgMusic.volume - 0.4);
+  }
   const bgMusic = document.getElementById("bg-music");
   if (!bgMusic) return;
 

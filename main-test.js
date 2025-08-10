@@ -10,6 +10,8 @@ let activeModel = null;
 let mixer = null; // <-- NEW
 let time = 0;
 let currentPose = "";
+let catMaskCanvas = null;
+let catMaskContext = null;
 // let jumpForwardActive = false;
 // let jumpStartTime = 0;
 // let jumpStartPosition = { x: 0, Z: 0 };
@@ -22,7 +24,54 @@ let currentPose = "";
 
 const clock = new THREE.Clock();
 
-function loadAndDisplayFBX(path, pose = {}) {
+// Function to get cat position and dimensions for dynamic masking
+function getCatMaskData() {
+  if (!activeModel) return null;
+
+  // Get the model's bounding box
+  const box = new THREE.Box3().setFromObject(activeModel);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+
+  // Project 3D position to screen coordinates
+  const vector = center.clone();
+  vector.project(camera);
+
+  // Convert to screen space (0 to 1, then to pixel coordinates)
+  const containerRect = document
+    .getElementById("pet-container")
+    .getBoundingClientRect();
+  const x = (vector.x * 0.5 + 0.5) * containerRect.width;
+  const y = (-vector.y * 0.5 + 0.5) * containerRect.height;
+
+  // Estimate cat dimensions based on the model size and current animation
+  let width = Math.abs(size.x) * 100; // Convert to reasonable pixel size
+  let height = Math.abs(size.y) * 100;
+
+  // Adjust for different animations
+  if (currentPose.includes("dance") || currentPose.includes("salsa")) {
+    width *= 1.2; // Dancing cats spread out more
+  }
+  if (currentPose.includes("sleep")) {
+    height *= 0.7; // Sleeping cats are shorter
+    width *= 1.3; // But wider
+  }
+
+  // Ensure minimum/maximum sizes
+  width = Math.max(80, Math.min(300, width));
+  height = Math.max(100, Math.min(400, height));
+
+  return {
+    x: x,
+    y: y,
+    width: width,
+    height: height,
+    pose: currentPose,
+    scale: activeModel.scale.x,
+  };
+}
+
+function loadAndDisplayFBX(path, pose = {}, options = {}) {
   return new Promise((resolve) => {
     const loader = new FBXLoader();
 
@@ -64,6 +113,18 @@ function loadAndDisplayFBX(path, pose = {}) {
 
       mixer = new THREE.AnimationMixer(fbx);
       const action = mixer.clipAction(fbx.animations[0]);
+
+      // Control looping behavior - default is to loop, but death animations should play once
+      if (options.loop === false) {
+        action.setLoop(THREE.LoopOnce);
+        action.clampWhenFinished = true; // Keep the final pose when animation ends
+        console.log(
+          `🎬 Animation set to play once (no loop) and clamp on final frame`
+        );
+      } else {
+        action.setLoop(THREE.LoopRepeat); // Default looping behavior
+      }
+
       action.play();
 
       const duration = fbx.animations[0]?.duration || 2.5;
@@ -72,7 +133,7 @@ function loadAndDisplayFBX(path, pose = {}) {
   });
 }
 
-export { loadAndDisplayFBX };
+export { loadAndDisplayFBX, getCatMaskData };
 
 const scene = new THREE.Scene();
 // scene.background = new THREE.Color("black"); // Light gray background
@@ -180,8 +241,6 @@ function animate() {
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
   time += delta; // Increment time
-
-  
 
   if (activeModel && currentPose.includes("yellow_capo_wind")) {
     activeModel.position.x = Math.sin(time * 1) * 1; //slide left-right
