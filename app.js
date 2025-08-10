@@ -256,11 +256,12 @@ function updateButtonStatesForEvolution() {
     // Grey out hunger and sleep timer displays and show 'Stopped'
     if (hungerTimer) {
       hungerTimer.style.opacity = "0.3";
-      hungerTimer.textContent = "Hunger: G0DM0DE";
+      hungerTimer.style.color;
+      hungerTimer.textContent = "G0DM0DE";
     }
     if (sleepTimer) {
       sleepTimer.style.opacity = "0.3";
-      sleepTimer.textContent = "Sleep: G0DM0DE";
+      sleepTimer.textContent = "G0DM0DE";
     }
 
     // Stop hunger and sleep timers so they do not update in white stage
@@ -374,6 +375,20 @@ function checkForEvolution() {
         `⚡️⚡️⚡️ All care actions complete. Evolving from ${myPet.stage} (level ${myPet.evolutionLevel}) in 1 second after idle...`
       );
       evolutionTimeout = setTimeout(() => {
+        // Play evolve_effect_2.wav 500ms before pet evolution
+        setTimeout(() => {
+          const evolveEffectAudio = document.getElementById("evolve_effect_2");
+          if (evolveEffectAudio) {
+            evolveEffectAudio.currentTime = 0;
+            evolveEffectAudio.volume = 1.0;
+            evolveEffectAudio.play().catch((err) => {
+              console.log("🔇 evolve_effect_2.wav audio play() blocked:", err);
+            });
+          } else {
+            console.warn("⚠️ evolve_effect_2.wav audio element not found");
+          }
+        }, 1000); // 2 seconds before evolution (evolution in 3000ms)
+
         // 🔊 Play evolution sound synchronized with effect
         playEvolutionSound();
 
@@ -737,9 +752,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "white";
-    myPet.stage = "white"; // uncomment to start at white
-    currentStage = "white";
+    currentStage = "blue";
+    myPet.stage = "blue"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -1931,156 +1945,3 @@ trainButton.addEventListener("click", async () => {
     console.log("🔓 Train button unlocked - Action available");
   }
 });
-
-// ===================TESTING DEATH ANIMATIONS
-
-// document.addEventListener("keydown", (e) =>{
-//   const stage = deathTestMap[e.key];
-//   if (stage && animationConfig[stage]?.death) {
-//     currentStage = stage;
-//     console.log(`Testing DEATH: ${stage.toUpperCase()}`);
-//     loadAndDisplayFBX(
-//       animationConfig[stage].death.file,
-//       animationConfig[stage].death.pose
-//     );
-//   }
-// });
-
-// document.addEventListener("keydown", (e) => {
-//   if (e.key === "q") {
-//     console.log(`🧪 Previewing IDLE for ${currentStage.toUpperCase()}`);
-//     const idleAnim = animationConfig[currentStage]?.idle;
-//     if (idleAnim) {
-//       loadAndDisplayFBX(idleAnim.file, idleAnim.pose);
-//     }
-//   }
-// });
-
-// ===================IDLE AFTER TESTING
-//11
-// TEMPORARY: Press number keys 1–5 to test idleAfterFeed animations per color
-// document.addEventListener("keydown", (e) => {
-//   if (e.key === "1") {
-//     loadAndDisplayFBX(
-//       animationConfig["red"].idleAfterTrain.file,
-//       animationConfig["red"].idleAfterTrain.pose
-//     );
-//   }
-//   if (e.key === "2") {
-//     loadAndDisplayFBX(
-//       animationConfig["red"].idleAfterSleep.file,
-//       animationConfig["red"].idleAfterSleep.pose
-//     );
-//   }
-//   if (e.key === "3") {
-//     loadAndDisplayFBX(
-//       animationConfig["red"].idleAfterDance.file,
-//       animationConfig["red"].idleAfterDance.pose
-//     );
-//   }
-//   if (e.key === "4") {
-//     loadAndDisplayFBX(
-//       animationConfig["red"].idleAfterFeed.file,
-//       animationConfig["red"].idleAfterFeed.pose
-//     );
-//   }
-//   if (e.key === "5") {
-//     loadAndDisplayFBX(
-//       animationConfig["white"].idleAfterFeed.file,
-//       animationConfig["white"].idleAfterFeed.pose
-//     );
-//   }
-// });
-
-// // setting position for evolution. Comment out bottom functiona temporarily
-
-// //TEMP: Test Blue Idle
-// feedButton.addEventListener("click", () => {
-//   loadAndDisplayFBX(
-//     animationConfig["red"].feed.file,
-//     animationConfig["red"].feed.pose
-//   );
-// });
-
-// // TEMP: Test Yellow Idle
-// danceButton.addEventListener("click", () => {
-//   loadAndDisplayFBX(
-//     animationConfig["white"].dance.file,
-//     animationConfig["white"].dance.pose
-//   );
-// });
-
-// // TEMP: Test Red Idle
-// sleepButton.addEventListener("click", () => {
-//   loadAndDisplayFBX(
-//     animationConfig["red"].sleep.file,
-//     animationConfig["red"].sleep.pose
-//   );
-// });
-
-// // TEMP: Test White Idle
-// trainButton.addEventListener("click", () => {
-//   loadAndDisplayFBX(
-//     animationConfig["white"].train.file,
-//     animationConfig["white"].train.pose
-//   );
-// });
-
-// document.addEventListener("keydown", (e) => {
-//   if (e.key === "d") {
-//     console.log("🌀 Dissolve test triggered!");
-//     loadAndDisplayFBX("models/WHITE_emission_2.fbx", {
-//       scale: [0.001, 0.001, 0.001],
-//       position: [0, -1.6, -1],
-//       rotationY: 0,
-//     });
-//   }
-// });
-
-//=================TO USE IN GAME
-
-// async function playAnimation(stage, action) {
-//   const { file, pose } = animationConfig[stage][action];
-//   const duration = await loadAndDisplayFBX(file, pose);
-//   return duration;
-// }
-// feedButton.addEventListener("click", async () => {
-//   const duration = await playAnimation(currentStage, "feed");
-//   setTimeout(() => playAnimation(currentStage, "idleAfterFeed"), duration * 2);
-// });
-
-// danceButton.addEventListener("click", async () => {
-//   const danceList = danceMap[currentStage];
-//   const index = danceIndices[currentStage];
-//   const danceKey = danceList[index];
-
-//   danceIndices[currentStage] = (index + 1) % danceList.length;
-
-//   const duration = await playAnimation(currentStage, danceKey);
-//   let delay;
-//   // 💚 Force Green's Dance 2 to last 15 seconds
-//   if (currentStage === "green" && danceKey === "dance2") {
-//     delay = 20000;
-//   } else {
-//     delay = duration * 1000;
-//   }
-//   setTimeout(() => playAnimation(currentStage, "idleAfterDance"), duration);
-// });
-
-// sleepButton.addEventListener("click", async () => {
-//   const duration = await playAnimation(currentStage, "sleep");
-//   setTimeout(() => playAnimation(currentStage, "idleAfterSleep"), duration);
-// });
-
-// trainButton.addEventListener("click", async () => {
-//   const trainList = trainMap[currentStage];
-//   const index = trainIndices[currentStage];
-//   const trainKey = trainList[index];
-
-//   const duration = await playAnimation(currentStage, trainKey);
-//   // now play the next train animation
-//   // and set the next index for the next time
-//   trainIndices[currentStage] = (index + 1) % trainList.length;
-
-//   setTimeout(() => playAnimation(currentStage, "idleAfterTrain"), duration);
-// });
