@@ -498,15 +498,15 @@ const animationConfig = {
         rotationX: 0,
       },
     },
-    train2: {
-      file: "./white_spell.fbx",
-      pose: {
-       scale: [0.003, 0.003, 0.003],
-        position: [0, -1.5, -11],
-        rotationY: -Math.PI / -6,
-        rotationX: 0,
-      },
-    },
+    // train2: {
+    //   file: "./white_spell.fbx",
+    //   pose: {
+    //    scale: [0.003, 0.003, 0.003],
+    //     position: [0, -1.5, -11],
+    //     rotationY: -Math.PI / -6,
+    //     rotationX: 0,
+    //   },
+    // },
     idle: {
       file: "./models/SLOW_QI.fbx",
       pose: {

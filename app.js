@@ -737,9 +737,9 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
-    currentStage = "blue";
+    currentStage = "white";
+    myPet.stage = "white"; // uncomment to start at white
+    currentStage = "white";
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -928,10 +928,17 @@ function triggerTranscendence() {
   }
 
   // Trigger mystical transcendence effect with mandala glow
-  triggerMysticalTranscendence(1000); // Extended 16.5-second mystical effect (50% longer than original 11s)
+  // Mystical effect should disappear 3ms before beam ends (beam duration: 9000ms)
+  const mysticalDuration = 1000 + 9000 - 3; // 1000ms initial mystical + 9000ms beam - 3ms
+  triggerMysticalTranscendence(mysticalDuration);
 
-  // Show transcendence overlay immediately
-  showTranscendenceOverlay();
+  // Trigger intergalactic beam 1 second after transcendence
+  setTimeout(() => {
+    triggerIntergalacticBeam();
+  }, 1000);
+
+  // Show transcendence overlay immediately (if needed elsewhere)
+  // showTranscendenceOverlay();
 }
 
 // Fade out background music volume smoothly
@@ -1082,12 +1089,13 @@ function triggerIntergalacticBeam() {
     petContainer.style.opacity = "0";
   }
 
-  // Remove beam after animation completes
+  // Remove beam and show overlay after animation completes
   setTimeout(() => {
     if (beamElement && beamElement.parentNode) {
       beamElement.parentNode.removeChild(beamElement);
     }
     console.log("🌌⚡ Intergalactic beam effect completed and removed");
+    showWhiteTranscendenceOverlay();
   }, 9000); // Match beam animation duration
 }
 
@@ -1396,7 +1404,7 @@ function triggerGlitchStutter(duration = 120) {
   const glitchStutterAudio = document.getElementById("stutterMask");
   if (glitchStutterAudio) {
     glitchStutterAudio.currentTime = 0;
-    glitchStutterAudio.volume = .8;
+    glitchStutterAudio.volume = 0.8;
     glitchStutterAudio.play().catch((err) => {
       console.log("🔇 stutterMask.wav audio play() blocked:", err);
     });
@@ -1599,7 +1607,15 @@ async function playDanceAction(stage) {
     );
 
     const anim = animationConfig[stage][selectedAction];
-    const baseDurationMs = await loadAndDisplayFBX(anim.file, anim.pose);
+    let loopOptions = undefined;
+    if (stage === "white" && actionType === "train") {
+      loopOptions = { loop: false };
+    }
+    const baseDurationMs = await loadAndDisplayFBX(
+      anim.file,
+      anim.pose,
+      loopOptions
+    );
 
     // Both dance and dance2 loop 1 time
     const totalDurationMs = baseDurationMs * 1;
@@ -1686,7 +1702,7 @@ async function playActionThenShareIdle(actionType, stage) {
     if (["dance", "dance2"].includes(selectedAction)) {
       idleKey = "idleAfterDance";
     } else if (["train", "train2"].includes(selectedAction)) {
-      idleKey = "idleAfterTrain";
+      idleKey = stage === "white" ? "idle" : "idleAfterTrain";
     } else if (["sleep"].includes(selectedAction)) {
       idleKey = "idleAfterSleep";
     } else if (["feed"].includes(selectedAction)) {
@@ -1710,7 +1726,15 @@ async function playActionThenShareIdle(actionType, stage) {
             `🎬 Transitioning to ${idleKey} for ${currentActiveStage} stage (action was ${stage}) with glitch masking`
           );
           loadAndDisplayFBX(idleAnim.file, idleAnim.pose).then(() => {
-            // Resolve the promise after idle animation starts
+            // If this was train in white stage, trigger transcendence after 3s
+            if (
+              stage === "white" &&
+              ["train", "train2"].includes(selectedAction)
+            ) {
+              setTimeout(() => {
+                triggerTranscendence();
+              }, 3000);
+            }
             resolve(selectedAction);
           });
         } else {
