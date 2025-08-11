@@ -1,6 +1,5 @@
 import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
-import { mul } from "three/tsl";
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
@@ -753,7 +752,8 @@ function startGame() {
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
     currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    myPet.stage = "blue";
+    // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
