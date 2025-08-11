@@ -752,8 +752,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    currentStage = "white";
+    myPet.stage = "white"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -816,8 +816,11 @@ function resetGame() {
   whiteStageAnimationCount = 0; // Reset white stage animation counter  // Reset button states to initial (all enabled)
   updateButtonStatesForEvolution();
 
-  // 3. Hide Game Over overlay and reset its styling
-  gameOverOverlay.style.display = "none";
+  // 3. Hide overlays
+  const gameOverOverlay = document.getElementById("gameOverOverlay");
+  const winOverlay = document.getElementById("winOverlay");
+  if (gameOverOverlay) gameOverOverlay.style.display = "none";
+  if (winOverlay) winOverlay.style.display = "none";
 
   // Reset game over overlay styling to default
   const reasonElement = document.getElementById("gameOverReason");
@@ -978,31 +981,34 @@ function fadeOutBgMusic(targetVolume = 0.05, duration = 2000) {
 }
 
 function showTranscendenceOverlay() {
-  // Update the game over overlay for transcendence
-  const gameOverOverlay = document.getElementById("gameOverOverlay");
-  const reasonElement = document.getElementById("gameOverReason");
+  const winOverlay = document.getElementById("transcendenceOverlay");
+  if (!winOverlay) return;
+  winOverlay.style.display = "flex";
+  // Optional: move focus to the button for keyboard users
+  const btn = document.getElementById("playAgainBtn");
+  if (btn) btn.focus();
+}
 
-  if (gameOverOverlay && reasonElement) {
-    // Update the message for transcendence
-    reasonElement.textContent =
-      "🌟 TRANSCENDENCE ACHIEVED! 🌟\nYour pet has completed its evolutionary journey and ascended beyond the physical realm. The cycle is complete.";
-    reasonElement.style.color = "#ffffff";
-    reasonElement.style.textAlign = "center";
-    reasonElement.style.fontSize = "18px";
-    reasonElement.style.lineHeight = "1.6";
+function showGameOverOverlayLoss(reason) {
+  const overlay = document.getElementById("gameOverOverlay");
+  const titleEl = overlay?.querySelector("h2");
+  const reasonEl = document.getElementById("gameOverReason");
+  const btn = overlay?.querySelector(".game-over-button");
+  if (!overlay || !titleEl || !reasonEl || !btn) return;
 
-    // Add special styling for transcendence
-    gameOverOverlay.style.background =
-      "linear-gradient(45deg, #000011, #001122, #000033)";
-    gameOverOverlay.style.border = "2px solid #ffffff";
-    gameOverOverlay.style.boxShadow =
-      "0 0 50px #ffffff, inset 0 0 50px rgba(255,255,255,0.1)";
+  overlay.classList.remove("win");
 
-    // Show the overlay
-    gameOverOverlay.style.display = "flex";
+  titleEl.textContent = "GAME OVER";
+  titleEl.classList.add("glitch-text");
+  titleEl.classList.remove("gradient-text");
 
-    console.log("✨ Transcendence overlay displayed - Game completed!");
-  }
+  reasonEl.textContent = reason || "Your pet has perished...";
+  reasonEl.classList.remove("gradient-text");
+
+  btn.textContent = "TRY AGAIN";
+  btn.classList.remove("gradient-text");
+
+  overlay.style.display = "flex";
 }
 
 // ============ ⚪ WHITE STAGE TRANSCENDENCE WITH EVOLUTION EFFECTS ============ \\
@@ -1114,31 +1120,7 @@ function triggerIntergalacticBeam() {
 }
 
 function showWhiteTranscendenceOverlay() {
-  // Update the game over overlay for white transcendence
-  const gameOverOverlay = document.getElementById("gameOverOverlay");
-  const reasonElement = document.getElementById("gameOverReason");
-
-  if (gameOverOverlay && reasonElement) {
-    // Update the message for white transcendence
-    reasonElement.textContent =
-      "✨👁️✨ TRANSCENDENCE COMPLETE ✨👁️✨\nYour pet has mastered the art of care and transcended beyond existence. The ultimate evolution has been achieved through perfect balance.";
-    reasonElement.style.color = "#60daffff";
-    reasonElement.style.textAlign = "center";
-    reasonElement.style.fontSize = "25px";
-    reasonElement.style.lineHeight = "1.6";
-
-    // Add special styling for white transcendence
-    gameOverOverlay.style.background =
-      "radial-gradient(ellipse at center, #ffffff10, #000011, #001122)";
-    gameOverOverlay.style.border = "2px solid #ffffff";
-    gameOverOverlay.style.boxShadow =
-      "0 0 50px #ffffff, inset 0 0 50px rgba(255,255,255,0.1)";
-
-    // Show the overlay
-    gameOverOverlay.style.display = "flex";
-
-    console.log("⚪✨ White transcendence overlay displayed - Game completed!");
-  }
+  showTranscendenceOverlay();
 }
 
 // ============ ⚡ CYBERPUNK EVOLUTION EFFECT SYSTEM ============ \\
