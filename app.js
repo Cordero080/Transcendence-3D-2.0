@@ -752,8 +752,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "white";
-    myPet.stage = "white"; // uncomment to start at white
+    currentStage = "blue";
+    myPet.stage = "blue"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -1764,6 +1764,18 @@ overlayStartBtn.addEventListener("click", async () => {
     glitchEgg.style.display = "none";
     console.log("✨ Glitch egg hidden");
   }, 5000);
+});
+
+// Add event listener for Play Again button in winOverlay
+document.addEventListener("DOMContentLoaded", () => {
+  const playAgainBtn = document.querySelector("#winOverlay .game-over-button");
+  if (playAgainBtn) {
+    playAgainBtn.addEventListener("click", () => {
+      const winOverlay = document.getElementById("winOverlay");
+      if (winOverlay) winOverlay.style.display = "none";
+      resetGame();
+    });
+  }
 });
 
 feedButton.addEventListener("click", async () => {
