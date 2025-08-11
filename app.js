@@ -1,6 +1,5 @@
 import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
-
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
 // ⚠️ BALANCED EVOLUTION AND SURVIVAL SYSTEM ⚠️
