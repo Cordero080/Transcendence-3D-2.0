@@ -1,7 +1,6 @@
 import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
 
-
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
 // ⚠️ BALANCED EVOLUTION AND SURVIVAL SYSTEM ⚠️
@@ -80,7 +79,8 @@ const stageMap = {
   },
   4: {
     stage: "white",
-    message: "⚪ I am nearly formless and can feel my essence slowly traversing the physical realm",
+    message:
+      "⚪ I am nearly formless and can feel my essence slowly traversing the physical realm",
   },
 };
 const stageEmojis = {
@@ -300,7 +300,7 @@ function updateButtonStatesForEvolution() {
       danceButton.style.cursor = whiteStageCareActions.dance
         ? "not-allowed"
         : "pointer";
-      trainButton.style.cursor = whiteStageCareActions.train 
+      trainButton.style.cursor = whiteStageCareActions.train
         ? "not-allowed"
         : "pointer";
     }
@@ -1688,6 +1688,47 @@ async function playActionThenShareIdle(actionType, stage) {
     const anim = animationConfig[stage][selectedAction];
     const baseDurationMs = await loadAndDisplayFBX(anim.file, anim.pose);
 
+    // Play fighting_voice.wav at different times for train/train2 in blue stage
+    if (stage === "blue") {
+      if (selectedAction === "train") {
+        setTimeout(() => {
+          let audio = document.getElementById("fighting-voice");
+          if (!audio) {
+            audio = document.createElement("audio");
+            audio.id = "fighting-voice";
+            audio.src = "music/fighting_voice.wav";
+            audio.preload = "auto";
+            document.body.appendChild(audio);
+          }
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = 1.0;
+          audio.playbackRate = 3.7;
+          audio.play().catch((err) => {
+            console.log("🔇 fighting_voice.wav audio play() blocked:", err);
+          });
+        }, 2700);
+      } else if (selectedAction === "train2") {
+        setTimeout(() => {
+          let audio = document.getElementById("fighting-voice");
+          if (!audio) {
+            audio = document.createElement("audio");
+            audio.id = "fighting-voice";
+            audio.src = "music/fighting_voice.wav";
+            audio.preload = "auto";
+            document.body.appendChild(audio);
+          }
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = 1.0;
+          audio.playbackRate = 1.5;
+          audio.play().catch((err) => {
+            console.log("🔇 fighting_voice.wav audio play() blocked:", err);
+          });
+        }, 3200);
+      }
+    }
+
     //🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄
     // Define loop counts for different actions
     let loopCount = 1; // Default to 1 loop
@@ -1839,6 +1880,26 @@ danceButton.addEventListener("click", async () => {
   console.log("🔒 Dance button pressed - Action locked");
   try {
     myPet.dance();
+    // Play radiance.mp3 at 18s when dance or dance2 is triggered
+    let radianceAudio = document.getElementById("radiance-music");
+    if (!radianceAudio) {
+      radianceAudio = document.createElement("audio");
+      radianceAudio.id = "radiance-music";
+      radianceAudio.src = "music/radiance.mp3";
+      radianceAudio.preload = "auto";
+      document.body.appendChild(radianceAudio);
+    }
+    // Pause 3dc_theme when radiance.mp3 starts
+    let themeAudio = document.getElementById("bg-music");
+    if (themeAudio) {
+      themeAudio.pause();
+    }
+    radianceAudio.pause();
+    radianceAudio.currentTime = 18;
+  radianceAudio.volume = 0.15;
+    radianceAudio.play().catch((err) => {
+      console.log("🔇 radiance.mp3 audio play() blocked:", err);
+    });
     // Play stutterMask.wav 3ms before glitch stutter
     const stutterMaskAudio = document.getElementById("stutterMask");
     if (stutterMaskAudio) {
@@ -1856,6 +1917,16 @@ danceButton.addEventListener("click", async () => {
       buttonTracker.dance = true;
     } else if (selectedAction === "dance2") {
       buttonTracker.dance2 = true;
+    }
+    // After dance animation stops, discontinue radiance.mp3 and resume 3dc_theme
+    if (radianceAudio) {
+      radianceAudio.pause();
+      radianceAudio.currentTime = 0;
+    }
+    if (themeAudio) {
+      themeAudio.play().catch((err) => {
+        console.log("🔇 3dc_theme audio play() blocked:", err);
+      });
     }
     console.log(
       `💃 Dance action completed (${selectedAction}). Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
