@@ -1,51 +1,5 @@
-import { createState } from "./modules/state.js";
-import { initUI } from "./modules/ui.js";
-
-const {
-  evolutionAudio,
-  evolveEffectAudio,
-  highTechAudio,
-  gameOverOverlay,
-  reasonElement,
-  petChat,
-  hungerTimer,
-  funTimer,
-  sleepTimer,
-  powerTimer,
-  overlay,
-  overlayStartBtn,
-  resetBtn,
-  buttons,
-  btn,
-  menu,
-  container,
-  feedIndicator,
-  danceIndicator,
-  sleepIndicator,
-  powerIndicator,
-  glitchStutterOverlay,
-  glitchStutterOverlay2,
-  glitchDiv,
-  winOverlay,
-  bgMusic,
-  spaceEngineAudio,
-
-  // ⬇️ add these
-  feedButton,
-  danceButton,
-  sleepButton,
-  trainButton,
-  weakButton,
-} = initUI();
-
-const state = createState();
-window._state = state;
-// optional: lets you inspect it in DevTools
-
 import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
-
-console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
@@ -552,7 +506,36 @@ let slowedTimers = {
 };
 
 /*----- Cached Element References  -----*/
-
+const gameOverOverlay = document.getElementById("gameOverOverlay");
+const reasonElement = document.getElementById("gameOverReason");
+const petChat = document.querySelector(".infoBox_petChat");
+const hungerTimer = document.getElementById("hungerTimer");
+const funTimer = document.getElementById("funTimer");
+const sleepTimer = document.getElementById("sleepTimer");
+const powerTimer = document.getElementById("powerTimer");
+const overlayTexts = document.querySelectorAll(
+  ".overlay-content h2, .overlay-content p"
+);
+const overlay = document.getElementById("pageOverlay");
+const overlayStartBtn = document.getElementById("overlayStartButton");
+const regularStartBtn = document.querySelector(
+  ".startButtonContainer .StartButton"
+);
+const resetBtn = document.querySelector(".ResetButton");
+const buttons = document.querySelectorAll(".Buttons");
+const feedButton = buttons[0];
+const danceButton = buttons[1];
+const sleepButton = buttons[2];
+const trainButton = buttons[3];
+const btn = document.getElementById("infoDropdownBtn");
+const menu = document.getElementById("infoDropdownMenu");
+const container = document.querySelector(".dropdown-container");
+const feedIndicator = document.querySelector("#hungerTimer");
+const danceIndicator = document.querySelector("#funTimer");
+const sleepIndicator = document.querySelector("#sleepTimer");
+const powerIndicator = document.querySelector("#powerTimer");
+const glitchStutterOverlay = document.getElementById("glitchStutterOverlay");
+const glitchStutterOverlay2 = document.getElementById("glitchStutterOverlay2");
 // *---------------CACHED ELEMENTS ---------------------* \\
 
 // 🧬 Transcendence Pet Class
@@ -1913,7 +1896,7 @@ danceButton.addEventListener("click", async () => {
     }
     radianceAudio.pause();
     radianceAudio.currentTime = 18;
-    radianceAudio.volume = 0.15;
+  radianceAudio.volume = 0.15;
     radianceAudio.play().catch((err) => {
       console.log("🔇 radiance.mp3 audio play() blocked:", err);
     });
