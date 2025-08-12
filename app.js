@@ -1,6 +1,6 @@
 import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
-import { mul } from "three/tsl";
+
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
@@ -61,8 +61,8 @@ console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
 const gameSettings = {
   ageInterval: 20000,
-  baseDecayRate: 14000,
-  fastDecayRate: 7000,
+  baseDecayRate: 20000,
+  fastDecayRate: 20000,
 };
 const stageMap = {
   0: {
@@ -71,7 +71,7 @@ const stageMap = {
   },
   1: {
     stage: "yellow",
-    message: " Yellow form! The wise grow joy under their feet!",
+    message: "They call me MELLOW YELLOW!",
   },
   2: { stage: "green", message: "Green form! Growing stronger!" },
   3: {
@@ -80,11 +80,11 @@ const stageMap = {
   },
   4: {
     stage: "white",
-    message: "⚪ I have transcended to White Form! Ready for the beyond...",
+    message: "⚪ I am nearly formless and can feel my essence slowly traversing the physical realm",
   },
 };
 const stageEmojis = {
-  blue: "🔵",
+  blue: "⚡️",
   yellow: "🟡",
   green: "🟢",
   red: "🔴",
@@ -103,16 +103,16 @@ const STAT_TYPES = ["hunger", "fun", "sleep", "power"];
 const danceMap = {
   blue: ["dance", "dance2"],
   yellow: ["dance", "dance2"],
-  green: ["dance", "dance2", "dance3"],
-  red: ["dance", "dance2", "dance3"],
-  white: ["dance", "dance2", "dance3", "dance4"],
+  green: ["dance", "dance2"],
+  red: ["dance", "dance2"],
+  white: ["dance", "dance2"],
 };
 const trainMap = {
   blue: ["train", "train2"],
   yellow: ["train", "train2"],
   green: ["train", "train2"],
-  red: ["train", "train2", "train3"],
-  white: ["train", "train2", "train3", "train4"],
+  red: ["train", "train2"],
+  white: ["train", "train2", "train3"],
 };
 
 // ==========KEEPS TRACK OF EACH MOVE YOUR ON FOR EACH STAGE======= \\
@@ -300,7 +300,7 @@ function updateButtonStatesForEvolution() {
       danceButton.style.cursor = whiteStageCareActions.dance
         ? "not-allowed"
         : "pointer";
-      trainButton.style.cursor = whiteStageCareActions.train
+      trainButton.style.cursor = whiteStageCareActions.train 
         ? "not-allowed"
         : "pointer";
     }
@@ -609,6 +609,12 @@ class Pet {
 
       this.age += 5;
       console.log(`🐱 ${this.name} has aged to ${this.age} years old`);
+      // Show stageMap message in petChat for the new stage
+      if (petChat && stageMap[this.evolutionLevel]) {
+        petChat.textContent = `${stageEmojis[this.stage]} ${this.name}${
+          stageMap[this.evolutionLevel].message
+        }`;
+      }
       this.render();
     } else {
       console.log(
@@ -672,7 +678,8 @@ class Pet {
     this.render(); // UPDATE FINAL STAT DISPLAY
   }
 
-  // ⏳ Stat decay
+  // ⏳ Stat decay //
+
   createStatTimer(type, interval = 7000) {
     const timer = setInterval(() => {
       if (type === "hunger") this.hunger++;
@@ -727,9 +734,16 @@ class Pet {
       powerTimer.textContent = `Power: ${this.power}`;
     }
 
-    petChat.textContent = `${stageEmojis[this.stage]} ${
-      this.name
-    } is evolving...`;
+    // Show stageMap message in petChat for the current stage
+    if (petChat && stageMap[this.evolutionLevel]) {
+      petChat.textContent = `${stageEmojis[this.stage]} ${this.name}${
+        stageMap[this.evolutionLevel].message
+      }`;
+    } else {
+      petChat.textContent = `${stageEmojis[this.stage]} ${
+        this.name
+      } is evolving...`;
+    }
   }
 }
 
@@ -748,7 +762,7 @@ function hideGlitchEgg() {
 
 function startGame() {
   return new Promise((resolve) => {
-    myPet = new Pet("Coco");
+    myPet = new Pet("Coco:");
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
