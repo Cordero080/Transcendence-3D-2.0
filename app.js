@@ -783,14 +783,32 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    currentStage = "white";
+    myPet.stage = "white"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
       animationConfig[currentStage].idle.file,
       animationConfig[currentStage].idle.pose
     ).then(() => {
+      // Play white_gong.mp3 2.5 seconds into white idle animation
+      if (currentStage === "white") {
+        setTimeout(() => {
+          let whiteGongAudio = document.getElementById("white-gong");
+          if (!whiteGongAudio) {
+            whiteGongAudio = document.createElement("audio");
+            whiteGongAudio.id = "white-gong";
+            whiteGongAudio.src = "music/white_gong.mp3";
+            whiteGongAudio.preload = "auto";
+            document.body.appendChild(whiteGongAudio);
+          }
+          whiteGongAudio.currentTime = 0;
+          whiteGongAudio.volume = 1.0;
+          whiteGongAudio.play().catch((err) => {
+            console.log("🔇 white_gong.mp3 audio play() blocked:", err);
+          });
+        }, 2200);
+      }
       resetButtonTracker();
       gameStarted = true;
 
@@ -911,10 +929,25 @@ function startWhiteEmissionTimer() {
             "✨ White emission animation completed - TRANSCENDENCE ACHIEVED!"
           );
 
-          // Trigger transcendence ending after emission completes
+          // Play white_shift.mp3 3 seconds before transcendence
           setTimeout(() => {
-            triggerTranscendence();
-          }, 1000); // Brief pause before transcendence
+            let whiteShiftAudio = document.getElementById("white-shift");
+            if (!whiteShiftAudio) {
+              whiteShiftAudio = document.createElement("audio");
+              whiteShiftAudio.id = "white-shift";
+              whiteShiftAudio.src = "music/white_shift.mp3";
+              whiteShiftAudio.preload = "auto";
+              document.body.appendChild(whiteShiftAudio);
+            }
+            whiteShiftAudio.currentTime = 0;
+            whiteShiftAudio.volume = 0.6;
+            whiteShiftAudio.play().catch((err) => {
+              console.log("🔇 white_shift.mp3 audio play() blocked:", err);
+            });
+            setTimeout(() => {
+              triggerTranscendence();
+            }, 3000); // 3 seconds after white_shift
+          }, 1000); // Brief pause before white emission ends
         });
       }
     }
@@ -1799,6 +1832,20 @@ async function playActionThenShareIdle(actionType, stage) {
               stage === "white" &&
               ["train", "train2"].includes(selectedAction)
             ) {
+              // Play white_shift.mp3 3 seconds before transcendence
+              let whiteShiftAudio = document.getElementById("white-shift");
+              if (!whiteShiftAudio) {
+                whiteShiftAudio = document.createElement("audio");
+                whiteShiftAudio.id = "white-shift";
+                whiteShiftAudio.src = "music/white_shift.mp3";
+                whiteShiftAudio.preload = "auto";
+                document.body.appendChild(whiteShiftAudio);
+              }
+              whiteShiftAudio.currentTime = 0;
+              whiteShiftAudio.volume = 0.2;
+              whiteShiftAudio.play().catch((err) => {
+                console.log("🔇 white_shift.mp3 audio play() blocked:", err);
+              });
               setTimeout(() => {
                 triggerTranscendence();
               }, 3000);

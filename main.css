@@ -1,3 +1,140 @@
+/* === Win/Transcendence Overlay FINAL UPDATES === */
+.transcendence-overlay-content {
+  width: min(90vw, 1066px);
+  padding: clamp(23px, 3.9vw, 42px);
+  border-radius: 22px;
+}
+#transcendenceOverlay {
+  /* keep previous restored visible style */
+}
+.btn-play-again {
+  margin-top: 32px;
+  border: 2px solid #ff2bd3;
+  background: #111218;
+  color: #ff2bd3;
+  border-radius: 10px;
+  padding: 16px 28.6px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-size: clamp(18.2px, 2.86vw, 23.4px);
+  transition: background 200ms ease;
+}
+.btn-play-again:hover,
+.btn-play-again:active {
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+.btn-play-again .gradient-text {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientMove 6s ease infinite;
+  font: inherit;
+  letter-spacing: inherit;
+  text-shadow: none;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (max-width: 420px) {
+  .transcendence-overlay-content { gap: 16px; padding: 20.8px; }
+}
+/* === RESTORED OLD WIN/TRANSCENDENCE OVERLAY STYLING === */
+.game-over-overlay,
+#transcendenceOverlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2147483647;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+.game-over-overlay.show,
+#transcendenceOverlay.show {
+  display: flex;
+  pointer-events: auto;
+}
+.game-over-content,
+.transcendence-overlay-content {
+  position: relative;
+  width: min(820px, 92vw);
+  padding: 36px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #0b0e14e8, #0b0e14fa);
+  border: 3px solid #ff2bd3;
+  box-shadow:
+    0 0 0 1px rgba(255,43,214,.35) inset,
+    0 18px 60px rgba(0,0,0,.7),
+    0 0 28px rgba(255,43,214,.35),
+    0 0 80px rgba(255,43,214,.35);
+  text-align: center;
+  overflow: hidden;
+}
+.game-over-content h1,
+.game-over-content h2,
+.game-over-content p,
+.game-over-button,
+.game-over-buttons,
+#transcendence,
+#winReason,
+.transcendence-title,
+.transcendence-message,
+.transcendence-overlay-content h1,
+.transcendence-overlay-content h2,
+.transcendence-overlay-content p,
+.btn-play-again {
+  background: linear-gradient(90deg,
+    oklch(71.384% 0.20314 353.227),
+    oklch(61.9% 0.19284 258.775),
+    oklch(68.299% 0.18562 299.899),
+    oklch(85.825% 0.23495 148.424),
+    oklch(79.49% 0.14271 62.993),
+    oklch(73.033% 0.19383 352.633)
+  );
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientShift 6s ease-in-out infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.game-over-button,
+.btn-play-again {
+  border: 3px solid #ff2bd3;
+  background: rgba(0,0,0,.35);
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: transform .12s, box-shadow .2s;
+}
+.game-over-button:hover,
+.btn-play-again:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(255,43,214,.6) inset,
+    0 16px 44px rgba(255,43,214,.28),
+    0 0 32px rgba(255,43,214,.45);
+}
+.game-over-button:active,
+.btn-play-again:active {
+  transform: translateY(0);
+}
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Honk&family=Monoton&family=Poiret+One&family=Splash&family=Tektur:wght@400..900&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');

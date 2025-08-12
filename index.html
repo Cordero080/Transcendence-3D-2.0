@@ -170,7 +170,7 @@
 
       <!-- scaling root end -->
       <!-- Game Over Overlay -->
-       
+
       <div id="gameOverOverlay" class="game-over-overlay" style="display: none">
         <div class="game-over-content">
           <h2 class="glitch-text">GAME OVER</h2>
@@ -183,12 +183,44 @@
         </div>
       </div>
 
+      <!-- Win / Transcendence Overlay -->
+      <div id="winOverlay" class="game-over-overlay" style="display: none">
+        <div class="game-over-content">
+          <h2 id="transcendence">TRANSCENDENCE</h2>
+          <p id="winReason">Your pet has transcended...</p>
+          <div class="game-over-buttons">
+            <button class="game-over-button" onclick="resetGame()">
+              PLAY AGAIN
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Transcendence Win Overlay -->
+      <div id="transcendenceOverlay" class="overlay" style="display: none">
+        <div class="transcendence-overlay-content">
+          <h2 class="transcendence-title gradient-text">TRANSCENDENCE</h2>
+          <p class="transcendence-message gradient-text">
+            ✨👁 TRANSCENDENCE COMPLETE 👁✨<br>
+            Your pet has mastered the art of care and transcended beyond existence.<br>
+            The ultimate evolution has been achieved through perfect balance.
+          </p>
+          <button
+            id="playAgainBtn"
+            class="btn-play-again"
+            onclick="resetGame()"
+          >
+            <span class="gradient-text">PLAY AGAIN</span>
+          </button>
+        </div>
+      </div>
+
       <div class="startButtonContainer">
         <button class="StartButton">START</button>
         <button class="ResetButton">RESET</button>
         <!-- scaling root end -->
       </div>
     </div>
-  <audio id="stutterMask" src="music/stutterMask.wav" preload="auto"></audio>
+    <audio id="stutterMask" src="music/stutterMask.wav" preload="auto"></audio>
   </body>
 </html>
