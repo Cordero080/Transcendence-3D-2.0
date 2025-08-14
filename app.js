@@ -49,60 +49,6 @@ console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
-// ⚠️ BALANCED EVOLUTION AND SURVIVAL SYSTEM ⚠️
-// - Game over triggers when: hunger ≥ 10, fun ≤ 0, sleep ≥ 10, power >= 0
-// - Evolution: Press all 3 buttons → wait 5 seconds → evolve
-// - Stat decay: Base 7s, Fast 2s (gives time for evolution)
-// - Balance: Manage stats while working toward evolution!
-
-// *-------------------------METHODS ----------------*  \\
-//   - Inside petClss (what pet can do)
-//   - Only availabe after you do myPet= new Pet("name")
-
-// +-------------------------+
-// |       Pet Class         |   ← 🐾 Controls PET behavior and state
-// +-------------------------+
-// | - name                 |
-// | - age                  |   ← Tracks stats
-// | - hunger               |
-// | - fun                  |
-// | - sleep
-// | - power       |
-// | - evolutionStage       |
-// +-------------------------+
-// | 🧠 Methods:              |
-// |  • feed()              | ← Pet eats
-// |  • dance()             | ← Pet has fun
-// |  • sleep()             | ← Pet rests
-// |  • render()            | ← Updates UI
-// |  • createStatTimer()   | ← Starts stat decay
-// |  • stopAllTimers()     | ← Stops stat decay
-// |  • triggerGameOver()   | ← Ends the game
-// |  • evolveToNextStage() | ← Evolves pet
-// +-------------------------+
-// *---------------------FUNCTIONS-----------------------* \\
-//  Run indipendentally from Pet Class(outside petClass). Affect game logic or interface globally------- *
-// +------------------------------+
-// |     Global Functions         |   ← 🎮 Controls GAME
-// +------------------------------+
-// |  • startGame()              | ← Sets up new pet and timers
-// |  • resetGame()              | ← Clears everything and restarts
-// |  • updatePetVisual(stage)   | ← Changes how pet looks
-// |  • updateTimers()           | ← Updates hunger/fun/sleep on screen
-// |  • Event Listeners          | ← Detects clicks (feed, dance, sleep)
-// |  • setInterval (age ticker) | ← Tracks cosmetic age
-// +------------------------------+
-
-/*-------------- Constants -------------*/
-// DEATH MAP TESTS
-// const deathTestMap = {
-//   "1": "blue",
-//   "2": "yellow",
-//   "3": "green",
-//   "4": "red",
-//   "5": "white",
-
-// }
 
 const gameSettings = {
   ageInterval: 20000,
@@ -839,6 +785,7 @@ function startGame() {
 }
 
 function resetGame() {
+  console.log("Game reset, stats are reset to 0");
   // 1. Clear all timers
   clearInterval(statTimers.hunger);
   clearInterval(statTimers.fun);
@@ -1886,7 +1833,31 @@ overlayStartBtn.addEventListener("click", async () => {
 });
 
 // Add event listener for Play Again button in winOverlay
+
+// Start Game Overlay logic
 document.addEventListener("DOMContentLoaded", () => {
+  const overlayStartBtn = document.getElementById("overlayStartButton");
+  const pageOverlay = document.getElementById("pageOverlay");
+  const startBtn = document.querySelector(".StartButton");
+
+  // Hide overlay only when overlayStartButton is clicked
+  if (overlayStartBtn && pageOverlay) {
+    overlayStartBtn.addEventListener("click", () => {
+      pageOverlay.style.display = "none";
+    });
+  }
+
+  // Safeguard: prevent duplicate timers
+  let gameStarted = false;
+  if (startBtn) {
+    startBtn.addEventListener("click", async () => {
+      if (gameStarted) return;
+      gameStarted = true;
+      await startGame();
+    });
+  }
+
+  // Play Again button logic (unchanged)
   const playAgainBtn = document.querySelector("#winOverlay .game-over-button");
   if (playAgainBtn) {
     playAgainBtn.addEventListener("click", () => {
