@@ -49,7 +49,6 @@ console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
-
 const gameSettings = {
   ageInterval: 20000,
   baseDecayRate: 20000,
@@ -729,32 +728,15 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "white";
-    myPet.stage = "white"; // uncomment to start at white
+    currentStage = "blue";
+    myPet.stage = "blue"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
       animationConfig[currentStage].idle.file,
       animationConfig[currentStage].idle.pose
     ).then(() => {
-      // Play white_gong.mp3 2.5 seconds into white idle animation
-      if (currentStage === "white") {
-        setTimeout(() => {
-          let whiteGongAudio = document.getElementById("white-gong");
-          if (!whiteGongAudio) {
-            whiteGongAudio = document.createElement("audio");
-            whiteGongAudio.id = "white-gong";
-            whiteGongAudio.src = "music/white_gong.mp3";
-            whiteGongAudio.preload = "auto";
-            document.body.appendChild(whiteGongAudio);
-          }
-          whiteGongAudio.currentTime = 0;
-          whiteGongAudio.volume = 1.0;
-          whiteGongAudio.play().catch((err) => {
-            console.log("🔇 white_gong.mp3 audio play() blocked:", err);
-          });
-        }, 2200);
-      }
+      // (white_gong.mp3 is now only played after train in white stage)
       resetButtonTracker();
       gameStarted = true;
 
@@ -1136,11 +1118,11 @@ function showWhiteTranscendenceOverlay() {
 
 // ============ ⚡ CYBERPUNK EVOLUTION EFFECT SYSTEM ============ \\
 function triggerCyberpunkEvolutionEffect(duration = 6000) {
-  // Play stutterMask.wav whenever glitch stutter is triggered
+  // Do NOT play stutterMask.wav during evolution
   const stutterMaskAudio = document.getElementById("stutterMask");
-  if (stutterMaskAudio) {
+  if (stutterMaskAudio && !evolutionInProgress) {
     stutterMaskAudio.currentTime = 0;
-    stutterMaskAudio.volume = 1.0;
+    stutterMaskAudio.volume = 0.5;
     stutterMaskAudio.play().catch((err) => {
       console.log("🔇 stutterMask.wav audio play() blocked:", err);
     });
@@ -1411,7 +1393,7 @@ function triggerGlitchStutter(duration = 120) {
   const glitchStutterAudio = document.getElementById("stutterMask");
   if (glitchStutterAudio) {
     glitchStutterAudio.currentTime = 0;
-    glitchStutterAudio.volume = 0.8;
+    glitchStutterAudio.volume = 0.3;
     glitchStutterAudio.play().catch((err) => {
       console.log("🔇 stutterMask.wav audio play() blocked:", err);
     });
@@ -1699,7 +1681,7 @@ async function playActionThenShareIdle(actionType, stage) {
           }
           audio.pause();
           audio.currentTime = 0;
-          audio.volume = 1.0;
+          audio.volume = 0.5;
           audio.playbackRate = 3.7;
           audio.play().catch((err) => {
             console.log("🔇 fighting_voice.wav audio play() blocked:", err);
@@ -1717,7 +1699,7 @@ async function playActionThenShareIdle(actionType, stage) {
           }
           audio.pause();
           audio.currentTime = 0;
-          audio.volume = 1.0;
+          audio.volume = 0.5;
           audio.playbackRate = 1.5;
           audio.play().catch((err) => {
             console.log("🔇 fighting_voice.wav audio play() blocked:", err);
@@ -2038,6 +2020,26 @@ trainButton.addEventListener("click", async () => {
     await new Promise((resolve) => setTimeout(resolve, 3));
     triggerGlitchStutter(90);
     await new Promise((resolve) => setTimeout(resolve, 20));
+
+    // Only in white stage: play white_gong.mp3 2.5s after train button
+    if (currentStage === "white") {
+      setTimeout(() => {
+        let whiteGongAudio = document.getElementById("white-gong");
+        if (!whiteGongAudio) {
+          whiteGongAudio = document.createElement("audio");
+          whiteGongAudio.id = "white-gong";
+          whiteGongAudio.src = "music/white_gong.mp3";
+          whiteGongAudio.preload = "auto";
+          document.body.appendChild(whiteGongAudio);
+        }
+        whiteGongAudio.currentTime = 0;
+        whiteGongAudio.volume = 1.0;
+        whiteGongAudio.play().catch((err) => {
+          console.log("🔇 white_gong.mp3 audio play() blocked:", err);
+        });
+      }, 1250);
+    }
+
     const selectedAction = await playActionThenShareIdle("train", currentStage);
     if (selectedAction === "train") {
       buttonTracker.train = true;
