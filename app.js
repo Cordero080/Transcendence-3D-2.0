@@ -1,6 +1,10 @@
 import { createState } from "./modules/state.js";
 import { initUI } from "./modules/ui.js";
-import { loadAndDisplayFBX, clearActiveModel } from "./main-test.js";
+import {
+  loadAndDisplayFBX,
+  clearActiveModel,
+  hasActiveModel,
+} from "./main-test.js";
 import { getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
 
@@ -137,6 +141,7 @@ let actionInProgress = false;
 let careCycles = 0;
 let gameOverTriggered = false;
 let gameOverTimeout = null;
+let whiteEmissionTimer = null;
 
 // Evolution System Variables
 let buttonTracker = {
@@ -780,29 +785,67 @@ function startGame() {
     });
   });
 }
+// Restores or recreates #pet-container and makes sure it's visible
+function restorePetContainer() {
+  let pc = document.getElementById("pet-container");
+  if (!pc) {
+    pc = document.createElement("div");
+    pc.id = "pet-container";
+    // ⬇️ change this mount if your HTML uses a different wrapper
+    const mount =
+      document.getElementById("game-area") ||
+      document.getElementById("stage") ||
+      document.body;
+    mount.prepend(pc);
+  }
+  pc.classList.remove("hidden", "removed", "fade-out", "invisible");
+  pc.style.display = ""; // let CSS control layout
+  pc.style.visibility = "visible";
+  pc.style.opacity = "1";
+  pc.style.pointerEvents = "auto";
+  return pc;
+}
 function resetGame() {
   console.log("resetGame() called");
 
-  // ── A) Overlays: hide + safety ───────────────────────────────────────────────
+  // ── A) Overlays: hide safely ────────────────────────────────────────────────
   const gameOverOverlay = document.getElementById("gameOverOverlay");
-  const winOverlay = document.getElementById("winOverlay");
   const transcendenceOverlay = document.getElementById("transcendenceOverlay");
+  const winOverlay = document.getElementById("winOverlay");
 
-  // normal hide
-  if (gameOverOverlay) gameOverOverlay.style.display = "none";
-  if (winOverlay) winOverlay.style.display = "none";
-  if (transcendenceOverlay) transcendenceOverlay.style.display = "none";
-
-  // safety: strip classes + neutralize any stubborn CSS
-  [gameOverOverlay, winOverlay, transcendenceOverlay].forEach((el) => {
+  [gameOverOverlay, transcendenceOverlay, winOverlay].forEach((el) => {
     if (!el) return;
+    el.style.display = "none";
     el.classList.remove("show", "active", "visible");
     el.style.visibility = "hidden";
     el.style.opacity = "0";
     el.style.pointerEvents = "none";
   });
 
-  // ── B) Stop/clear timers & timeouts ──────────────────────────────────────────
+  // ── B) ⭐ Ensure the render target exists & is visible again ─────────────────
+  const pc = restorePetContainer(); // <- your helper, exactly as you posted
+  console.log("[reset] pet-container present:", !!pc);
+
+  // If you added ensureRendererMounted() in main-test.js, re-attach the canvas
+  try {
+    if (typeof ensureRendererMounted === "function") {
+      const mounted = ensureRendererMounted();
+      console.log("[reset] renderer re-mounted to pet-container:", mounted);
+    } else {
+      // Fallback: if the canvas exists globally and isn't inside #pet-container, append it
+      const canvas =
+        document.querySelector("#pet-container canvas") ||
+        window?.renderer?.domElement;
+      if (canvas && !pc.contains(canvas)) {
+        pc.appendChild(canvas);
+        console.log("[reset] renderer canvas appended via fallback");
+      }
+    }
+  } catch (e) {
+    console.warn("[reset] ensureRendererMounted not available:", e);
+  }
+
+  // ── C) Stop/clear timers & timeouts ─────────────────────────────────────────
   try {
     clearInterval(statTimers.hunger);
     statTimers.hunger = null;
@@ -819,13 +862,11 @@ function resetGame() {
     clearInterval(statTimers.power);
     statTimers.power = null;
   } catch {}
-
   try {
     clearInterval(myPet?.ageInterval);
-    myPet && (myPet.ageInterval = null);
+    if (myPet) myPet.ageInterval = null;
   } catch {}
 
-  // app-level timeouts you’ve been using
   try {
     clearTimeout(evolutionTimeout);
     evolutionTimeout = null;
@@ -834,16 +875,12 @@ function resetGame() {
     clearTimeout(currentAnimationTimer);
     currentAnimationTimer = null;
   } catch {}
-
-  // ✅ clear any pending GAME-OVER reveal from a prior run
   try {
     if (gameOverTimeout) {
       clearTimeout(gameOverTimeout);
       gameOverTimeout = null;
     }
   } catch {}
-
-  // white-stage emission/transcendence timers (if present)
   try {
     stopWhiteEmissionTimer && stopWhiteEmissionTimer();
   } catch {}
@@ -851,44 +888,22 @@ function resetGame() {
     clearTimeout(whiteStageTranscendenceTimeout);
     whiteStageTranscendenceTimeout = null;
   } catch {}
-
-  // also stop any stat timers held on the pet instance
   try {
     myPet?.stopAllTimers?.();
   } catch {}
 
-  // ── C) Remove previous 3D model & stop old animations ────────────────────────
+  // ── D) Remove previous 3D model & stop old animations ───────────────────────
   try {
     myPet?.mixer?.stopAllAction?.();
-  } catch {} // stop any leftover actions
-
-  // Prefer a helper from main-test.js if you have one:
+  } catch {}
   try {
-    if (typeof window.clearActiveModel === "function") {
-      window.clearActiveModel();
-    } else if (window.currentModel && window.scene) {
-      // generic fallback: remove and dispose the last model we kept
-      window.scene.remove(window.currentModel);
-      try {
-        window.currentModel.traverse((o) => {
-          if (o.isMesh) {
-            o.geometry?.dispose?.();
-            if (o.material?.map) o.material.map.dispose?.();
-            o.material?.dispose?.();
-          }
-        });
-      } catch {}
-      window.currentModel = null;
-    }
-  } catch (e) {
-    console.warn("No active model to clear (ok).");
-  }
+    clearActiveModel && clearActiveModel();
+  } catch {}
 
-  // ── D) Reset core state ────────────────────────────────────────────────
-  clearActiveModel();
-
+  // ── E) Reset core state ─────────────────────────────────────────────────────
   myPet = new Pet("Coco");
   currentStage = "blue";
+  myPet.stage = "blue";
   careCycles = 0;
   resetButtonTracker();
   gameOverTriggered = false;
@@ -898,7 +913,7 @@ function resetGame() {
   whiteStageAnimationCount = 0;
   updateButtonStatesForEvolution();
 
-  // Reset Game Over overlay styles (if you had customized them)
+  // Optional: clear custom styles on the Game Over overlay
   const reasonElement = document.getElementById("gameOverReason");
   if (reasonElement) {
     reasonElement.style.color = "";
@@ -912,15 +927,18 @@ function resetGame() {
     gameOverOverlay.style.boxShadow = "";
   }
 
-  // ── E) Load Blue idle (and capture the model if your loader returns it) ──────
-  // If your loader exposes a global like window.currentModel internally, great.
-  // Otherwise you can modify loadAndDisplayFBX to return the model and save it.
-  loadAndDisplayFBX(
-    animationConfig[currentStage].idle.file,
-    animationConfig[currentStage].idle.pose
-  );
+  // ── F) Load Blue idle with your config (no pose/scale changes) ──────────────
+  try {
+    console.log("[reset] Loading Blue idle…");
+    loadAndDisplayFBX(
+      animationConfig[currentStage].idle.file,
+      animationConfig[currentStage].idle.pose
+    );
+  } catch (err) {
+    console.error("❌ Failed to start Blue idle load:", err);
+  }
 
-  // ── F) Restart stat timers ───────────────────────────────────────────────────
+  // ── G) Restart stat timers & refresh UI ─────────────────────────────────────
   statTimers.hunger = myPet.createStatTimer(
     "hunger",
     gameSettings.baseDecayRate
@@ -929,63 +947,17 @@ function resetGame() {
   statTimers.sleep = myPet.createStatTimer("sleep", gameSettings.baseDecayRate);
   statTimers.power = myPet.createStatTimer("power", gameSettings.baseDecayRate);
 
-  // ── G) Refresh UI ────────────────────────────────────────────────────────────
   myPet.render();
-}
+  gameStarted = true;
+  actionInProgress = false;
 
-// ============ ⚪ WHITE EMISSION EFFECT SYSTEM ============ \\
-let whiteEmissionTimer = null;
-
-function startWhiteEmissionTimer() {
-  // Clear any existing timer
-  if (whiteEmissionTimer) {
-    clearTimeout(whiteEmissionTimer);
-  }
-
-  // Set timer for 8 seconds after white idle starts
-  whiteEmissionTimer = setTimeout(() => {
-    if (myPet && myPet.stage === "white" && !actionInProgress) {
-      console.log(
-        "✨⚪ Triggering white emission animation after 8 seconds of idle"
-      );
-
-      // Load the emission animation
-      const emissionAnim = animationConfig.white.emission;
-      if (emissionAnim) {
-        loadAndDisplayFBX(emissionAnim.file, emissionAnim.pose).then(() => {
-          console.log(
-            "✨ White emission animation completed - TRANSCENDENCE ACHIEVED!"
-          );
-
-          // Play white_shift.mp3 3 seconds before transcendence
-          setTimeout(() => {
-            let whiteShiftAudio = document.getElementById("white-shift");
-            if (!whiteShiftAudio) {
-              whiteShiftAudio = document.createElement("audio");
-              whiteShiftAudio.id = "white-shift";
-              whiteShiftAudio.src = "music/white_shift.mp3";
-              whiteShiftAudio.preload = "auto";
-              document.body.appendChild(whiteShiftAudio);
-            }
-            whiteShiftAudio.currentTime = 0;
-            whiteShiftAudio.volume = 0.6;
-            whiteShiftAudio.play().catch((err) => {
-              console.log("🔇 white_shift.mp3 audio play() blocked:", err);
-            });
-            setTimeout(() => {
-              triggerTranscendence();
-            }, 3000); // 3 seconds after white_shift
-          }, 1000); // Brief pause before white emission ends
-        });
-      }
-    }
-  }, 8000); // 8 seconds
+  console.log("resetGame() complete.");
 }
 
 function stopWhiteEmissionTimer() {
   if (whiteEmissionTimer) {
     clearTimeout(whiteEmissionTimer);
-    whiteEmissionTimer = null;
+
     console.log("⏹️ White emission timer stopped");
   }
 }
@@ -1075,7 +1047,12 @@ function fadeOutBgMusic(targetVolume = 0.05, duration = 2000) {
 function showTranscendenceOverlay() {
   const winOverlay = document.getElementById("transcendenceOverlay");
   if (!winOverlay) return;
+
   winOverlay.style.display = "flex";
+  winOverlay.classList.add("show");
+  winOverlay.style.pointerEvents = "auto";
+  winOverlay.style.opacity = "1";
+  winOverlay.style.visibility = "visible";
   // Optional: move focus to the button for keyboard users
   const btn = document.getElementById("playAgainBtn");
   if (btn) btn.focus();
@@ -2158,18 +2135,13 @@ trainButton.addEventListener("click", async () => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const tryBtn = document.getElementById("tryAgainBtn");
-  const playBtn = document.getElementById("playAgainBtn");
-
-  const handle = (e, which) => {
+// ✅ Replace the DOMContentLoaded block with this:
+document.addEventListener("click", (e) => {
+  const id = e.target?.id;
+  if (id === "tryAgainBtn" || id === "playAgainBtn") {
     e.preventDefault();
     e.stopPropagation();
-    console.log(`[buttons] ${which} clicked`);
+    console.log(`[buttons] ${id} clicked`);
     resetGame();
-  };
-
-  if (tryBtn) tryBtn.addEventListener("click", (e) => handle(e, "Try Again"));
-  if (playBtn)
-    playBtn.addEventListener("click", (e) => handle(e, "Play Again"));
+  }
 });

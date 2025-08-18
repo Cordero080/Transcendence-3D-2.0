@@ -35,6 +35,8 @@ export function clearActiveModel() {
     mixer = null;
   }
 
+  
+
   // also clear anything else that might have been added into the petRoot
   while (petRoot.children.length) {
     const obj = petRoot.children.pop();
@@ -177,7 +179,12 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
     );
   });
 }
-export { loadAndDisplayFBX, getCatMaskData };
+
+function hasActiveModel() {
+    return !!activeModel;
+  }
+
+export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
 
 const scene = new THREE.Scene();
 const petRoot = new THREE.Group();
