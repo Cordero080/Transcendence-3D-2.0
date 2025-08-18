@@ -1,4 +1,3 @@
-<audio id="woosh" src="music/woosh.mp3" preload="auto"></audio>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,10 +9,11 @@
     <link rel="stylesheet" href="main.css" />
     <script type="module" src="app.js"></script>
 
-    <title>Cat-scendence</title>
+    <title>Transcendence</title>
   </head>
 
   <body>
+    <audio id="woosh" src="music/woosh.mp3" preload="auto"></audio>
     <!-- Page overlay - dims everything until Start is clicked -->
     <div id="pageOverlay" class="page-overlay">
       <div class="overlay-content">
@@ -177,9 +177,7 @@
           <h2 class="glitch-text">GAME OVER</h2>
           <p id="gameOverReason">Your pet has transcended...</p>
           <div class="game-over-buttons">
-            <button class="game-over-button" onclick="resetGame()">
-              TRY AGAIN
-            </button>
+            <button class="game-over-button" id="tryAgainBtn">TRY AGAIN</button>
           </div>
         </div>
       </div>
@@ -189,11 +187,7 @@
         <div class="game-over-content">
           <h2 id="transcendence">TRANSCENDENCE</h2>
           <p id="winReason">Your pet has transcended...</p>
-          <div class="game-over-buttons">
-            <button class="game-over-button" onclick="resetGame()">
-              PLAY AGAIN
-            </button>
-          </div>
+          <div class="game-over-buttons"></div>
         </div>
       </div>
 
@@ -207,11 +201,7 @@
             existence.<br />
             The ultimate evolution has been achieved through perfect balance.
           </p>
-          <button
-            id="playAgainBtn"
-            class="btn-play-again"
-            onclick="resetGame()"
-          >
+          <button id="playAgainBtn" class="btn-play-again">
             <span class="gradient-text">PLAY AGAIN</span>
           </button>
         </div>

@@ -1,11 +1,14 @@
 import { createState } from "./modules/state.js";
 import { initUI } from "./modules/ui.js";
+import { loadAndDisplayFBX, clearActiveModel } from "./main-test.js";
+import { getCatMaskData } from "./main-test.js";
+import animationConfig from "./annimationConfig.js";
 
 const {
   evolutionAudio,
   evolveEffectAudio,
   highTechAudio,
-  gameOverOverlay,
+  // gameOverOverlay,
   reasonElement,
   petChat,
   hungerTimer,
@@ -26,7 +29,7 @@ const {
   glitchStutterOverlay,
   glitchStutterOverlay2,
   glitchDiv,
-  winOverlay,
+  // winOverlay,
   bgMusic,
   spaceEngineAudio,
 
@@ -42,8 +45,7 @@ const state = createState();
 window._state = state;
 // optional: lets you inspect it in DevTools
 
-import { loadAndDisplayFBX, getCatMaskData } from "./main-test.js";
-import animationConfig from "./annimationConfig.js";
+
 
 console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
@@ -51,8 +53,8 @@ console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
 const gameSettings = {
   ageInterval: 20000,
-  baseDecayRate: 20000,
-  fastDecayRate: 20000,
+  baseDecayRate: 100,
+  fastDecayRate: 100,
 };
 const stageMap = {
   0: {
@@ -625,16 +627,23 @@ class Pet {
 
       setTimeout(() => {
         // Show game over overlay AFTER single death animation loop + 0.5s delay
-        gameOverOverlay.style.display = "flex";
-        reasonElement.textContent = `${reason}`;
-        console.log(
-          `💀 Game over overlay shown after single death animation loop + 0.5s delay`
-        );
+        const gameOverOverlay = document.getElementById("gameOverOverlay");
+        if (gameOverOverlay) {
+          gameOverOverlay.style.display = "flex";
+          gameOverOverlay.classList.add("show");
+          reasonElement.textContent = `${reason}`;
+          console.log(
+            `💀 Game over overlay shown after single death animation loop + 0.5s delay`
+          );
+        }
       }, totalDeathDuration);
     } else {
       // No death animation available, show overlay immediately
-      gameOverOverlay.style.display = "flex";
-      reasonElement.textContent = `${reason}`;
+      const gameOverOverlay = document.getElementById("gameOverOverlay");
+      if (gameOverOverlay) {
+        gameOverOverlay.style.display = "flex";
+        reasonElement.textContent = `${reason}`;
+      }
     }
 
     this.render(); // UPDATE FINAL STAT DISPLAY
@@ -765,42 +774,88 @@ function startGame() {
     });
   });
 }
-
 function resetGame() {
-  console.log("Game reset, stats are reset to 0");
-  // 1. Clear all timers
-  clearInterval(statTimers.hunger);
-  clearInterval(statTimers.fun);
-  clearInterval(statTimers.sleep);
-  clearInterval(statTimers.power);
-  clearInterval(myPet.ageInterval);
-  stopWhiteEmissionTimer(); // Stop white emission timer
+  console.log("resetGame() called");
 
-  // Clear evolution timeout (handles both regular evolution and white transcendence)
-  if (evolutionTimeout) {
-    clearTimeout(evolutionTimeout);
-    evolutionTimeout = null;
+  // ── A) Overlays: hide + safety ───────────────────────────────────────────────
+  const gameOverOverlay = document.getElementById("gameOverOverlay");
+  const winOverlay = document.getElementById("winOverlay");
+  const transcendenceOverlay = document.getElementById("transcendenceOverlay");
+
+  // normal hide
+  if (gameOverOverlay) gameOverOverlay.style.display = "none";
+  if (winOverlay) winOverlay.style.display = "none";
+  if (transcendenceOverlay) transcendenceOverlay.style.display = "none";
+
+  // safety: strip classes + neutralize any stubborn CSS
+  [gameOverOverlay, winOverlay, transcendenceOverlay].forEach((el) => {
+    if (!el) return;
+    el.classList.remove("show", "active", "visible");
+    el.style.visibility = "hidden";
+    el.style.opacity = "0";
+    el.style.pointerEvents = "none";
+  });
+
+  // ── B) Stop/clear timers & timeouts ──────────────────────────────────────────
+  try { clearInterval(statTimers.hunger); statTimers.hunger = null; } catch {}
+  try { clearInterval(statTimers.fun);    statTimers.fun    = null; } catch {}
+  try { clearInterval(statTimers.sleep);  statTimers.sleep  = null; } catch {}
+  try { clearInterval(statTimers.power);  statTimers.power  = null; } catch {}
+
+  try { clearInterval(myPet?.ageInterval); myPet && (myPet.ageInterval = null); } catch {}
+
+  // app-level timeouts you’ve been using
+  try { clearTimeout(evolutionTimeout); evolutionTimeout = null; } catch {}
+  try { clearTimeout(currentAnimationTimer); currentAnimationTimer = null; } catch {}
+
+  // white-stage emission/transcendence timers (if present)
+  try { stopWhiteEmissionTimer && stopWhiteEmissionTimer(); } catch {}
+  try { clearTimeout(whiteStageTranscendenceTimeout); whiteStageTranscendenceTimeout = null; } catch {}
+
+  // also stop any stat timers held on the pet instance
+  try { myPet?.stopAllTimers?.(); } catch {}
+
+  // ── C) Remove previous 3D model & stop old animations ────────────────────────
+  try { myPet?.mixer?.stopAllAction?.(); } catch {} // stop any leftover actions
+
+  // Prefer a helper from main-test.js if you have one:
+  try {
+    if (typeof window.clearActiveModel === "function") {
+      window.clearActiveModel();
+    } else if (window.currentModel && window.scene) {
+      // generic fallback: remove and dispose the last model we kept
+      window.scene.remove(window.currentModel);
+      try {
+        window.currentModel.traverse((o) => {
+          if (o.isMesh) {
+            o.geometry?.dispose?.();
+            if (o.material?.map) o.material.map.dispose?.();
+            o.material?.dispose?.();
+          }
+        });
+      } catch {}
+      window.currentModel = null;
+    }
+  } catch (e) {
+    console.warn("No active model to clear (ok).");
   }
 
-  // 2. Reset state variables
+  // ── D) Reset core state ────────────────────────────────────────────────
+  clearActiveModel();
+  
+
   myPet = new Pet("Coco");
   currentStage = "blue";
   careCycles = 0;
   resetButtonTracker();
   gameOverTriggered = false;
   actionInProgress = false;
-  evolutionInProgress = false; // Reset evolution flag
-  danceSequenceIndex = 0; // Reset dance sequence
-  whiteStageAnimationCount = 0; // Reset white stage animation counter  // Reset button states to initial (all enabled)
+  evolutionInProgress = false;
+  danceSequenceIndex = 0;
+  whiteStageAnimationCount = 0;
   updateButtonStatesForEvolution();
 
-  // 3. Hide overlays
-  const gameOverOverlay = document.getElementById("gameOverOverlay");
-  const winOverlay = document.getElementById("winOverlay");
-  if (gameOverOverlay) gameOverOverlay.style.display = "none";
-  if (winOverlay) winOverlay.style.display = "none";
-
-  // Reset game over overlay styling to default
+  // Reset Game Over overlay styles (if you had customized them)
   const reasonElement = document.getElementById("gameOverReason");
   if (reasonElement) {
     reasonElement.style.color = "";
@@ -808,31 +863,29 @@ function resetGame() {
     reasonElement.style.fontSize = "";
     reasonElement.style.lineHeight = "";
   }
-  gameOverOverlay.style.background = "";
-  gameOverOverlay.style.border = "";
-  gameOverOverlay.style.boxShadow = "";
+  if (gameOverOverlay) {
+    gameOverOverlay.style.background = "";
+    gameOverOverlay.style.border = "";
+    gameOverOverlay.style.boxShadow = "";
+  }
 
-  // 4. Load Blue stage idle animation
+  // ── E) Load Blue idle (and capture the model if your loader returns it) ──────
+  // If your loader exposes a global like window.currentModel internally, great.
+  // Otherwise you can modify loadAndDisplayFBX to return the model and save it.
   loadAndDisplayFBX(
     animationConfig[currentStage].idle.file,
     animationConfig[currentStage].idle.pose
   );
 
-  // 5. Restart stat timers
-  statTimers.hunger = myPet.createStatTimer(
-    "hunger",
-    gameSettings.baseDecayRate
-  );
-  statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
-  statTimers.sleep = myPet.createStatTimer("sleep", gameSettings.baseDecayRate);
-  statTimers.power = myPet.createStatTimer("power", gameSettings.baseDecayRate);
+  // ── F) Restart stat timers ───────────────────────────────────────────────────
+  statTimers.hunger = myPet.createStatTimer("hunger", gameSettings.baseDecayRate);
+  statTimers.fun    = myPet.createStatTimer("fun",    gameSettings.baseDecayRate);
+  statTimers.sleep  = myPet.createStatTimer("sleep",  gameSettings.baseDecayRate);
+  statTimers.power  = myPet.createStatTimer("power",  gameSettings.baseDecayRate);
 
-  // 6. REFRESH UI TO SHOW STARTING STAT VALUES AGAIN
+  // ── G) Refresh UI ────────────────────────────────────────────────────────────
   myPet.render();
 }
-
-// Make resetGame available globally for the HTML onclick
-window.resetGame = resetGame;
 
 // ============ ⚪ WHITE EMISSION EFFECT SYSTEM ============ \\
 let whiteEmissionTimer = null;
@@ -1814,39 +1867,36 @@ overlayStartBtn.addEventListener("click", async () => {
   }, 5000);
 });
 
-// Add event listener for Play Again button in winOverlay
-
-// Start Game Overlay logic
+// Event delegation for overlay buttons
 document.addEventListener("DOMContentLoaded", () => {
-  const overlayStartBtn = document.getElementById("overlayStartButton");
-  const pageOverlay = document.getElementById("pageOverlay");
-  const startBtn = document.querySelector(".StartButton");
-
-  // Hide overlay only when overlayStartButton is clicked
-  if (overlayStartBtn && pageOverlay) {
-    overlayStartBtn.addEventListener("click", () => {
-      pageOverlay.style.display = "none";
-    });
-  }
-
-  // Safeguard: prevent duplicate timers
-  let gameStarted = false;
-  if (startBtn) {
-    startBtn.addEventListener("click", async () => {
-      if (gameStarted) return;
-      gameStarted = true;
-      await startGame();
-    });
-  }
-
-  // Play Again button logic (unchanged)
-  const playAgainBtn = document.querySelector("#winOverlay .game-over-button");
-  if (playAgainBtn) {
-    playAgainBtn.addEventListener("click", () => {
-      const winOverlay = document.getElementById("winOverlay");
-      if (winOverlay) winOverlay.style.display = "none";
+  // TRY AGAIN button
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
+  if (tryAgainBtn) {
+    console.log("TRY AGAIN button found, attaching listener");
+    tryAgainBtn.addEventListener("click", () => {
+      console.log("TRY AGAIN button clicked");
+      const gameOverOverlay = document.getElementById("gameOverOverlay");
+      if (gameOverOverlay) gameOverOverlay.style.display = "none";
       resetGame();
     });
+  } else {
+    console.warn("TRY AGAIN button NOT found");
+  }
+
+  // PLAY AGAIN button
+  const playAgainBtn = document.getElementById("playAgainBtn");
+  if (playAgainBtn) {
+    console.log("PLAY AGAIN button found, attaching listener");
+    playAgainBtn.addEventListener("click", () => {
+      console.log("PLAY AGAIN button clicked");
+      const transcendenceOverlay = document.getElementById(
+        "transcendenceOverlay"
+      );
+      if (transcendenceOverlay) transcendenceOverlay.style.display = "none";
+      resetGame();
+    });
+  } else {
+    console.warn("PLAY AGAIN button NOT found");
   }
 });
 
@@ -2060,4 +2110,20 @@ trainButton.addEventListener("click", async () => {
     }
     console.log("🔓 Train button unlocked - Action available");
   }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tryBtn = document.getElementById("tryAgainBtn");
+  const playBtn = document.getElementById("playAgainBtn");
+
+  const handle = (e, which) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(`[buttons] ${which} clicked`);
+    resetGame();
+  };
+
+  if (tryBtn) tryBtn.addEventListener("click", (e) => handle(e, "Try Again"));
+  if (playBtn)
+    playBtn.addEventListener("click", (e) => handle(e, "Play Again"));
 });

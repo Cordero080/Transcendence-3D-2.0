@@ -1,27 +1,59 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
 import { TextureLoader } from "three";
 
 console.log("✅ Three.js and FBXLoader loaded successfully!");
 
 // Setup scene
+let currentLoadToken = 0;
 let activeModel = null;
 let mixer = null; // <-- NEW
 let time = 0;
 let currentPose = "";
 let catMaskCanvas = null;
 let catMaskContext = null;
-// let jumpForwardActive = false;
-// let jumpStartTime = 0;
-// let jumpStartPosition = { x: 0, Z: 0 };
-// let redUppercutActive = false;
-// let redUppercutStartTime = 0;
-// let redUppercutStartX = 0;
-// let redUppercutStartZ = 0;
-// let redUppercutDelayStart = 0;
-// let redUppercutStopTime = 0;
 
+export function clearActiveModel() {
+  // remove the single tracked model
+  if (activeModel) {
+    // was: scene.remove(activeModel);
+    petRoot.remove(activeModel);
+    try {
+      activeModel.traverse((child) => {
+        if (child.isMesh) {
+          child.geometry?.dispose?.();
+          if (Array.isArray(child.material)) {
+            child.material.forEach((m) => m.dispose?.());
+          } else {
+            child.material?.dispose?.();
+          }
+        }
+      });
+    } catch {}
+    activeModel = null;
+    mixer = null;
+  }
+
+  // also clear anything else that might have been added into the petRoot
+  while (petRoot.children.length) {
+    const obj = petRoot.children.pop();
+    try {
+      obj.traverse?.((child) => {
+        if (child.isMesh) {
+          child.geometry?.dispose?.();
+          if (Array.isArray(child.material)) {
+            child.material.forEach((m) => m.dispose?.());
+          } else {
+            child.material?.dispose?.();
+          }
+        }
+      });
+    } catch {}
+    // was: scene.remove(obj);
+    petRoot.remove(obj);
+  }
+}
 const clock = new THREE.Clock();
 
 // Function to get cat position and dimensions for dynamic masking
@@ -72,70 +104,84 @@ function getCatMaskData() {
 }
 
 function loadAndDisplayFBX(path, pose = {}, options = {}) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const loader = new FBXLoader();
 
-    if (activeModel) {
-      scene.remove(activeModel);
-      activeModel.traverse((child) => {
-        if (child.isMesh) {
-          child.geometry.dispose();
-          if (Array.isArray(child.material)) {
-            child.material.forEach((mat) => mat.dispose());
-          } else {
-            child.material.dispose();
+    // bump token for this load to prevent overlap/race duplicates
+    const myToken = ++currentLoadToken;
+
+    // always clear anything previously in the pet slot
+    clearActiveModel();
+
+    loader.load(
+      path,
+      (fbx) => {
+        // if a newer load started while this one was in-flight, drop this one
+        if (myToken !== currentLoadToken) {
+          try {
+            fbx.traverse((child) => {
+              if (child.isMesh) {
+                child.geometry?.dispose?.();
+                if (Array.isArray(child.material)) {
+                  child.material.forEach((m) => m.dispose?.());
+                } else {
+                  child.material?.dispose?.();
+                }
+              }
+            });
+          } catch {}
+          resolve(0);
+          return;
+        }
+
+        // ----- apply pose -----
+        const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
+        const [px = 0, py = -1, pz = 0] = pose.position || [];
+        const rotationY = pose.rotationY || 0;
+
+        fbx.scale.set(sx, sy, sz);
+        fbx.position.set(px, py, pz);
+        fbx.rotation.y = rotationY;
+
+        fbx.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
           }
+        });
+
+        // ----- attach under a single root, not directly to scene -----
+        petRoot.add(fbx);
+        activeModel = fbx;
+        currentPose = path;
+
+        // ----- animation (guard if no clips) -----
+        mixer = new THREE.AnimationMixer(fbx);
+        const clip = fbx.animations?.[0];
+        if (clip) {
+          const action = mixer.clipAction(clip);
+          if (options.loop === false) {
+            action.setLoop(THREE.LoopOnce);
+            action.clampWhenFinished = true;
+          } else {
+            action.setLoop(THREE.LoopRepeat);
+          }
+          action.play();
         }
-      });
-      activeModel = null;
-      mixer = null;
-    }
 
-    loader.load(path, (fbx) => {
-      const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
-      const [px = 0, py = -1, pz = 0] = pose.position || [];
-      const rotationY = pose.rotationY || 0;
-
-      fbx.scale.set(sx, sy, sz);
-      fbx.position.set(px, py, pz);
-      fbx.rotation.y = rotationY;
-
-      fbx.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-
-      activeModel = fbx;
-      scene.add(fbx);
-      currentPose = path;
-
-      mixer = new THREE.AnimationMixer(fbx);
-      const action = mixer.clipAction(fbx.animations[0]);
-
-      // Control looping behavior - default is to loop, but death animations should play once
-      if (options.loop === false) {
-        action.setLoop(THREE.LoopOnce);
-        action.clampWhenFinished = true; // Keep the final pose when animation ends
-        console.log(
-          `🎬 Animation set to play once (no loop) and clamp on final frame`
-        );
-      } else {
-        action.setLoop(THREE.LoopRepeat); // Default looping behavior
-      }
-
-      action.play();
-
-      const duration = fbx.animations[0]?.duration || 2.5;
-      resolve(duration * 1000);
-    });
+        const duration = clip?.duration || 2.5;
+        resolve(duration * 1000);
+      },
+      undefined,
+      (err) => reject(err)
+    );
   });
 }
-
 export { loadAndDisplayFBX, getCatMaskData };
 
 const scene = new THREE.Scene();
+const petRoot = new THREE.Group();
+scene.add(petRoot);
 // scene.background = new THREE.Color("black"); // Light gray background
 // Ambient light (softens all shadows, adds base brightness)
 const bgLoader = new TextureLoader();
@@ -219,24 +265,6 @@ ground.position.y = -1.7;
 ground.receiveShadow = true;
 scene.add(light, ground, topLight, bottomLight, sideLight, directionalLight);
 
-// Helpers
-// scene.add(new THREE.GridHelper(5, 5));
-// scene.add(new THREE.AxesHelper(1));
-
-// Orbit Controls
-// const controls = new OrbitControls(camera, renderer.domElement);
-//  loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-//   scale: [0.01, 0.01, 0.01],
-//   position: [0, -2.5, 0],
-//   rotationY: Math.PI / 9
-// });
-
-// Animation
-
-// Scale model to fit container height
-
-//
-
 function animate() {
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
@@ -277,19 +305,7 @@ function animate() {
   }
 
   if (mixer) mixer.update(delta);
-  // if (catModel) {
-  // Return to original hip-hop dance bounce
-  // catModel.position.x = Math.sin(time * 0.5) * 0.5;
-  // catModel.position.z = -0.5 + Math.cos(time * 0.4) * -0.1;
-  // catModel.position.x = Math.sin(time) * 0.6; //side-side
-  // catModel.position.y = -1.5; // this
 
-  //   catModel.position.z = 0.4 + Math.cos(time * 0.4) * -0.1;
-  //   catModel.position.x = Math.sin(time) * 0.1; //side-side
-  //   catModel.position.y = -2.5; // this
-  //   catModel.rotation.y = 0.9;
-  // }
-  // Always resize renderer and camera to fit container
   const newWidth = petContainer.offsetWidth || 900;
   const newHeight = petContainer.offsetHeight || 600;
   if (
@@ -303,14 +319,3 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
-
-// loadAndDisplayFBX("./models/cat_idle_chi.fbx", {
-//   scale: [0.001, 0.001, 0.001],
-//   position: [0, 0, 0], // move model up
-//   rotationY: Math.PI / 7,
-
-// loadAndDisplayFBX('./models/green_drunk.fbx', {
-//   scale: [0.0015, 0.0015, 0.0015],
-//   position: [0, -1, -1.5],
-//   rotationY: Math.PI / 9,
-// });

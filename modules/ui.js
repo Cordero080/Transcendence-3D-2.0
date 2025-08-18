@@ -3,7 +3,7 @@ export function initUI() {
   const evolutionAudio = document.getElementById("evolution-sound");
   const evolveEffectAudio = document.getElementById("evolve_effect_2");
   const highTechAudio = document.getElementById("high-tech");
-  const gameOverOverlay = document.getElementById("gameOverOverlay");
+  // const gameOverOverlay = document.getElementById("gameOverOverlay");
   const reasonElement = document.getElementById("gameOverReason");
   const petChat = document.querySelector(".infoBox_petChat");
   const hungerTimer = document.getElementById("hungerTimer");
@@ -24,7 +24,7 @@ export function initUI() {
   const glitchStutterOverlay = document.getElementById("glitchStutterOverlay");
   const glitchStutterOverlay2 = document.getElementById("glitchStutterOverlay2");
   const glitchDiv = document.getElementById("colorfulGlitchDiv");
-  const winOverlay = document.getElementById("winOverlay");
+  // const winOverlay = document.getElementById("winOverlay");
   const bgMusic = document.getElementById("bg-music");
   const spaceEngineAudio = document.getElementById("space-engine");
   const feedButton = buttons[0];
@@ -35,13 +35,15 @@ const trainButton = buttons[3];
   return {
     // existing returns...
     evolutionAudio, evolveEffectAudio, highTechAudio,
-    gameOverOverlay, reasonElement, petChat,
+    // gameOverOverlay,
+     reasonElement, petChat,
     hungerTimer, funTimer, sleepTimer, powerTimer,
     overlay, overlayStartBtn, resetBtn, buttons,
     btn, menu, container,
     feedIndicator, danceIndicator, sleepIndicator, powerIndicator,
     glitchStutterOverlay, glitchStutterOverlay2, glitchDiv,
-    winOverlay, bgMusic, spaceEngineAudio,
+    // winOverlay, 
+    bgMusic, spaceEngineAudio,
 
     // NEW: return the individual buttons
     feedButton, danceButton, sleepButton, trainButton,
