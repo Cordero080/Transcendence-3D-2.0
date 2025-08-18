@@ -45,8 +45,6 @@ const state = createState();
 window._state = state;
 // optional: lets you inspect it in DevTools
 
-
-
 console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
@@ -797,26 +795,56 @@ function resetGame() {
   });
 
   // ── B) Stop/clear timers & timeouts ──────────────────────────────────────────
-  try { clearInterval(statTimers.hunger); statTimers.hunger = null; } catch {}
-  try { clearInterval(statTimers.fun);    statTimers.fun    = null; } catch {}
-  try { clearInterval(statTimers.sleep);  statTimers.sleep  = null; } catch {}
-  try { clearInterval(statTimers.power);  statTimers.power  = null; } catch {}
+  try {
+    clearInterval(statTimers.hunger);
+    statTimers.hunger = null;
+  } catch {}
+  try {
+    clearInterval(statTimers.fun);
+    statTimers.fun = null;
+  } catch {}
+  try {
+    clearInterval(statTimers.sleep);
+    statTimers.sleep = null;
+  } catch {}
+  try {
+    clearInterval(statTimers.power);
+    statTimers.power = null;
+  } catch {}
 
-  try { clearInterval(myPet?.ageInterval); myPet && (myPet.ageInterval = null); } catch {}
+  try {
+    clearInterval(myPet?.ageInterval);
+    myPet && (myPet.ageInterval = null);
+  } catch {}
 
   // app-level timeouts you’ve been using
-  try { clearTimeout(evolutionTimeout); evolutionTimeout = null; } catch {}
-  try { clearTimeout(currentAnimationTimer); currentAnimationTimer = null; } catch {}
+  try {
+    clearTimeout(evolutionTimeout);
+    evolutionTimeout = null;
+  } catch {}
+  try {
+    clearTimeout(currentAnimationTimer);
+    currentAnimationTimer = null;
+  } catch {}
 
   // white-stage emission/transcendence timers (if present)
-  try { stopWhiteEmissionTimer && stopWhiteEmissionTimer(); } catch {}
-  try { clearTimeout(whiteStageTranscendenceTimeout); whiteStageTranscendenceTimeout = null; } catch {}
+  try {
+    stopWhiteEmissionTimer && stopWhiteEmissionTimer();
+  } catch {}
+  try {
+    clearTimeout(whiteStageTranscendenceTimeout);
+    whiteStageTranscendenceTimeout = null;
+  } catch {}
 
   // also stop any stat timers held on the pet instance
-  try { myPet?.stopAllTimers?.(); } catch {}
+  try {
+    myPet?.stopAllTimers?.();
+  } catch {}
 
   // ── C) Remove previous 3D model & stop old animations ────────────────────────
-  try { myPet?.mixer?.stopAllAction?.(); } catch {} // stop any leftover actions
+  try {
+    myPet?.mixer?.stopAllAction?.();
+  } catch {} // stop any leftover actions
 
   // Prefer a helper from main-test.js if you have one:
   try {
@@ -842,7 +870,6 @@ function resetGame() {
 
   // ── D) Reset core state ────────────────────────────────────────────────
   clearActiveModel();
-  
 
   myPet = new Pet("Coco");
   currentStage = "blue";
@@ -878,10 +905,13 @@ function resetGame() {
   );
 
   // ── F) Restart stat timers ───────────────────────────────────────────────────
-  statTimers.hunger = myPet.createStatTimer("hunger", gameSettings.baseDecayRate);
-  statTimers.fun    = myPet.createStatTimer("fun",    gameSettings.baseDecayRate);
-  statTimers.sleep  = myPet.createStatTimer("sleep",  gameSettings.baseDecayRate);
-  statTimers.power  = myPet.createStatTimer("power",  gameSettings.baseDecayRate);
+  statTimers.hunger = myPet.createStatTimer(
+    "hunger",
+    gameSettings.baseDecayRate
+  );
+  statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
+  statTimers.sleep = myPet.createStatTimer("sleep", gameSettings.baseDecayRate);
+  statTimers.power = myPet.createStatTimer("power", gameSettings.baseDecayRate);
 
   // ── G) Refresh UI ────────────────────────────────────────────────────────────
   myPet.render();
