@@ -7,6 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="main.css" />
+    <!-- Module shim (so import maps work everywhere) -->
+    <script
+      async
+      src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+          "three/examples/jsm/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+        }
+      }
+    </script>
+
     <script type="module" src="app.js"></script>
 
     <title>Transcendence</title>
@@ -14,6 +28,50 @@
 
   <body>
     <audio id="woosh" src="music/woosh.mp3" preload="auto"></audio>
+    <audio id="bg-music" src="music/3dC_theme.mp3" autoplay loop></audio>
+    <audio id="transcend-3" src="music/transcend_3.wav" preload="auto"></audio>
+    <audio id="evolve_effect_2" src="music/evolve_effect.wav"></audio>
+    <audio id="transcend-4" src="music/transcend_4.wav" preload="auto"></audio>
+    <audio id="evolution-sound" src="music/evolution.wav" preload="auto">
+      <source src="music/evolution.wav" type="audio/wav" />
+    </audio>
+    <audio
+      id="space-engine"
+      src="music/space_engine.wav"
+      preload="auto"
+    ></audio>
+    <audio id="stutterMask" src="music/stutterMask.wav" preload="auto"></audio>
+
+    <script>
+      // One-time unlock for strict browsers (iOS/Safari/Chrome)
+      function unlockAudioOnce() {
+        const a = new Audio();
+        a.muted = true;
+        a.play().catch(() => {});
+        document.removeEventListener("pointerdown", unlockAudioOnce, {
+          capture: true,
+        });
+      }
+      document.addEventListener("pointerdown", unlockAudioOnce, {
+        capture: true,
+      });
+
+      // Volume + start bg-music on Start button (backup in case autoplay was blocked)
+      window.addEventListener("DOMContentLoaded", () => {
+        const bg = document.getElementById("bg-music");
+        if (bg) bg.volume = 0.3;
+
+        const startBtn = document.getElementById("overlayStartButton");
+        if (startBtn && bg) {
+          startBtn.addEventListener("click", () => {
+            if (bg.paused) {
+              bg.currentTime = 0;
+              bg.play().catch(() => {});
+            }
+          });
+        }
+      });
+    </script>
     <!-- Page overlay - dims everything until Start is clicked -->
     <div id="pageOverlay" class="page-overlay">
       <div class="overlay-content">
@@ -55,35 +113,6 @@
     <div class="scaling-root">
       <!-- transcendence was here -->
 
-      <audio id="bg-music" src="music/3dC_theme.mp3" autoplay loop></audio>
-      <audio
-        id="transcend-3"
-        src="music/transcend_3.wav"
-        preload="auto"
-      ></audio>
-      <audio id="evolve_effect_2" src="music/evolve_effect.wav"></audio>
-      <audio
-        id="transcend-4"
-        src="music/transcend_4.wav"
-        preload="auto"
-      ></audio>
-      <script>
-        window.addEventListener("DOMContentLoaded", function () {
-          var bgMusic = document.getElementById("bg-music");
-          if (bgMusic) {
-            bgMusic.volume = 0.3;
-            console.log("bg-music volume set to", bgMusic.volume);
-          }
-        });
-      </script>
-      <audio id="evolution-sound" src="music/evolution.wav" preload="auto">
-        <source src="music/evolution.wav" type="audio/wav" />
-      </audio>
-      <audio
-        id="space-engine"
-        src="music/space_engine.wav"
-        preload="auto"
-      ></audio>
       <span id="transcendence">TRANSCENDENCE</span>
       <header>
         <h1>TAMAGOTCHI</h1>
@@ -167,8 +196,6 @@
         </div>
       </main>
 
-      <script type="module" src="./main-test.js"></script>
-
       <!-- scaling root end -->
       <!-- Game Over Overlay -->
 
@@ -213,6 +240,5 @@
         <!-- scaling root end -->
       </div>
     </div>
-    <audio id="stutterMask" src="music/stutterMask.wav" preload="auto"></audio>
   </body>
 </html>
