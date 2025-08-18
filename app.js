@@ -51,8 +51,8 @@ console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
 
 const gameSettings = {
   ageInterval: 20000,
-  baseDecayRate: 100,
-  fastDecayRate: 100,
+  baseDecayRate: 20000,
+  fastDecayRate: 20000,
 };
 const stageMap = {
   0: {
@@ -136,6 +136,7 @@ let backgroundMusic;
 let actionInProgress = false;
 let careCycles = 0;
 let gameOverTriggered = false;
+let gameOverTimeout = null;
 
 // Evolution System Variables
 let buttonTracker = {
@@ -160,6 +161,20 @@ let whiteStageTranscendenceTimeout = null;
 
 // Dance sequence tracking
 let danceSequenceIndex = 0; // 0 = dance, 1 = dance2
+// 🔹 Game Over overlay helper
+function showGameOverOverlay(reason = "") {
+  const overlay = document.getElementById("gameOverOverlay");
+  if (!overlay) return;
+
+  overlay.style.display = "flex";
+  overlay.classList.add("show");
+  overlay.style.pointerEvents = "auto";
+  overlay.style.opacity = "1";
+  overlay.style.visibility = "visible";
+
+  const reasonEl = document.getElementById("gameOverReason");
+  if (reasonEl) reasonEl.textContent = reason;
+}
 
 // 🔊 Play Evolution Sound Effect
 function playEvolutionSound() {
@@ -594,8 +609,12 @@ class Pet {
     }, gameSettings.ageInterval);
   }
   // ⚰️ Game Over
+  // inside class Pet { ... }
   async triggerGameOver(reason) {
-    console.log(`💀 GAME OVER: ${reason}`); // Prevent multiple triggers
+    if (gameOverTriggered) {
+      console.log("💀 GAME OVER already triggered, ignoring duplicate.");
+      return;
+    }
     gameOverTriggered = true;
 
     console.log(`💀 GAME OVER: ${reason}`);
@@ -604,49 +623,38 @@ class Pet {
     this.stopAllTimers();
     gameStarted = false;
 
+    // clear any previous scheduled show (belt-and-suspenders)
+    if (gameOverTimeout) {
+      clearTimeout(gameOverTimeout);
+      gameOverTimeout = null;
+    }
+
     // LOAD DEATH ANIMATION AND WAIT FOR IT TO COMPLETE
     const deathAnim = animationConfig[currentStage]?.death;
     if (deathAnim) {
       console.log(`🎬 Playing death animation for ${currentStage} stage...`);
 
-      // For death animations, we need to load with loop = false to prevent infinite looping
+      // For death animations, load with loop = false to prevent infinite looping
       const deathDuration = await loadAndDisplayFBX(
         deathAnim.file,
         deathAnim.pose,
         { loop: false }
       );
 
-      // Death animation plays exactly ONE LOOP only, then stops + 0.5s delay
-      const singleLoopDuration = deathDuration; // No multiplier - just one loop
-      const totalDeathDuration = singleLoopDuration + 500; // Add 0.5s delay after animation stops
-      console.log(
-        `⏱️ Death animation: 1 loop (${singleLoopDuration}ms) → stops → 0.5s delay → overlay (${totalDeathDuration}ms total)`
-      );
+      // 1 loop + 0.5s pad, then show overlay
+      const totalDeathDuration = (deathDuration || 0) + 500;
 
-      setTimeout(() => {
-        // Show game over overlay AFTER single death animation loop + 0.5s delay
-        const gameOverOverlay = document.getElementById("gameOverOverlay");
-        if (gameOverOverlay) {
-          gameOverOverlay.style.display = "flex";
-          gameOverOverlay.classList.add("show");
-          reasonElement.textContent = `${reason}`;
-          console.log(
-            `💀 Game over overlay shown after single death animation loop + 0.5s delay`
-          );
-        }
+      gameOverTimeout = setTimeout(() => {
+        showGameOverOverlay(reason); // << use the helper every time
+        gameOverTimeout = null;
       }, totalDeathDuration);
     } else {
       // No death animation available, show overlay immediately
-      const gameOverOverlay = document.getElementById("gameOverOverlay");
-      if (gameOverOverlay) {
-        gameOverOverlay.style.display = "flex";
-        reasonElement.textContent = `${reason}`;
-      }
+      showGameOverOverlay(reason); // << helper again
     }
 
-    this.render(); // UPDATE FINAL STAT DISPLAY
+    this.render(); // update final stat display
   }
-
   // ⏳ Stat decay //
 
   createStatTimer(type, interval = 7000) {
@@ -735,8 +743,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    currentStage = "white";
+    myPet.stage = "white"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -825,6 +833,14 @@ function resetGame() {
   try {
     clearTimeout(currentAnimationTimer);
     currentAnimationTimer = null;
+  } catch {}
+
+  // ✅ clear any pending GAME-OVER reveal from a prior run
+  try {
+    if (gameOverTimeout) {
+      clearTimeout(gameOverTimeout);
+      gameOverTimeout = null;
+    }
   } catch {}
 
   // white-stage emission/transcendence timers (if present)
