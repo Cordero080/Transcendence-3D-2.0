@@ -1206,7 +1206,7 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
   const stutterMaskAudio = document.getElementById("stutterMask");
   if (stutterMaskAudio && !evolutionInProgress) {
     stutterMaskAudio.currentTime = 0;
-    stutterMaskAudio.volume = 0.5;
+    stutterMaskAudio.volume = 1;
     stutterMaskAudio.play().catch((err) => {
       console.log("🔇 stutterMask.wav audio play() blocked:", err);
     });
