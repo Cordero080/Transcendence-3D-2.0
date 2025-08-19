@@ -1,8 +1,8 @@
-import * as THREE from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import * as THREE from "./libs/three.module.js";
+import { FBXLoader } from "./libs/FBXLoader.js";
 
-import { TextureLoader } from "three";
-
+// import { TextureLoader } from "./libs/three.module.js";
+const textureLoader = new THREE.TextureLoader();
 console.log("✅ Three.js and FBXLoader loaded successfully!");
 
 // Setup scene
@@ -34,8 +34,6 @@ export function clearActiveModel() {
     activeModel = null;
     mixer = null;
   }
-
-  
 
   // also clear anything else that might have been added into the petRoot
   while (petRoot.children.length) {
@@ -181,8 +179,8 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
 }
 
 function hasActiveModel() {
-    return !!activeModel;
-  }
+  return !!activeModel;
+}
 
 export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
 
@@ -191,8 +189,8 @@ const petRoot = new THREE.Group();
 scene.add(petRoot);
 // scene.background = new THREE.Color("black"); // Light gray background
 // Ambient light (softens all shadows, adds base brightness)
-const bgLoader = new TextureLoader();
-bgLoader.load("./models/cyberpunk-room2 .png", function (texture) {
+const bgLoader = new THREE.TextureLoader();
+bgLoader.load("./images/cyberpunk-room2 .png", function (texture) {
   scene.background = texture;
 });
 
