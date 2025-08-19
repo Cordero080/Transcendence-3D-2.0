@@ -1,3 +1,11 @@
+// --- Debug resource loading ---
+// --- Debug: catch any silent async errors ---
+window.addEventListener("unhandledrejection", (e) => {
+  console.error("[UNHANDLED PROMISE]", e.reason);
+});
+
+// --- imports and code ---
+
 import { createState } from "./modules/state.js";
 import { initUI } from "./modules/ui.js";
 import {
@@ -1872,24 +1880,44 @@ resetBtn.addEventListener("click", () => {
 });
 
 overlayStartBtn.addEventListener("click", async () => {
-  overlay.style.display = "none"; // Hide intro screen
-  // 🧿 Show the Glitch Egg when game starts
-  const glitchEgg = document.getElementById("colorfulGlitchDiv");
-  glitchEgg.style.display = "flex"; // Show glitch egg
-  glitchEgg.classList.add("hatching"); // Start animation
-  console.log("🧿 Glitch egg shown...");
+  console.log("[Start] click fired");
 
-  // Load pet while glitch egg animates
-  await startGame(); // Now returns a Promise after FBX idle loads
+  try {
+    overlay.style.display = "none"; // Hide intro screen
+    console.log("[Start] overlay hidden");
 
-  // Wait 5s before hiding glitch egg to ensure it plays fully
-  setTimeout(() => {
-    glitchEgg.classList.remove("hatching");
-    glitchEgg.style.display = "none";
-    console.log("✨ Glitch egg hidden");
-  }, 5000);
+    // 🧿 Show the Glitch Egg
+    const glitchEgg = document.getElementById("colorfulGlitchDiv");
+    glitchEgg.style.display = "flex";
+    glitchEgg.classList.add("hatching");
+    console.log("[Start] glitch egg shown...");
+
+    // Resume audio here if using WebAudio
+    const theme = document.getElementById("bg-music");
+    if (theme) {
+      theme.muted = false;
+      theme.currentTime = 0;
+      await theme
+        .play()
+        .then(() => console.log("[Start] theme playing"))
+        .catch((err) => console.warn("[Start] theme blocked:", err));
+    }
+
+    // Load pet while glitch egg animates
+    console.log("[Start] calling startGame()");
+    await startGame();
+    console.log("[Start] startGame() finished");
+
+    // Wait 5s before hiding glitch egg
+    setTimeout(() => {
+      glitchEgg.classList.remove("hatching");
+      glitchEgg.style.display = "none";
+      console.log("[Start] glitch egg hidden");
+    }, 5000);
+  } catch (err) {
+    console.error("[Start] failed:", err);
+  }
 });
-
 // Event delegation for overlay buttons
 document.addEventListener("DOMContentLoaded", () => {
   // TRY AGAIN button

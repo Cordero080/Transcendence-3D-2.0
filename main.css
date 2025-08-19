@@ -218,7 +218,7 @@ html, body {
   display: flex;
   font-weight: 200;
   font-style: bold;
-  background: url('/images/grid-b.jpg') no-repeat center center fixed;
+  background: url('./images/grid-b.jpg') no-repeat center center fixed;
   border: solid 4px oklch(34.36% 0.328 265.87);
   color: oklch(87.87% 0.211 149.57 / 0.923);
   min-height: 100vh;

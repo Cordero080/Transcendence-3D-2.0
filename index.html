@@ -12,14 +12,6 @@
       async
       src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"
     ></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
-          "three/examples/jsm/": "https://unpkg.com/three@0.158.0/examples/jsm/"
-        }
-      }
-    </script>
 
     <script type="module" src="app.js"></script>
 
@@ -42,36 +34,6 @@
     ></audio>
     <audio id="stutterMask" src="music/stutterMask.wav" preload="auto"></audio>
 
-    <script>
-      // One-time unlock for strict browsers (iOS/Safari/Chrome)
-      function unlockAudioOnce() {
-        const a = new Audio();
-        a.muted = true;
-        a.play().catch(() => {});
-        document.removeEventListener("pointerdown", unlockAudioOnce, {
-          capture: true,
-        });
-      }
-      document.addEventListener("pointerdown", unlockAudioOnce, {
-        capture: true,
-      });
-
-      // Volume + start bg-music on Start button (backup in case autoplay was blocked)
-      window.addEventListener("DOMContentLoaded", () => {
-        const bg = document.getElementById("bg-music");
-        if (bg) bg.volume = 0.3;
-
-        const startBtn = document.getElementById("overlayStartButton");
-        if (startBtn && bg) {
-          startBtn.addEventListener("click", () => {
-            if (bg.paused) {
-              bg.currentTime = 0;
-              bg.play().catch(() => {});
-            }
-          });
-        }
-      });
-    </script>
     <!-- Page overlay - dims everything until Start is clicked -->
     <div id="pageOverlay" class="page-overlay">
       <div class="overlay-content">
