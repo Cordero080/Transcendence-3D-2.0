@@ -1783,7 +1783,7 @@ async function playActionThenShareIdle(actionType, stage) {
           }
           audio.pause();
           audio.currentTime = 0;
-          audio.volume = 0.5;
+          audio.volume = 1;
           audio.playbackRate = 1.5;
           audio.play().catch((err) => {
             console.log("🔇 fighting_voice.wav audio play() blocked:", err);
