@@ -340,6 +340,7 @@ header {
     oklch(79.49% 0.14271 62.993),     /* Orange */
     oklch(73.033% 0.19383 352.633)      /* Pink again for seamless loop */
   );
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
@@ -352,6 +353,14 @@ header {
   /* Animate the gradient for extra visual appeal */
   animation: gradientShift 2.5s ease infinite;
 }
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+
 
 
 /* Center pet container in the middle of main */
