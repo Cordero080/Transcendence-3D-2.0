@@ -2680,28 +2680,32 @@ canvas {
 
 /* show background grid image on mobile if all else fails */
 
-/* Mobile-only fixes */
+/* === Mobile background + scale fixes (portrait + landscape) === */
+
+/* 0) Avoid white flash */
+html, body { height: 100%; background-color: #000; }
+
+/* 1) Always-on grid layer behind the app (works in all orientations) */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url("./images/grid-b.jpg") center/cover no-repeat;
+}
+
+/* 2) iOS fixed-background bug: disable 'fixed' on small screens and when sideways */
+@media (max-width: 767px),
+       (orientation: landscape) and (max-height: 500px) {
+  body { background-attachment: scroll !important; }
+}
+
+/* 3) Make the whole app a bit smaller on phones (portrait) */
 @media (max-width: 767px) {
-  /* 1) iOS background bug fix */
-  body {
-    background-attachment: scroll !important;
-  }
-
-  /* 2) Always-visible grid layer behind content */
-  html::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;           /* stays behind your app */
-    pointer-events: none;  /* never intercepts taps */
-    background: url("./images/grid-b.jpg") center/cover no-repeat;
-  }
-
-  /* 3) Make the whole app a bit smaller on phones */
   #main-wrapper {
-    transform: scale(0.88);       /* try 0.85–0.92 to taste */
-    transform-origin: top center; /* keeps title visible & centered */
-    margin: 0 auto;               /* ensure it stays centered */
+    transform: scale(0.88);          /* adjust 0.85–0.92 to taste */
+    transform-origin: top center;
+    margin: 0 auto;
   }
 }
-/* Overlay visibility — single source of truth (final override) */
