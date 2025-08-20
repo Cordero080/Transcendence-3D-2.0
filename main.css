@@ -314,6 +314,8 @@ header h1 {
  white-space: normal;
  text-overflow: unset;
  animation: floatUpDown 3s ease-in-out infinite;
+
+ 
 }
 header {
   border: solid 2px oklch(61.05% 0.315 318.55);
@@ -323,7 +325,7 @@ header {
   align-items: center;
   justify-content: center;
   padding-top: 0 2vw;
-  margin-top: 2vh;
+  margin-top: 14vh;
   margin-bottom: 2vh;
   position: relative;
   width: 100%;
