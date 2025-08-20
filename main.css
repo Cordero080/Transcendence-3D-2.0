@@ -315,8 +315,8 @@ header {
   align-items: center;
   justify-content: center;
   padding-top: 0 2vw;
-  margin-top: 4vh;
-  margin-bottom: 4vh;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
   position: relative;
   width: 100%;
   height: 9vh;
@@ -329,7 +329,7 @@ header {
   display: block;
   position: relative;
   text-align: center;
-  margin-top: 1vh;
+  margin-top: 1.5vh;
 
   background: linear-gradient(45deg, 
     oklch(71.384% 0.20314 353.227),     /* Pink */
@@ -362,6 +362,7 @@ header {
   justify-content: flex-start;
   width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
   margin-top: 1.2vh;
   padding: 0;
   gap: 0;
@@ -2678,17 +2679,29 @@ canvas {
 /* show background grid image on mobile if all else fails*/
 
 /* show background grid image on mobile if all else fails */
+
+/* Mobile-only fixes */
 @media (max-width: 767px) {
+  /* 1) iOS background bug fix */
   body {
-    background-attachment: scroll !important; /* iOS fixed bug fix */
+    background-attachment: scroll !important;
   }
 
+  /* 2) Always-visible grid layer behind content */
   html::before {
     content: "";
     position: fixed;
     inset: 0;
-    z-index: -1;
-    background: url('./images/grid-b.jpg') center/cover no-repeat;
+    z-index: -1;           /* stays behind your app */
+    pointer-events: none;  /* never intercepts taps */
+    background: url("./images/grid-b.jpg") center/cover no-repeat;
+  }
+
+  /* 3) Make the whole app a bit smaller on phones */
+  #main-wrapper {
+    transform: scale(0.88);       /* try 0.85–0.92 to taste */
+    transform-origin: top center; /* keeps title visible & centered */
+    margin: 0 auto;               /* ensure it stays centered */
   }
 }
 /* Overlay visibility — single source of truth (final override) */
