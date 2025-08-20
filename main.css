@@ -327,9 +327,10 @@ header {
 
 #transcendence {
   display: block;
+  font-size: 2.5vh;
   position: relative;
   text-align: center;
-  margin-top: 1.5vh;
+  margin-top: .2vh;
 
   background: linear-gradient(45deg, 
     oklch(71.384% 0.20314 353.227),     /* Pink */
