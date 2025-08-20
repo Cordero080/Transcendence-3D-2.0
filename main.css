@@ -2675,5 +2675,20 @@ canvas {
     opacity: 0;
   }
 }
+/* show background grid image on mobile if all else fails*/
 
+/* show background grid image on mobile if all else fails */
+@media (max-width: 767px) {
+  body {
+    background-attachment: scroll !important; /* iOS fixed bug fix */
+  }
+
+  html::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: url('./images/grid-b.jpg') center/cover no-repeat;
+  }
+}
 /* Overlay visibility — single source of truth (final override) */
