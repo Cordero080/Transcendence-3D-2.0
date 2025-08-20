@@ -190,7 +190,7 @@ scene.add(petRoot);
 // scene.background = new THREE.Color("black"); // Light gray background
 // Ambient light (softens all shadows, adds base brightness)
 const bgLoader = new THREE.TextureLoader();
-bgLoader.load("./images/cyberpunk-room2 .png", function (texture) {
+bgLoader.load("./images/cyberpunk-room2.3.png", function (texture) {
   scene.background = texture;
 });
 
