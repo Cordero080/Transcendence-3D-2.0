@@ -1,5 +1,15 @@
-/* Remove invalid/duplicate font-size rules above. Correct rule added at end of file. */
-/* Make the transcendence overlay title much larger and bold */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Honk&family=Monoton&family=Poiret+One&family=Splash&family=Tektur:wght@400..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+@font-face {
+  font-family: "Future Z";
+  src: url('./Fonts/FutureZ.otf') format('truetype');
+  font-weight: normal;
+font-style: normal;
+}
 .transcendence-title {
   font-size: 1.7em !important;
   font-weight: 900 !important;
@@ -15,6 +25,7 @@
   /* Subtle blur only for Try Again/Play Again button */
   backdrop-filter: blur(4px);
   margin-top: 32px;
+  font-family: Future Z;
   border: 2px solid #ff2bd3;
   background: #111218;
   color: #ff2bd3;
@@ -151,9 +162,6 @@
 .btn-play-again:active {
   transform: translateY(0);
 }
-@import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Honk&family=Monoton&family=Poiret+One&family=Splash&family=Tektur:wght@400..900&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
 /* Custom Scrollbar Styling */
 ::-webkit-scrollbar {
@@ -610,8 +618,29 @@ li::marker {
   z-index: 2;
 }
 
+.feed-btn:hover {
+  transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  box-shadow: 0 12px 12px oklch(84.201% 0.2819 142.495 / 0.843), 0 2px 8px oklch(120% 0.110 120.08 / 0.28); /* Greenish */
+  z-index: 2;
+}
+.dance-btn:hover {
+  transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  box-shadow: 0 12px 12px oklch(71.798% 0.26888 325.169 / 0.843), 0 2px 8px oklch(250% 0.110 292.08 / 0.18); /* Pink/Purple */
+  z-index: 2;
+}
+.sleep-btn:hover {
+  transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  box-shadow: 0 12px 12px oklch(71.171% 0.15989 239.246 / 0.843), 0 2px 8px oklch(200% 0.110 192.08 / 0.18); /* Blue */
+  z-index: 2;
+}
+.train-btn:hover {
+  transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  box-shadow: 0 12px 12px oklch(65.025% 0.26522 357.482 / 0.731), 0 2px 8px oklch(80% 0.110 92.08 / 0.18); /* Yellow/Gold */
+  z-index: 2;
+}
+
 .Buttons {
-  font-family: "Orbitron";
+  font-family: "Future Z";
   color: oklch(92.95% 0.105 96.77);
   background-color: blue;
   display: inline-flex;
@@ -634,7 +663,7 @@ button.Buttons {
   height: 40px;
   display: flex;
   padding: 0;
-  font-size: 0.4em;
+  font-size: 0.45em;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -676,15 +705,15 @@ button.Buttons.disabled:active
 }
 
 .timer-display {
-  font-family: "doto";
-  font-size: 0.7em;
+  font-family: "Future Z";
+  font-size: 0.52em;
   color: oklch(85.549% 0.24662 147.119 / 0.923);
   background-color: oklch(58.62% 0.108 255.79 / 0.479);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
+  padding: 4px 1px;
   border-radius: 4px;
   text-align: center;
   min-width: 50px;
@@ -697,20 +726,24 @@ button.Buttons.disabled:active
 .timer-display.medium { color: #ffd93d; } /* Yellow for medium levels */
 .timer-display.high { color: #6bcf7f; }   /* Green for good levels */
 /*=====================START/RESET======================*/
+
+
 .StartButton {
   padding: 12px 36px;
   font-size: 0.8em;
   margin-top: 40px;
   letter-spacing: 3px;
-  font-family: "Orbitron", sans-serif;
+  font-family: "Future Z", sans-serif;
   background: #1e1eeb;
   color: #fff;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  cursor:pointer;
   box-shadow: 0 4px 8px oklch(0% 0 0 / 0.2);
   position:relative;
 }
+
+
 
 @property --angle{
   syntax:"<angle>" ;
@@ -734,10 +767,62 @@ button.Buttons.disabled:active
 .StartButton::before {
   filter: blur(1.5rem);
   opacity: 0.5;
-  z-index: -10;
+  z-index: -1;
 }
 
 @keyframes spin{
+  from{
+--angle: 0deg;
+  }
+  to{
+--angle: -360deg;
+  }
+}
+
+
+
+.ResetButton {
+  padding: 12px 36px;
+  font-size: 0.8em;
+  letter-spacing: 3px;
+  font-family: "Future Z", sans-serif;
+  background: #9d1eeb;
+  color: #eaf8fd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px oklch(0% 0 0 / 0.2);
+  position:relative;
+  
+}
+
+@property --angle{
+  syntax:"<angle>" ;
+  initial-value: 0deg;
+  inherits: false;
+}
+.ResetButton::after, .ResetButton::before {
+ content:"";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: conic-gradient(from var(--angle),  oklch(65.964% 0.27558 349.688), oklch(73.035% 0.15018 232.981), oklch(69.854% 0.17452 153.965), oklch(48.131% 0.28662 278.604), oklch(59.72% 0.27737 321.28), oklch(65.964% 0.27558 349.688)  );
+  top: 50%;
+  left:50%;
+  translate: -50% -50%;
+  z-index: -15;
+  padding: 3px;
+  border-radius: 8px;
+  animation: 3s spinReverse linear infinite;
+}
+.ResetButton::before {
+  filter: blur(1.5rem);
+  opacity: 0.5;
+  z-index: -1;
+  
+}
+
+@keyframes spinReverse{
   from{
 --angle: 0deg;
   }
@@ -746,26 +831,18 @@ button.Buttons.disabled:active
   }
 }
 
-.ResetButton {
-  padding: 12px 36px;
-  font-size: 0.8em;
-  letter-spacing: 3px;
-  font-family: "Orbitron", sans-serif;
-  background: #9d1eeb;
-  color: #eaf8fd;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px oklch(0% 0 0 / 0.2);
-  
-}
 
 
 .StartButton:hover,
 .ResetButton:hover {
   transform: perspective(200px) rotateX(1deg) rotateY(1deg) scale(1);
+  animation: floatButton 1.2s ease-in-out infinite;
   box-shadow: 0 12px 12px oklch(51.245% 0.27967 294.646), 0 2px 8px oklch(30.8% 0.16816 296.076 / 0.18);
-  z-index: -15;
+  
+}
+@keyframes floatButton {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 canvas {
@@ -891,7 +968,7 @@ canvas {
   background: linear-gradient(45deg, #ad0e5b, #1a4e93, #3d0c82);
   background-size: 200% 200%;
   color: hsl(216, 56%, 79%);
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Future Z', sans-serif;
   font-size: 1em;
   padding: 10px 25px;
   border: none;
