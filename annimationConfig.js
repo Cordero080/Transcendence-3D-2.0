@@ -152,7 +152,7 @@ const animationConfig = {
     sleep: {
       file: "./models/yellow_sleep.fbx",
       pose: {
-        scale: [0.0020, 0.0020, 0.0020],
+        scale: [0.002, 0.002, 0.002],
         position: [-7.9, -2.8, -4.9],
         rotationY: Math.PI / 10,
         rotationX: 0,
@@ -342,7 +342,7 @@ const animationConfig = {
     feed: {
       file: "./models/red_eats.fbx",
       pose: {
-        scale: [0.00290, 0.00290, 0.00290],
+        scale: [0.0029, 0.0029, 0.0029],
         position: [-1.9, -1, -9],
         rotationY: -Math.PI / 1,
         rotationX: 0,
@@ -352,7 +352,7 @@ const animationConfig = {
       file: "./models/red_break2.fbx",
       pose: {
         scale: [0.0025, 0.0025, 0.0025],
-        position: [0.3, -2.6, -5.3],
+        position: [0.3, -2.6, -6],
         rotationY: Math.PI / -14,
         rotationX: 0,
       },
@@ -361,8 +361,8 @@ const animationConfig = {
       file: "./models/red_bboy.fbx",
       pose: {
         scale: [0.0018, 0.0018, 0.0018],
-        position: [-1, -1.4, -3],
-        rotationY: -Math.PI / -10,
+        position: [0, -1.4, -3.5],
+        rotationY: -Math.PI / 4,
         rotationX: 0,
       },
     },
@@ -379,10 +379,9 @@ const animationConfig = {
       file: "./models/red_sleep.fbx",
       pose: {
         scale: [0.0029, 0.0029, 0.0029],
-        position: [0, .5, -8.7],
+        position: [0, 0.5, -8.7],
         rotationY: Math.PI / -3,
         rotationX: 6,
-       
       },
     },
     train: {

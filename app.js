@@ -175,6 +175,7 @@ let whiteStageTranscendenceTimeout = null;
 // Dance sequence tracking
 let danceSequenceIndex = 0; // 0 = dance, 1 = dance2
 // 🔹 Game Over overlay helper
+
 function showGameOverOverlay(reason = "") {
   const overlay = document.getElementById("gameOverOverlay");
   if (!overlay) return;
@@ -756,8 +757,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "yellow";
-    myPet.stage = "yellow"; // uncomment to start at white
+    currentStage = "red";
+    myPet.stage = "red"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -1742,15 +1743,284 @@ async function playActionThenShareIdle(actionType, stage) {
       return;
     }
 
-    const selectedAction =
-      availableVariants[Math.floor(Math.random() * availableVariants.length)];
-    console.log(
-      `🎬 Playing ${actionType} animation: ${selectedAction} for ${stage} stage (${availableVariants.length} variants available)`
-    );
+    let selectedAction;
+    if (actionType === "train") {
+      const idx = trainIndices[stage] || 0;
+      selectedAction = availableVariants[idx % availableVariants.length];
+      trainIndices[stage] = (idx + 1) % availableVariants.length;
+    } else if (actionType === "dance") {
+      const idx = danceIndices[stage] || 0;
+      selectedAction = availableVariants[idx % availableVariants.length];
+      danceIndices[stage] = (idx + 1) % availableVariants.length;
+    } else {
+      selectedAction = availableVariants[0];
+    }
 
     const anim = animationConfig[stage][selectedAction];
     const baseDurationMs = await loadAndDisplayFBX(anim.file, anim.pose);
+    if (stage === "yellow" && selectedAction === "train") {
+      setTimeout(() => {
+        let yellowKickAudio = document.getElementById("yellow-kick");
+        if (!yellowKickAudio) {
+          yellowKickAudio = document.createElement("audio");
+          yellowKickAudio.id = "yellow-kick";
+          yellowKickAudio.src = "music/yellow_kick.wav";
+          yellowKickAudio.preload = "auto";
+          document.body.appendChild(yellowKickAudio);
+        }
+        yellowKickAudio.pause();
+        yellowKickAudio.currentTime = 0;
+        yellowKickAudio.volume = 1;
+        yellowKickAudio.play().catch((err) => {
+          console.log("🔇 yellow_kick.wav audio play() blocked:", err);
+        });
+      }, 200); // 1 second = 1000 ms
+    }
+    if (stage === "yellow" && selectedAction === "train2") {
+      setTimeout(() => {
+        let yellowKickAudio = document.getElementById("yellow-kick");
+        if (!yellowKickAudio) {
+          yellowKickAudio = document.createElement("audio");
+          yellowKickAudio.id = "yellow-kick";
+          yellowKickAudio.src = "music/yellow_kick.wav";
+          yellowKickAudio.preload = "auto";
+          document.body.appendChild(yellowKickAudio);
+        }
+        yellowKickAudio.pause();
+        yellowKickAudio.currentTime = 0;
+        yellowKickAudio.volume = 1;
+        yellowKickAudio.play().catch((err) => {
+          console.log("🔇 yellow_kick.wav audio play() blocked:", err);
+        });
+      }, 1800); // <-- play at 1.8 seconds for train2
 
+      // yellow_grunt.wav at 2300ms
+      setTimeout(() => {
+        let yellowGruntAudio = document.getElementById("yellow-grunt");
+        if (!yellowGruntAudio) {
+          yellowGruntAudio = document.createElement("audio");
+          yellowGruntAudio.id = "yellow-grunt";
+          yellowGruntAudio.src = "music/yellow_grunt.mp3";
+          yellowGruntAudio.preload = "auto";
+          document.body.appendChild(yellowGruntAudio);
+        }
+        yellowGruntAudio.pause();
+        yellowGruntAudio.currentTime = 0;
+        yellowGruntAudio.volume = 1.0;
+        yellowGruntAudio.play().catch(() => {});
+      }, 670);
+    }
+    if (stage === "green" && selectedAction === "train") {
+      setTimeout(() => {
+        let greenGruntAudio = document.getElementById("green-grunt");
+        if (!greenGruntAudio) {
+          greenGruntAudio = document.createElement("audio");
+          greenGruntAudio.id = "green-grunt";
+          greenGruntAudio.src = "music/green_grunt2.wav";
+          greenGruntAudio.preload = "auto";
+          document.body.appendChild(greenGruntAudio);
+        }
+        greenGruntAudio.pause();
+        greenGruntAudio.currentTime = 0;
+        greenGruntAudio.volume = 0.8;
+        greenGruntAudio.play().catch((err) => {
+          console.log("🔇 green_grunt2.wav audio play() blocked:", err);
+        });
+      }, 700); // Adjust the delay (in ms) as needed for timing
+    }
+    if (stage === "green" && selectedAction === "train2") {
+      setTimeout(() => {
+        let greenGruntAudio = document.getElementById("green-grunt");
+        if (!greenGruntAudio) {
+          greenGruntAudio = document.createElement("audio");
+          greenGruntAudio.id = "green-grunt";
+          greenGruntAudio.src = "music/green_grunt.wav";
+          greenGruntAudio.preload = "auto";
+          document.body.appendChild(greenGruntAudio);
+        }
+        greenGruntAudio.pause();
+        greenGruntAudio.currentTime = 0;
+        greenGruntAudio.volume = 1.0;
+        greenGruntAudio.play().catch((err) => {
+          console.log("🔇 green_grunt.wav audio play() blocked:", err);
+        });
+      }, 990); // Adjust the delay (in ms) as needed for timing
+    }
+    if (stage === "red" && selectedAction === "train") {
+      setTimeout(() => {
+        let redJumpAudio = document.getElementById("red-jump");
+        if (!redJumpAudio) {
+          redJumpAudio = document.createElement("audio");
+          redJumpAudio.id = "red-jump";
+          redJumpAudio.src = "music/red_jump.wav";
+          redJumpAudio.preload = "auto";
+          document.body.appendChild(redJumpAudio);
+        }
+        redJumpAudio.pause();
+        redJumpAudio.currentTime = 0;
+        redJumpAudio.volume = 1.0;
+        redJumpAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 900); // Adjust the delay (in ms) as needed for timing
+
+      // Second effect at 1600ms
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit";
+          redLandAudio.src = "music/red_jump.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 1.0;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 1600);
+
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit-2");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit-2";
+          redLandAudio.src = "music/red_jump.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 1.0;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 1800);
+
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit-3");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit-3";
+          redLandAudio.src = "music/red_grunt2.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 0.9;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_grunt2.wav audio play() blocked:", err);
+        });
+      }, 2100);
+    }
+
+    if (stage === "red" && selectedAction === "train2") {
+      setTimeout(() => {
+        let redJumpAudio = document.getElementById("red-jump");
+        if (!redJumpAudio) {
+          redJumpAudio = document.createElement("audio");
+          redJumpAudio.id = "red-jump";
+          redJumpAudio.src = "music/red_jump.wav";
+          redJumpAudio.preload = "auto";
+          document.body.appendChild(redJumpAudio);
+        }
+        redJumpAudio.pause();
+        redJumpAudio.currentTime = 0;
+        redJumpAudio.volume = 1.0;
+        redJumpAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 800); // Adjust the delay (in ms) as needed for timing
+
+      // Second effect at 1600ms
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit";
+          redLandAudio.src = "music/red_jump.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 1.0;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 1600);
+
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit";
+          redLandAudio.src = "music/red_jump.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 1.0;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 1700);
+
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit-2");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit-2";
+          redLandAudio.src = "music/red_jump.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 1.0;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_jump.wav audio play() blocked:", err);
+        });
+      }, 1800);
+
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit-3");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit-3";
+          redLandAudio.src = "music/red_grunt2.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 0.9;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_grunt2.wav audio play() blocked:", err);
+        });
+      }, 2100);
+
+      setTimeout(() => {
+        let redLandAudio = document.getElementById("red-hit-4");
+        if (!redLandAudio) {
+          redLandAudio = document.createElement("audio");
+          redLandAudio.id = "red-hit-4";
+          redLandAudio.src = "music/red_grunt3.wav";
+          redLandAudio.preload = "auto";
+          document.body.appendChild(redLandAudio);
+        }
+        redLandAudio.pause();
+        redLandAudio.currentTime = 0;
+        redLandAudio.volume = 0.9;
+        redLandAudio.play().catch((err) => {
+          console.log("🔇 red_grunt3.wav audio play() blocked:", err);
+        });
+      }, 2400);
+    }
     // Play fighting_voice.wav at different times for train/train2 in blue stage
     if (stage === "blue") {
       if (selectedAction === "train") {
