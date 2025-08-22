@@ -220,6 +220,10 @@ html, body {
     transform: scale(calc(100vw / 1200));
   }
 }
+
+@media (max-width: 768px) {
+  .scaling-root {transform: none;}
+}
  body {
   font-family: "Doto", sans-serif;
   font-size: 3vh;
@@ -2782,6 +2786,13 @@ html::before {
   z-index: -1;
   pointer-events: none;
   background: url("./images/grid-b.jpg") center/cover no-repeat;
+  image-rendering: auto;        /* let browser optimize for device */
+  background-attachment: fixed; /* keeps scale uniform */
+}
+
+/* Mobile: avoid iOS fixed-background jank */
+@media (max-width: 767px) {
+  html::before { background-attachment: scroll; }
 }
 
 /* 2) iOS fixed-background bug: disable 'fixed' on small screens and when sideways */
@@ -2790,11 +2801,68 @@ html::before {
   body { background-attachment: scroll !important; }
 }
 
+/* === NEW: Base (desktop) aspect for uniform scaling ========== */
+#pet-container {
+  /* keeps composition consistent on desktop while resizing */
+  aspect-ratio: 16 / 8.4;
+  height: auto;        /* let width drive height */
+  position: relative;
+  overflow: hidden;    /* letterbox if needed instead of squish */
+}
+
 /* 3) Make the whole app a bit smaller on phones (portrait) */
 @media (max-width: 767px) {
   #main-wrapper {
-    transform: scale(0.88);          /* adjust 0.85–0.92 to taste */
+    transform: scale(0.88);      /* adjust 0.85–0.92 to taste */
     transform-origin: top center;
     margin: 0 auto;
   }
+}
+
+/* === Mobile PORTRAIT (phones) =============================== */
+@media (max-width: 768px) and (orientation: portrait) {
+  #pet-container {
+    width: 94vw;                 /* fit nicely with small padding */
+    aspect-ratio: 4 / 5;         /* taller view for phones */
+    height: auto;                /* override any fixed height */
+    max-height: 78vh;            /* avoid overflow under UI */
+    margin: 0 auto;
+  }
+
+  /* Make info box stack and breathe */
+  .infoBox {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* === Mobile LANDSCAPE (tilted phones) ======================= */
+@media (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
+  #pet-container {
+    width: 96vw;                 /* almost full width */
+    aspect-ratio: 16 / 9;        /* wider frame for landscape */
+    height: auto;
+    max-height: 85vh;
+    margin: 0 auto;
+  }
+
+  /* Controls more compact to keep canvas big */
+  .infoBox {
+    flex-direction: row;
+    gap: 8px;
+    min-height: unset;
+  }
+  .infoBox-controls, .infoBox_petChat {
+    width: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Make sure the canvas always fills the container box */
+#pet-container canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
 }

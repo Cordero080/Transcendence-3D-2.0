@@ -13,6 +13,45 @@ let time = 0;
 let currentPose = "";
 let catMaskCanvas = null;
 let catMaskContext = null;
+let lastBaseScale = [0.001, 0.001, 0.001];
+// === Responsive helpers ======================================
+function resizeRendererToContainer(renderer, camera) {
+  const container = document.getElementById("pet-container");
+  if (!container) return;
+  const width = Math.floor(container.clientWidth);
+  const height = Math.floor(container.clientHeight);
+  const canvas = renderer.domElement;
+
+  // Only resize when needed
+  if (canvas.width !== width || canvas.height !== height) {
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }
+}
+
+// Scale the active model a bit smaller on narrow screens
+// Scale the active model a bit smaller on narrow screens (multiplicative)
+function fitModelForViewport(model, baseScale = [0.001, 0.001, 0.001]) {
+  if (!model) return;
+
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  if (!isMobile) {
+    // Desktop: keep your exact pose scale
+    model.scale.set(baseScale[0], baseScale[1], baseScale[2]);
+    return;
+  }
+
+  const container = document.getElementById("pet-container");
+  const w = container ? container.clientWidth : window.innerWidth;
+
+  // Scale factor 0.6..1.0 across 360–900px widths
+  const t = Math.max(360, Math.min(900, w));
+  const k = 0.6 + ((t - 360) / (900 - 360)) * 0.4;
+
+  // Multiply original pose scale, don't overwrite
+  model.scale.set(baseScale[0] * k, baseScale[1] * k, baseScale[2] * k);
+}
 
 export function clearActiveModel() {
   // remove the single tracked model
@@ -143,6 +182,8 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
         fbx.position.set(px, py, pz);
         fbx.rotation.y = rotationY;
 
+        lastBaseScale = [sx, sy, sz];
+
         fbx.traverse((child) => {
           if (child.isMesh) {
             child.castShadow = true;
@@ -154,6 +195,7 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
         petRoot.add(fbx);
         activeModel = fbx;
         currentPose = path;
+      fitModelForViewport(activeModel, lastBaseScale);
 
         // ----- animation (guard if no clips) -----
         mixer = new THREE.AnimationMixer(fbx);
@@ -177,6 +219,7 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
     );
   });
 }
+
 
 function hasActiveModel() {
   return !!activeModel;
@@ -221,6 +264,8 @@ renderer.setSize(PET_WIDTH, PET_HEIGHT);
 renderer.shadowMap.enabled = true; // ✅ Add this line
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // (optional but softer shadows)
 petContainer.appendChild(renderer.domElement);
+
+resizeRendererToContainer(renderer, camera);
 
 // Update camera aspect ratio to match container
 camera.aspect = PET_WIDTH / PET_HEIGHT;
@@ -311,16 +356,20 @@ function animate() {
 
   if (mixer) mixer.update(delta);
 
-  const newWidth = petContainer.offsetWidth || 900;
-  const newHeight = petContainer.offsetHeight || 600;
-  if (
-    renderer.getSize(new THREE.Vector2()).x !== newWidth ||
-    renderer.getSize(new THREE.Vector2()).y !== newHeight
-  ) {
-    renderer.setSize(newWidth, newHeight, false);
-    camera.aspect = newWidth / newHeight;
-    camera.updateProjectionMatrix();
-  }
+  
   renderer.render(scene, camera);
 }
+
+// Refit on window resizes and orientation changes
+window.addEventListener("resize", () => {
+  resizeRendererToContainer(renderer, camera);
+  fitModelForViewport(activeModel, lastBaseScale);
+});
+
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    resizeRendererToContainer(renderer, camera);
+    fitModelForViewport(activeModel, lastBaseScale);
+  }, 150); // let CSS media queries settle
+});
 animate();

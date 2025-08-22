@@ -756,8 +756,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    currentStage = "yellow";
+    myPet.stage = "yellow"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
