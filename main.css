@@ -2823,9 +2823,9 @@ html::before {
 @media (max-width: 768px) and (orientation: portrait) {
   #pet-container {
     width: 94vw;                 /* fit nicely with small padding */
-    aspect-ratio: 4 / 5.3;       /* slightly less tall than 4/5 */
+    aspect-ratio: 4 / 5.4;       /* slightly less tall than 4/5 */
     height: auto;                /* override any fixed height */
-    max-height: 72svh;           /* avoid overflow under UI */
+    max-height: 70svh;           /* avoid overflow under UI */
     margin: 0 auto;
   }
 
@@ -2841,15 +2841,15 @@ html::before {
   #pet-container {
     width: 96vw;                 /* almost full width */
     aspect-ratio: 16 / 8.4;      /* match desktop vibe */
-    height: auto;
-    max-height: 78svh;           /* reduced to avoid scroll */
+    max-height: 82svh;           /* reduced to avoid scroll */
     margin: 0 auto;
   }
 
   /* Controls more compact to keep canvas big */
   .infoBox {
     flex-direction: row;
-    gap: 6px;
+    gap: 8px;
+    padding: 4px 8px;
     min-height: unset;
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -2858,10 +2858,11 @@ html::before {
   .Buttons button,
   .infoBox-controls button,
   .infoBox_petChat button {
-    padding: 8px 12px;
-    font-size: clamp(12px, 1.6vw, 14px);
+    padding: 6px 10px;
+    font-size: clamp(11px, 1.4vw, 13px);
     line-height: 1.1;
     min-width: auto;
+    margin: 0;
   }
 
   .infoBox-controls, .infoBox_petChat {
