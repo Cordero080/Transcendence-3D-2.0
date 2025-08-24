@@ -1066,190 +1066,6 @@ canvas {
 }
 
 /* ============================================================================
-   CYBERPUNK GLITCH EFFECTS
-   ============================================================================ */
-.glitching-effect {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background: linear-gradient(45deg, #000, #1a1a1a, #333);
-  border-radius: 10px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: glitchContainer 2s infinite;
-}
-
-.glitch-text {
-  font-family: "Doto", monospace;
-  font-size: 0.9em;
-  padding: 0.7em;
-  word-break: break-word;
-  text-shadow: 
-    0 0 10px #00ff00,
-    0 0 20px #00ff00,
-    0 0 30px #00ff00;
-  animation: glitchText 1.5s infinite;
-  z-index: 3;
-}
-
-.glitch-bars {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 255, 255, 0.1) 2px,
-    rgba(0, 255, 255, 0.1) 4px
-  );
-  animation: glitchBars 0.5s infinite;
-  z-index: 2;
-}
-
-.glitch-static {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/></filter></defs><rect width="100%" height="100%" fill="rgba(255,255,255,0.1)" filter="url(%23noise)"/></svg>');
-  animation: glitchStatic 0.1s infinite;
-  z-index: 1;
-}
-
-/* ============================================================================
-   COLORFUL GLITCH ANIMATION CONTAINER
-   ============================================================================ */
-.colorful-glitch-container {
-  width: 150px;
-  height: 200px;
-  position: relative;
-  background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #0080ff);
-  background-size: 400% 400%;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: colorfulGlitchContainer 1.5s infinite, rainbowShift 3s infinite;
-  box-shadow: 
-    0 0 20px rgba(255, 0, 128, 0.5),
-    0 0 40px rgba(0, 255, 128, 0.3),
-    0 0 60px rgba(128, 0, 255, 0.2),
-    /* 3D depth shadows for mass effect */
-    inset -8px -8px 16px rgba(0, 0, 0, 0.4),
-    inset 8px 8px 16px rgba(255, 255, 255, 0.1),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.3),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.05),
-    /* Enhanced edge shading for 3D realism */
-    inset -15px 0px 20px rgba(0, 0, 0, 0.3),
-    inset 15px 0px 20px rgba(255, 255, 255, 0.08),
-    inset 0px -20px 25px rgba(0, 0, 0, 0.35),
-    inset 0px 12px 18px rgba(255, 255, 255, 0.12),
-    /* Curved edge highlights */
-    inset -25px -25px 30px rgba(0, 0, 0, 0.25),
-    inset 25px 25px 30px rgba(255, 255, 255, 0.06),
-    /* Subtle rim lighting */
-    inset -2px -2px 4px rgba(255, 0, 128, 0.2),
-    inset 2px 2px 4px rgba(0, 255, 128, 0.15);
-  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
-}
-
-/* Hatching animation state */
-.colorful-glitch-container.hatching {
-  animation: eggHatching 1.5s ease-out forwards;
-}
-
-/* Sonic birth animation */
-.sonic-container img.hatching {
-  animation: sonicBirth 2s ease-out forwards, sonicFastFrames 0.05s infinite;
-  filter: 
-    drop-shadow(0 0 10px rgba(255, 0, 128, 0.8)) 
-    drop-shadow(0 0 20px rgba(0, 255, 128, 0.6)) 
-    drop-shadow(0 0 30px rgba(128, 0, 255, 0.4));
-  image-rendering: pixelated;
-}
-
-
-
-/* Sonic normal state after hatching */
-.sonic-container img.born {
-  animation: none;
-  border: none;
-  filter: brightness(0.9) contrast(1.5);
-  transform: translateY(30px);
-}
-
-.colorful-glitch-text {
-  display: flex;
-  text-align: center;
-  font-family: "Doto", monospace;
-  font-size: 1.2em;
-  opacity: 0.8;
-  font-weight: bold;
-  color: #ffffff;
-  text-shadow: 
-    2px 2px 0px #ff0080,
-    -2px -2px 0px #00ff80,
-    2px -2px 0px #8000ff,
-    -2px 2px 0px #ff8000;
-  animation: colorfulGlitchText 1.2s infinite;
-  z-index: 5;
-  letter-spacing: 3px;
-}
-
-.colorful-glitch-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 3px,
-    rgba(255, 0, 128, 0.2) 3px,
-    rgba(255, 0, 128, 0.2) 6px,
-    transparent 6px,
-    transparent 9px,
-    rgba(0, 255, 128, 0.2) 9px,
-    rgba(0, 255, 128, 0.2) 12px
-  );
-  animation: colorfulGlitchOverlay 0.8s infinite;
-  z-index: 4;
-}
-
-.colorful-glitch-particles {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 80% 50%, rgba(0, 255, 128, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 50% 20%, rgba(128, 0, 255, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 50% 80%, rgba(255, 128, 0, 0.3) 0%, transparent 50%);
-  animation: colorfulGlitchParticles 2s infinite;
-  z-index: 3;
-}
-
-.colorful-glitch-border {
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  border: 3px solid;
-  border-color: #ff0080 #00ff80 #8000ff #ff8000;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  animation: colorfulGlitchBorder 1s infinite;
-  z-index: 2;
-}
-
-/* ============================================================================
    KEYFRAME ANIMATIONS
    ============================================================================ */
 @keyframes pageLoadFadeIn {
@@ -1383,230 +1199,6 @@ canvas {
   100% { opacity: 0.1; }
 }
 
-/* ============================================================================
-   COLORFUL GLITCH KEYFRAME ANIMATIONS
-   ============================================================================ */
-@keyframes colorfulGlitchContainer {
-  0%, 90% { transform: translate(0) scale(1); }
-  91% { transform: translate(-3px, 2px) scale(1.02); }
-  92% { transform: translate(3px, -2px) scale(0.98); }
-  93% { transform: translate(-2px, 3px) scale(1.01); }
-  94% { transform: translate(2px, -3px) scale(0.99); }
-  95% { transform: translate(-3px, -2px) scale(1.03); }
-  96% { transform: translate(3px, 2px) scale(0.97); }
-  97% { transform: translate(-2px, -3px) scale(1.02); }
-  98% { transform: translate(2px, 3px) scale(0.98); }
-  99% { transform: translate(0) scale(1); }
-}
-
-@keyframes rainbowShift {
-  0% { background-position: 0% 50%; }
-  25% { background-position: 100% 50%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes colorfulGlitchText {
-  0%, 80% { 
-    color: #ffffff;
-    text-shadow: 
-      2px 2px 0px #ff0080,
-      -2px -2px 0px #00ff80,
-      2px -2px 0px #8000ff,
-      -2px 2px 0px #ff8000;
-  }
-  81% { 
-    color: #ff0080;
-    text-shadow: 
-      2px 2px 0px #ffffff,
-      -2px -2px 0px #00ff80,
-      2px -2px 0px #8000ff,
-      -2px 2px 0px #ff8000;
-  }
-  82% { 
-    color: #00ff80;
-    text-shadow: 
-      2px 2px 0px #ff0080,
-      -2px -2px 0px #ffffff,
-      2px -2px 0px #8000ff,
-      -2px 2px 0px #ff8000;
-  }
-  83% { 
-    color: #8000ff;
-    text-shadow: 
-      2px 2px 0px #ff0080,
-      -2px -2px 0px #00ff80,
-      2px -2px 0px #ffffff,
-      -2px 2px 0px #ff8000;
-  }
-  84% { 
-    color: #ff8000;
-    text-shadow: 
-      2px 2px 0px #ff0080,
-      -2px -2px 0px #00ff80,
-      2px -2px 0px #8000ff,
-      -2px 2px 0px #ffffff;
-  }
-  85%, 100% { 
-    color: #ffffff;
-    text-shadow: 
-      2px 2px 0px #ff0080,
-      -2px -2px 0px #00ff80,
-      2px -2px 0px #8000ff,
-      -2px 2px 0px #ff8000;
-  }
-}
-
-@keyframes colorfulGlitchOverlay {
-  0% { transform: translateX(0) skewX(0deg); }
-  20% { transform: translateX(-5px) skewX(-2deg); }
-  40% { transform: translateX(5px) skewX(2deg); }
-  60% { transform: translateX(-3px) skewX(-1deg); }
-  80% { transform: translateX(3px) skewX(1deg); }
-  100% { transform: translateX(0) skewX(0deg); }
-}
-
-@keyframes colorfulGlitchParticles {
-  0% { 
-    opacity: 0.3;
-    transform: rotate(0deg) scale(1);
-  }
-  25% { 
-    opacity: 0.7;
-    transform: rotate(90deg) scale(1.1);
-  }
-  50% { 
-    opacity: 0.5;
-    transform: rotate(180deg) scale(0.9);
-  }
-  75% { 
-    opacity: 0.8;
-    transform: rotate(270deg) scale(1.05);
-  }
-  100% { 
-    opacity: 0.3;
-    transform: rotate(360deg) scale(1);
-  }
-}
-
-@keyframes colorfulGlitchBorder {
-  0% { 
-    border-color: #ff0080 #00ff80 #8000ff #ff8000;
-    transform: rotate(0deg);
-  }
-  25% { 
-    border-color: #00ff80 #8000ff #ff8000 #ff0080;
-    transform: rotate(1deg);
-  }
-  50% { 
-    border-color: #8000ff #ff8000 #ff0080 #00ff80;
-    transform: rotate(-1deg);
-  }
-  75% { 
-    border-color: #ff8000 #ff0080 #00ff80 #8000ff;
-    transform: rotate(1deg);
-  }
-  100% { 
-    border-color: #ff0080 #00ff80 #8000ff #ff8000;
-    transform: rotate(0deg);
-  }
-}
-
-/* ============================================================================
-   HATCHING ANIMATIONS
-   ============================================================================ */
-@keyframes eggHatching {
-  0% { 
-    opacity: 1; 
-    transform: scale(1); 
-  }
-  50% { 
-    opacity: 0.7; 
-    transform: scale(1.1) rotate(5deg); 
-  }
-  100% { 
-    opacity: 0; 
-    transform: scale(0.8) rotate(-5deg); 
-  }
-}
-
-@keyframes sonicBirth {
-  0% { 
-    opacity: 0;
-    transform: translateY(30px) scale(0.5);
-    filter: 
-      drop-shadow(0 0 15px rgba(255, 0, 128, 1)) 
-      drop-shadow(0 0 25px rgba(0, 255, 128, 0.8)) 
-      drop-shadow(0 0 35px rgba(128, 0, 255, 0.6));
-  }
-  25% { 
-    opacity: 0.7;
-    transform: translateY(30px) scale(0.8);
-    filter: 
-      drop-shadow(0 0 20px rgba(0, 255, 128, 1)) 
-      drop-shadow(0 0 30px rgba(128, 0, 255, 0.8)) 
-      drop-shadow(0 0 40px rgba(255, 128, 0, 0.6));
-  }
-  50% { 
-    opacity: 0.8;
-    transform: translateY(30px) scale(1);
-    filter: 
-      drop-shadow(0 0 25px rgba(128, 0, 255, 1)) 
-      drop-shadow(0 0 35px rgba(255, 128, 0, 0.8)) 
-      drop-shadow(0 0 45px rgba(0, 128, 255, 0.6));
-  }
-  75% { 
-    opacity: 0.9;
-    transform: translateY(30px) scale(1.1);
-    filter: 
-      drop-shadow(0 0 20px rgba(255, 128, 0, 1)) 
-      drop-shadow(0 0 30px rgba(0, 128, 255, 0.8)) 
-      drop-shadow(0 0 40px rgba(255, 0, 128, 0.6));
-  }
-  100% { 
-    opacity: 1;
-    transform: translateY(30px) scale(1);
-    filter: brightness(0.9) contrast(1.5);
-  }
-}
-
-@keyframes sonicFastFrames {
-  0% { 
-    filter: 
-      brightness(1.2) contrast(1.8) hue-rotate(0deg)
-      drop-shadow(0 0 10px rgba(255, 0, 128, 0.8)) 
-      drop-shadow(0 0 20px rgba(0, 255, 128, 0.6)) 
-      drop-shadow(0 0 30px rgba(128, 0, 255, 0.4));
-  }
-  50% { 
-    filter: 
-      brightness(1.4) contrast(2.0) hue-rotate(180deg)
-      drop-shadow(0 0 10px rgba(0, 255, 128, 0.8)) 
-      drop-shadow(0 0 20px rgba(128, 0, 255, 0.6)) 
-      drop-shadow(0 0 30px rgba(255, 128, 0, 0.4));
-  }
-  100% { 
-    filter: 
-      brightness(1.2) contrast(1.8) hue-rotate(360deg)
-      drop-shadow(0 0 10px rgba(255, 0, 128, 0.8)) 
-      drop-shadow(0 0 20px rgba(0, 255, 128, 0.6)) 
-      drop-shadow(0 0 30px rgba(128, 0, 255, 0.4));
-  }
-}
-
-/* ============================================================================
-   SONIC ANIMATIONS & SPECIAL POSITIONING
-   ============================================================================ */
-/* Default sonic.gif styling */
-.sonic-container img[src="resources/sonic.gif"] {
-  width: 75%;
-  height: auto;
-  transform: translateY(30px);
-  filter: brightness(0.9) contrast(1.5);
-}
-
-
 
 @keyframes mysteriousDrop {
   0% {
@@ -1725,14 +1317,6 @@ canvas {
 }
 
 /* ────────────── Evolution Stage Filters ────────────── */
-
-
-/* ============================================================================
-   TRANSCENDENCE ANIMATION
-   ============================================================================ */
-
-/* Transcendence animation for final evolution */
-
 
 /* ============================================================================
    GAME OVER OVERLAY
@@ -2870,7 +2454,6 @@ html::before {
     max-width: 50%;
   }
 }
-
 /* Make sure the canvas always fills the container box */
 #pet-container canvas {
   position: absolute;
@@ -2878,4 +2461,459 @@ html::before {
   width: 100% !important;
   height: 100% !important;
   display: block;
+}
+/*=================GLITCH EGG EFFECTS=====================*/
+/* Keep the egg centered (no inset:0 here) */
+#colorfulGlitchDiv {
+  position: absolute;        /* stays absolute */
+  width: 180px; height: 240px;
+  inset: auto; left: 50%; top: 35%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 3;
+}
+/* Position & layering for stutter overlays ONLY */
+#glitchStutterOverlay,
+#glitchStutterOverlay2 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+/* ==========COLORFUL GLITCH ANIMATION CONTAINER =========*/
+.colorful-glitch-container {
+  width: 150px;
+  height: 200px;
+  position: relative;
+  background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #0080ff);
+  background-size: 400% 400%;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: colorfulGlitchContainer 1.5s infinite, rainbowShift 3s infinite;
+  box-shadow: 
+    0 0 20px rgba(255, 0, 128, 0.5),
+    0 0 40px rgba(0, 255, 128, 0.3),
+    0 0 60px rgba(128, 0, 255, 0.2),
+    /* 3D depth shadows for mass effect */
+    inset -8px -8px 16px rgba(0, 0, 0, 0.4),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.1),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.3),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.05),
+    /* Enhanced edge shading for 3D realism */
+    inset -15px 0px 20px rgba(0, 0, 0, 0.3),
+    inset 15px 0px 20px rgba(255, 255, 255, 0.08),
+    inset 0px -20px 25px rgba(0, 0, 0, 0.35),
+    inset 0px 12px 18px rgba(255, 255, 255, 0.12),
+    /* Curved edge highlights */
+    inset -25px -25px 30px rgba(0, 0, 0, 0.25),
+    inset 25px 25px 30px rgba(255, 255, 255, 0.06),
+    /* Subtle rim lighting */
+    inset -2px -2px 4px rgba(255, 0, 128, 0.2),
+    inset 2px 2px 4px rgba(0, 255, 128, 0.15);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+/* Hatching animation state */
+.colorful-glitch-container.hatching {
+  animation: eggHatching 1.5s ease-out forwards;
+}
+
+/* Sonic birth animation */
+.sonic-container img.hatching {
+  animation: sonicBirth 2s ease-out forwards, sonicFastFrames 0.05s infinite;
+  filter: 
+    drop-shadow(0 0 10px rgba(255, 0, 128, 0.8)) 
+    drop-shadow(0 0 20px rgba(0, 255, 128, 0.6)) 
+    drop-shadow(0 0 30px rgba(128, 0, 255, 0.4));
+  image-rendering: pixelated;
+}
+
+/* ========CYBERPUNK GLITC EGG TEXT EFFECTS=========*/
+.glitching-effect {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(45deg, #000, #1a1a1a, #333);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: glitchContainer 2s infinite;
+}
+
+.glitch-text {
+  font-family: "Doto", monospace;
+  font-size: 0.9em;
+  padding: 0.7em;
+  word-break: break-word;
+  text-shadow: 
+    0 0 10px #00ff00,
+    0 0 20px #00ff00,
+    0 0 30px #00ff00;
+  animation: glitchText 1.5s infinite;
+  z-index: 3;
+}
+
+.glitch-bars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 255, 0.1) 2px,
+    rgba(0, 255, 255, 0.1) 4px
+  );
+  animation: glitchBars 0.5s infinite;
+  z-index: 2;
+}
+
+.glitch-static {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/></filter></defs><rect width="100%" height="100%" fill="rgba(255,255,255,0.1)" filter="url(%23noise)"/></svg>');
+  animation: glitchStatic 0.1s infinite;
+  z-index: 1;
+}
+
+/* Sonic normal state after hatching */
+.sonic-container img.born {
+  animation: none;
+  border: none;
+  filter: brightness(0.9) contrast(1.5);
+  transform: translateY(30px);
+}
+
+.colorful-glitch-text {
+  display: flex;
+  text-align: center;
+  font-family: "Doto", monospace;
+  font-size: 1.2em;
+  opacity: 0.8;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 
+    2px 2px 0px #ff0080,
+    -2px -2px 0px #00ff80,
+    2px -2px 0px #8000ff,
+    -2px 2px 0px #ff8000;
+  animation: colorfulGlitchText 1.2s infinite;
+  z-index: 5;
+  letter-spacing: 3px;
+}
+
+.colorful-glitch-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 0, 128, 0.2) 3px,
+    rgba(255, 0, 128, 0.2) 6px,
+    transparent 6px,
+    transparent 9px,
+    rgba(0, 255, 128, 0.2) 9px,
+    rgba(0, 255, 128, 0.2) 12px
+  );
+  animation: colorfulGlitchOverlay 0.8s infinite;
+  z-index: 4;
+}
+
+.colorful-glitch-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 50%, rgba(0, 255, 128, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 50% 20%, rgba(128, 0, 255, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(255, 128, 0, 0.3) 0%, transparent 50%);
+  animation: colorfulGlitchParticles 2s infinite;
+  z-index: 3;
+}
+
+.colorful-glitch-border {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border: 3px solid;
+  border-color: #ff0080 #00ff80 #8000ff #ff8000;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: colorfulGlitchBorder 1s infinite;
+  z-index: 2;
+}
+/* Generic overlay class for inner parts */
+.glitch-stutter-overlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: normal;
+  opacity: 0;                 /* off by default */
+}
+.glitch-stutter-overlay.active {
+  opacity: 1;                 /* toggle on via JS */
+  animation: stutterFlicker 0.6s linear;
+}
+
+/* Optional inverted pass for a stronger hit */
+.glitch-stutter-overlay.glitch-inverted {
+  filter: invert(1) contrast(1.2) saturate(1.4);
+}
+
+/* Scanlines layer */
+.glitch-stutter-overlay .stutter-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.07) 0 2px,
+    transparent 2px 4px
+  );
+  animation: stutterScan 0.6s steps(2) infinite;
+}
+
+/* Static speckle layer */
+.glitch-stutter-overlay .stutter-static {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12) 0 2px, transparent 2px 80px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.10) 0 2px, transparent 2px 80px);
+  mix-blend-mode: screen;
+  animation: stutterStatic 0.18s steps(4) infinite;
+}
+
+/* Flash layer */
+.glitch-stutter-overlay .stutter-flash {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.18);
+  opacity: 0;
+  animation: stutterFlash 0.6s linear infinite;
+}
+/* ========COLORFUL GLITCH KEYFRAME ANIMATIONS======== */
+@keyframes colorfulGlitchContainer {
+  0%, 90% { transform: translate(0) scale(1); }
+  91% { transform: translate(-3px, 2px) scale(1.02); }
+  92% { transform: translate(3px, -2px) scale(0.98); }
+  93% { transform: translate(-2px, 3px) scale(1.01); }
+  94% { transform: translate(2px, -3px) scale(0.99); }
+  95% { transform: translate(-3px, -2px) scale(1.03); }
+  96% { transform: translate(3px, 2px) scale(0.97); }
+  97% { transform: translate(-2px, -3px) scale(1.02); }
+  98% { transform: translate(2px, 3px) scale(0.98); }
+  99% { transform: translate(0) scale(1); }
+}
+
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes colorfulGlitchText {
+  0%, 80% { 
+    color: #ffffff;
+    text-shadow: 
+      2px 2px 0px #ff0080,
+      -2px -2px 0px #00ff80,
+      2px -2px 0px #8000ff,
+      -2px 2px 0px #ff8000;
+  }
+  81% { 
+    color: #ff0080;
+    text-shadow: 
+      2px 2px 0px #ffffff,
+      -2px -2px 0px #00ff80,
+      2px -2px 0px #8000ff,
+      -2px 2px 0px #ff8000;
+  }
+  82% { 
+    color: #00ff80;
+    text-shadow: 
+      2px 2px 0px #ff0080,
+      -2px -2px 0px #ffffff,
+      2px -2px 0px #8000ff,
+      -2px 2px 0px #ff8000;
+  }
+  83% { 
+    color: #8000ff;
+    text-shadow: 
+      2px 2px 0px #ff0080,
+      -2px -2px 0px #00ff80,
+      2px -2px 0px #ffffff,
+      -2px 2px 0px #ff8000;
+  }
+  84% { 
+    color: #ff8000;
+    text-shadow: 
+      2px 2px 0px #ff0080,
+      -2px -2px 0px #00ff80,
+      2px -2px 0px #8000ff,
+      -2px 2px 0px #ffffff;
+  }
+  85%, 100% { 
+    color: #ffffff;
+    text-shadow: 
+      2px 2px 0px #ff0080,
+      -2px -2px 0px #00ff80,
+      2px -2px 0px #8000ff,
+      -2px 2px 0px #ff8000;
+  }
+}
+
+@keyframes colorfulGlitchOverlay {
+  0% { transform: translateX(0) skewX(0deg); }
+  20% { transform: translateX(-5px) skewX(-2deg); }
+  40% { transform: translateX(5px) skewX(2deg); }
+  60% { transform: translateX(-3px) skewX(-1deg); }
+  80% { transform: translateX(3px) skewX(1deg); }
+  100% { transform: translateX(0) skewX(0deg); }
+}
+
+@keyframes colorfulGlitchParticles {
+  0% { 
+    opacity: 0.3;
+    transform: rotate(0deg) scale(1);
+  }
+  25% { 
+    opacity: 0.7;
+    transform: rotate(90deg) scale(1.1);
+  }
+  50% { 
+    opacity: 0.5;
+    transform: rotate(180deg) scale(0.9);
+  }
+  75% { 
+    opacity: 0.8;
+    transform: rotate(270deg) scale(1.05);
+  }
+  100% { 
+    opacity: 0.3;
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes colorfulGlitchBorder {
+  0% { 
+    border-color: #ff0080 #00ff80 #8000ff #ff8000;
+    transform: rotate(0deg);
+  }
+  25% { 
+    border-color: #00ff80 #8000ff #ff8000 #ff0080;
+    transform: rotate(1deg);
+  }
+  50% { 
+    border-color: #8000ff #ff8000 #ff0080 #00ff80;
+    transform: rotate(-1deg);
+  }
+  75% { 
+    border-color: #ff8000 #ff0080 #00ff80 #8000ff;
+    transform: rotate(1deg);
+  }
+  100% { 
+    border-color: #ff0080 #00ff80 #8000ff #ff8000;
+    transform: rotate(0deg);
+  }
+}
+
+/* ============================================================================
+   HATCHING ANIMATIONS
+   ============================================================================ */
+@keyframes eggHatching {
+  0% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.1) rotate(5deg); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: scale(0.8) rotate(-5deg); 
+  }
+}
+
+@keyframes sonicBirth {
+  0% { 
+    opacity: 0;
+    transform: translateY(30px) scale(0.5);
+    filter: 
+      drop-shadow(0 0 15px rgba(255, 0, 128, 1)) 
+      drop-shadow(0 0 25px rgba(0, 255, 128, 0.8)) 
+      drop-shadow(0 0 35px rgba(128, 0, 255, 0.6));
+  }
+  25% { 
+    opacity: 0.7;
+    transform: translateY(30px) scale(0.8);
+    filter: 
+      drop-shadow(0 0 20px rgba(0, 255, 128, 1)) 
+      drop-shadow(0 0 30px rgba(128, 0, 255, 0.8)) 
+      drop-shadow(0 0 40px rgba(255, 128, 0, 0.6));
+  }
+  50% { 
+    opacity: 0.8;
+    transform: translateY(30px) scale(1);
+    filter: 
+      drop-shadow(0 0 25px rgba(128, 0, 255, 1)) 
+      drop-shadow(0 0 35px rgba(255, 128, 0, 0.8)) 
+      drop-shadow(0 0 45px rgba(0, 128, 255, 0.6));
+  }
+  75% { 
+    opacity: 0.9;
+    transform: translateY(30px) scale(1.1);
+    filter: 
+      drop-shadow(0 0 20px rgba(255, 128, 0, 1)) 
+      drop-shadow(0 0 30px rgba(0, 128, 255, 0.8)) 
+      drop-shadow(0 0 40px rgba(255, 0, 128, 0.6));
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(30px) scale(1);
+    filter: brightness(0.9) contrast(1.5);
+  }
+}
+
+@keyframes stutterFlicker {
+  0%, 100% { opacity: 0.0; }
+  10%      { opacity: 0.9; }
+  20%      { opacity: 0.2; }
+  35%      { opacity: 0.8; }
+  50%      { opacity: 0.3; }
+  70%      { opacity: 1.0; }
+  85%      { opacity: 0.4; }
+}
+
+@keyframes stutterScan {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes stutterStatic {
+  0%   { opacity: 0.10; transform: translate(0,0) scale(1); }
+  50%  { opacity: 0.30; transform: translate(-1px,1px) scale(1.01); }
+  100% { opacity: 0.10; transform: translate(0,0) scale(1); }
+}
+
+@keyframes stutterFlash {
+  0%,100% { opacity: 0; }
+  15%     { opacity: 0.35; }
+  30%     { opacity: 0; }
+  60%     { opacity: 0.25; }
+  75%     { opacity: 0; }
 }
