@@ -1,5 +1,6 @@
 // safety so missing function won't crash white-stage evolution
-window.startWhiteEmissionTimer = window.startWhiteEmissionTimer || function(){};
+window.startWhiteEmissionTimer =
+  window.startWhiteEmissionTimer || function () {};
 // --- Debug resource loading ---
 // --- Debug: catch any silent async errors ---
 window.addEventListener("unhandledrejection", (e) => {
@@ -945,8 +946,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "white";
-    myPet.stage = "white"; // uncomment to start at white
+    currentStage = "blue";
+    myPet.stage = "blue"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
