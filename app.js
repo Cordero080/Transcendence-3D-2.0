@@ -2400,10 +2400,10 @@ document.addEventListener("click", (e) => {
 
 // === Wire buttons AFTER the DOM exists ===
 window.addEventListener("DOMContentLoaded", () => {
-  const overlay    = document.getElementById("pageOverlay");
+  const overlay = document.getElementById("pageOverlay");
   const overlayBtn = document.getElementById("overlayStartButton"); // START GAME
-  const startBtn   = document.querySelector(".StartButton");         // START
-  const egg        = document.getElementById("colorfulGlitchDiv");
+  const startBtn = document.querySelector(".StartButton"); // START
+  const egg = document.getElementById("colorfulGlitchDiv");
 
   // 1) START GAME: close overlay, show egg idle (do NOT hatch here)
   if (overlayBtn) {
@@ -2415,20 +2415,40 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       // optional music
       const theme = document.getElementById("bg-music");
-      if (theme) { try { theme.muted = false; theme.currentTime = 0; theme.volume = 0.8; await theme.play(); } catch {} }
+      if (theme) {
+        try {
+          theme.muted = false;
+          theme.currentTime = 0;
+          theme.volume = 0.8;
+          await theme.play();
+        } catch {}
+      }
     });
   }
 
   // 2) START: hatch the egg, then start the game
   if (startBtn) {
     startBtn.addEventListener("click", async () => {
+      // Play egg hatch sound
+      const eggHatchAudio = document.getElementById("egg-hatch");
+      if (eggHatchAudio) {
+        eggHatchAudio.playbackRate = 3;
+        eggHatchAudio.currentTime = 0;
+        eggHatchAudio.volume = 0.8;
+        eggHatchAudio.play().catch((err) => {
+          console.log("🔇 egg_hatch.wav audio play() blocked:", err);
+        });
+      }
       if (egg) {
         egg.style.display = "flex";
         egg.classList.remove("hatching");
         void egg.offsetWidth; // force reflow
         egg.classList.add("hatching");
 
-        const hide = () => { egg.style.display = "none"; egg.classList.remove("hatching"); };
+        const hide = () => {
+          egg.style.display = "none";
+          egg.classList.remove("hatching");
+        };
         egg.addEventListener("animationend", hide, { once: true });
         setTimeout(hide, 1600);
       }

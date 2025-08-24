@@ -2524,7 +2524,7 @@ html::before {
 
 /* Hatching animation state */
 .colorful-glitch-container.hatching {
-  animation: eggHatching 2.5s ease-out forwards;
+  animation: eggHatching 3.5s ease-out forwards;
 }
 
 /* Sonic birth animation */
