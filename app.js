@@ -1,3 +1,5 @@
+// safety so missing function won't crash white-stage evolution
+window.startWhiteEmissionTimer = window.startWhiteEmissionTimer || function(){};
 // --- Debug resource loading ---
 // --- Debug: catch any silent async errors ---
 window.addEventListener("unhandledrejection", (e) => {
@@ -76,8 +78,7 @@ const actionConfigs = {
     button: danceButton,
     action: () => myPet.dance(),
     animation: (stage) => playDanceAction(stage),
-    message: () =>
-      "💃 I gets BUZY! Pawz on fire! Just watch me bust these moves. Taught by the best. My true master!",
+    message: () => "💃 I gets BUZY! Pawz on fire!",
     available: () => true,
   },
   sleep: {
@@ -120,6 +121,10 @@ function handleCareAction(actionName) {
       }
       config.action();
       updatePetChat(config.message());
+      // Mark care action as completed for evolution tracking
+      if (buttonTracker.hasOwnProperty(actionName)) {
+        buttonTracker[actionName] = true;
+      }
       // Play stutterMask.wav 3ms before glitch stutter (except dance, which has its own music logic)
       if (actionName !== "dance") {
         const stutterMaskAudio = document.getElementById("stutterMask");
@@ -184,6 +189,15 @@ function handleCareAction(actionName) {
       }
       // Play animation
       await config.animation(currentStage);
+
+      // fire Cyberpunk ~3s into idle after TRAIN in WHITE
+      if (actionName === "train" && currentStage === "white") {
+        setTimeout(() => {
+          console.log("[CYBERPUNK] firing");
+          window.triggerCyberpunkEvolutionEffect(900);
+        }, 3000); // ~3s into idle
+      }
+
       checkForEvolution && checkForEvolution();
       // After dance, stop radiance and resume theme
       if (actionName === "dance") {
@@ -339,7 +353,6 @@ let whiteStageTranscendenceTimeout = null;
 
 // Dance sequence tracking
 let danceSequenceIndex = 0; // 0 = dance, 1 = dance2
-// 🔹 Game Over overlay helper
 
 function showGameOverOverlay(reason = "") {
   const overlay = document.getElementById("gameOverOverlay");
@@ -383,14 +396,16 @@ function allCareActionsCompleted() {
     return whiteEvolutionReady;
   }
 
-  // Require all care actions for evolution: dance, dance2, train, train2
+  // Require all care actions for evolution: feed, sleep, dance, dance2, train, train2
   const completed =
+    buttonTracker.feed &&
+    buttonTracker.sleep &&
     buttonTracker.dance &&
     buttonTracker.dance2 &&
     buttonTracker.train &&
     buttonTracker.train2;
   console.log(
-    `🔍 Evolution requirements - Dance: ${buttonTracker.dance}, Dance2: ${buttonTracker.dance2}, Train: ${buttonTracker.train}, Train2: ${buttonTracker.train2}`,
+    `🔍 Evolution requirements - Feed: ${buttonTracker.feed}, Sleep: ${buttonTracker.sleep}, Dance: ${buttonTracker.dance}, Dance2: ${buttonTracker.dance2}, Train: ${buttonTracker.train}, Train2: ${buttonTracker.train2}`,
     `Evolution ready: ${completed}`
   );
   return completed;
@@ -930,8 +945,8 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    currentStage = "white";
+    myPet.stage = "white"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
@@ -1481,6 +1496,13 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
   }
 }
 
+window.triggerCyberpunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
+window.TriggerCyberpunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
+window.TriggerCyberPunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
+window.TriggerCyberPunkEvilutionEffect = triggerCyberpunkEvolutionEffect;
+window.triggerCyberpunkEvilutionEffect = triggerCyberpunkEvolutionEffect;
+window.triggerCyberPunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
+
 // ============ ✨ MYSTICAL TRANSCENDENCE EFFECT SYSTEM ============ \\
 function triggerMysticalTranscendence(duration = 16500) {
   // Extended from 11000 to 16500ms (50% longer)
@@ -1803,6 +1825,7 @@ async function playDanceAction(stage) {
     const selectedAction = danceVariants[danceSequenceIndex];
 
     // Check if the selected dance exists for this stage
+
     if (!animationConfig[stage] || !animationConfig[stage][selectedAction]) {
       console.log(
         `⚠️ ${selectedAction} animation not available for ${stage} stage`
@@ -1810,6 +1833,10 @@ async function playDanceAction(stage) {
       // Try the other dance if this one doesn't exist
       const fallbackAction = danceVariants[1 - danceSequenceIndex];
       if (animationConfig[stage] && animationConfig[stage][fallbackAction]) {
+        // Mark fallback as completed if tracked
+        if (buttonTracker.hasOwnProperty(fallbackAction)) {
+          buttonTracker[fallbackAction] = true;
+        }
         console.log(
           `🎬 Playing fallback dance: ${fallbackAction} for ${stage} stage`
         );
@@ -1852,6 +1879,11 @@ async function playDanceAction(stage) {
         danceSequenceIndex + 1
       }/2: ${selectedAction} for ${stage} stage`
     );
+
+    // Mark the correct dance as completed for evolution tracking
+    if (buttonTracker.hasOwnProperty(selectedAction)) {
+      buttonTracker[selectedAction] = true;
+    }
 
     const anim = animationConfig[stage][selectedAction];
     let loopOptions = undefined;
@@ -1929,6 +1961,10 @@ async function playActionThenShareIdle(actionType, stage) {
       selectedAction = availableVariants[0];
     }
 
+    // Mark the correct train as completed for evolution tracking
+    if (buttonTracker.hasOwnProperty(selectedAction)) {
+      buttonTracker[selectedAction] = true;
+    }
     const anim = animationConfig[stage][selectedAction];
     const baseDurationMs = await loadAndDisplayFBX(anim.file, anim.pose);
     if (stage === "yellow" && selectedAction === "train") {
@@ -2434,7 +2470,7 @@ window.addEventListener("DOMContentLoaded", () => {
       if (eggHatchAudio) {
         eggHatchAudio.playbackRate = 3;
         eggHatchAudio.currentTime = 0;
-        eggHatchAudio.volume = 0.8;
+        eggHatchAudio.volume = 1;
         eggHatchAudio.play().catch((err) => {
           console.log("🔇 egg_hatch.wav audio play() blocked:", err);
         });
@@ -2457,3 +2493,67 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+// === One canonical PET-ONLY effect + aliases for every spelling/casing ===
+(() => {
+  // minimal, zero-CSS pet-only overlay (solid gradient), then remove
+  function petOnlyBurst(ms = 1600) {
+    const pc = document.getElementById("pet-container");
+    if (!pc) {
+      console.error("❌ #pet-container not found");
+      return;
+    }
+    if (getComputedStyle(pc).position === "static")
+      pc.style.position = "relative"; // optional: quick stutter flash if your overlays exist
+
+    ["glitchStutterOverlay", "glitchStutterOverlay2"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.opacity = "1";
+        el.style.transition = "opacity 120ms steps(2)";
+        setTimeout(() => (el.style.opacity = "0"), Math.min(ms, 400));
+      }
+    });
+
+    const veil = document.createElement("div");
+    veil.style.cssText = `
+      position:absolute; inset:0; pointer-events:none;
+      z-index:99999; opacity:1; transition:opacity 250ms ease;
+      background: linear-gradient(45deg,
+        oklch(71.384% 0.20314 353.227),
+        oklch(61.9%   0.19284 258.775),
+        oklch(68.299% 0.18562 299.899),
+        oklch(85.825% 0.23495 148.424),
+        oklch(79.49%  0.14271 62.993),
+        oklch(73.033% 0.19383 352.633)
+      );
+      background-size:300% 300%; mix-blend-mode:normal;
+    `;
+    pc.appendChild(veil);
+    setTimeout(() => {
+      veil.style.opacity = "0";
+    }, Math.max(0, ms - 250));
+    setTimeout(() => {
+      veil.remove();
+    }, ms + 20);
+  } // expose the same function under ALL common spellings/casings
+
+  const names = [
+    "triggerCyberpunkEvolutionEffect", // canonical
+    "TriggerCyberpunkEvolutionEffect",
+    "TriggerCyberPunkEvolutionEffect",
+    "triggerCyberPunkEvolutionEffect",
+    "TriggerCyberPunkEvilutionEffect", // your current call
+    "triggerCyberpunkEvilutionEffect",
+  ];
+  names.forEach((n) => {
+    window[n] = petOnlyBurst;
+  }); // safety: if this helper was missing, don’t crash your flow
+
+  window.startWhiteEmissionTimer =
+    window.startWhiteEmissionTimer || (() => null);
+
+  console.log(
+    "[transcendence] pet-only effect wired under names:",
+    names.join(", ")
+  );
+})();
