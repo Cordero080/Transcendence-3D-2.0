@@ -4,6 +4,7 @@ export function initUI() {
   const evolveEffectAudio = document.getElementById("evolve_effect_2");
   const highTechAudio = document.getElementById("high-tech");
   // const gameOverOverlay = document.getElementById("gameOverOverlay");
+  const startBtn = document.querySelector(".StartButton");
   const reasonElement = document.getElementById("gameOverReason");
   const petChat = document.querySelector(".infoBox_petChat");
   const hungerTimer = document.getElementById("hungerTimer");

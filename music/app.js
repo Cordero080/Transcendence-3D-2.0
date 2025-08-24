@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", function () {
   }
   // Lower music volume by 10% on page load
   if (bgMusic) {
-    bgMusic.volume = Math.max(0, bgMusic.volume - 0.4);
+    bgMusic.volume = Math.max(0, bgMusic.volume - 0.3);
   }
   const bgMusic = document.getElementById("bg-music");
   if (!bgMusic) return;

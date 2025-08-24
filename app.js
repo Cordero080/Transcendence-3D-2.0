@@ -25,6 +25,7 @@ const {
   petChat,
   hungerTimer,
   funTimer,
+  startBtn,
   sleepTimer,
   powerTimer,
   overlay,
@@ -60,6 +61,170 @@ window._state = state;
 console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
 console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
+
+// --- Modular Care Action Handler ---
+const actionConfigs = {
+  feed: {
+    button: feedButton,
+    action: () => myPet.feed(),
+    animation: (stage) => playActionThenShareIdle("feed", stage),
+    message: () =>
+      "🍽️ This is so good, it's actually making me angry. How dare you set the bar this high? hit the spot! ",
+    available: (stage) => !!animationConfig[stage]?.feed,
+  },
+  dance: {
+    button: danceButton,
+    action: () => myPet.dance(),
+    animation: (stage) => playDanceAction(stage),
+    message: () =>
+      "💃 I gets BUZY! Pawz on fire! Just watch me bust these moves. Taught by the best. My true master!",
+    available: () => true,
+  },
+  sleep: {
+    button: sleepButton,
+    action: () => myPet.sleepRest(),
+    animation: (stage) => playActionThenShareIdle("sleep", stage),
+    message: () => "😴 Got tickets to the blanket show...zzz",
+    available: (stage) => !!animationConfig[stage]?.sleep,
+  },
+  train: {
+    button: trainButton,
+    action: () => myPet.train(),
+    animation: (stage) => playActionThenShareIdle("train", stage),
+    message: () =>
+      "🐉 The purpose of today's training is to defeat yesterday's understanding.",
+    available: () => true,
+  },
+};
+
+function updatePetChat(message) {
+  if (petChat) {
+    petChat.textContent = message;
+  }
+}
+
+function handleCareAction(actionName) {
+  return async function () {
+    const config = actionConfigs[actionName];
+    if (!config) return;
+    if (actionInProgress || gameOverTriggered || config.button.disabled) return;
+    actionInProgress = true;
+    stopWhiteEmissionTimer && stopWhiteEmissionTimer();
+    try {
+      if (!config.available(currentStage)) {
+        console.log(
+          `⚠️ ${actionName} action not available for ${currentStage} stage`
+        );
+        actionInProgress = false;
+        return;
+      }
+      config.action();
+      updatePetChat(config.message());
+      // Play stutterMask.wav 3ms before glitch stutter (except dance, which has its own music logic)
+      if (actionName !== "dance") {
+        const stutterMaskAudio = document.getElementById("stutterMask");
+        if (stutterMaskAudio) {
+          stutterMaskAudio.currentTime = 0;
+          stutterMaskAudio.volume = 1.0;
+          stutterMaskAudio.play().catch((err) => {
+            console.log("🔇 stutterMask.wav audio play() blocked:", err);
+          });
+        }
+        await new Promise((resolve) => setTimeout(resolve, 3));
+        triggerGlitchStutter && triggerGlitchStutter(90);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+      // Special dance music logic
+      if (actionName === "dance") {
+        let radianceAudio = document.getElementById("radiance-music");
+        if (!radianceAudio) {
+          radianceAudio = document.createElement("audio");
+          radianceAudio.id = "radiance-music";
+          radianceAudio.src = "music/radiance.mp3";
+          radianceAudio.preload = "auto";
+          document.body.appendChild(radianceAudio);
+        }
+        let themeAudio = document.getElementById("bg-music");
+        if (themeAudio) themeAudio.pause();
+        radianceAudio.pause();
+        radianceAudio.currentTime = 18;
+        radianceAudio.volume = 0.5;
+        radianceAudio.play().catch((err) => {
+          console.log("🔇 radiance.mp3 audio play() blocked:", err);
+        });
+        const stutterMaskAudio = document.getElementById("stutterMask");
+        if (stutterMaskAudio) {
+          stutterMaskAudio.currentTime = 0;
+          stutterMaskAudio.volume = 1.0;
+          stutterMaskAudio.play().catch((err) => {
+            console.log("🔇 stutterMask.wav audio play() blocked:", err);
+          });
+        }
+        await new Promise((resolve) => setTimeout(resolve, 3));
+        triggerGlitchStutter && triggerGlitchStutter(90);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+      // Special white stage train sound
+      if (actionName === "train" && currentStage === "white") {
+        setTimeout(() => {
+          let whiteGongAudio = document.getElementById("white-gong");
+          if (!whiteGongAudio) {
+            whiteGongAudio = document.createElement("audio");
+            whiteGongAudio.id = "white-gong";
+            whiteGongAudio.src = "music/white_gong.mp3";
+            whiteGongAudio.preload = "auto";
+            document.body.appendChild(whiteGongAudio);
+          }
+          whiteGongAudio.currentTime = 0;
+          whiteGongAudio.volume = 1.0;
+          whiteGongAudio.play().catch((err) => {
+            console.log("🔇 white_gong.mp3 audio play() blocked:", err);
+          });
+        }, 1250);
+      }
+      // Play animation
+      await config.animation(currentStage);
+      checkForEvolution && checkForEvolution();
+      // After dance, stop radiance and resume theme
+      if (actionName === "dance") {
+        let radianceAudio = document.getElementById("radiance-music");
+        let themeAudio = document.getElementById("bg-music");
+        if (radianceAudio) {
+          radianceAudio.pause();
+          radianceAudio.currentTime = 0;
+        }
+        if (themeAudio) {
+          themeAudio.play().catch((err) => {
+            console.log("🔇 3dc_theme audio play() blocked:", err);
+          });
+        }
+      }
+    } finally {
+      actionInProgress = false;
+      if (currentStage === "white") {
+        if (actionName === "dance" || actionName === "train") {
+          if (!whiteStageCareActions.dance || !whiteStageCareActions.train) {
+            startWhiteEmissionTimer && startWhiteEmissionTimer();
+          }
+        } else {
+          startWhiteEmissionTimer && startWhiteEmissionTimer();
+        }
+      }
+      console.log(`🔓 ${actionName} button unlocked - Action available`);
+    }
+  };
+}
+
+// Attach modular handlers
+Object.keys(actionConfigs).forEach((action) => {
+  const config = actionConfigs[action];
+  if (config.button) {
+    config.button.removeEventListener &&
+      config.button.removeEventListener("click", config._handler);
+    config._handler = handleCareAction(action);
+    config.button.addEventListener("click", config._handler);
+  }
+});
 
 const gameSettings = {
   ageInterval: 20000,
@@ -743,14 +908,22 @@ class Pet {
 // ✅ Then define this after the class ends
 function hideGlitchEgg() {
   const glitchDiv = document.getElementById("colorfulGlitchDiv");
-  if (glitchDiv) {
-    glitchDiv.classList.add("hatching");
-    setTimeout(() => {
-      glitchDiv.style.display = "none";
-    }, 1500);
-  }
-}
+  if (!glitchDiv) return;
 
+  // make sure it's visible before animating
+  glitchDiv.style.display = "flex";
+
+  // RESTART the CSS animation reliably
+  glitchDiv.classList.remove("hatching");
+  void glitchDiv.offsetWidth; // force reflow
+  glitchDiv.classList.add("hatching");
+
+  // hide after hatch duration (matches @keyframes eggHatching 1.5s)
+  setTimeout(() => {
+    glitchDiv.style.display = "none";
+    glitchDiv.classList.remove("hatching");
+  }, 1500);
+}
 function startGame() {
   return new Promise((resolve) => {
     myPet = new Pet("Coco:");
@@ -2144,50 +2317,44 @@ async function playActionThenShareIdle(actionType, stage) {
 }
 
 // *================EVENT LISTENERS ===================* \\
+// if (overlayStartBtn) {
+//   overlayStartBtn.addEventListener("click", async () => {
+//     overlay.style.display = "none";                // close intro
 
-resetBtn.addEventListener("click", () => {
-  resetGame();
-});
+//     // show egg IDLE (no hatch here)
+//     const glitchEgg = document.getElementById("colorfulGlitchDiv");
+//     if (glitchEgg) {
+//       glitchEgg.style.display = "flex";
+//       glitchEgg.classList.remove("hatching");
+//     }
 
-overlayStartBtn.addEventListener("click", async () => {
-  console.log("[Start] click fired");
+//     // optional music
+//     const theme = document.getElementById("bg-music");
+//     if (theme) {
+//       try { theme.muted = false; theme.currentTime = 0; theme.volume = 0.8; await theme.play(); } catch {}
+//     }
+//   });
+// }
 
-  try {
-    overlay.style.display = "none"; // Hide intro screen
-    console.log("[Start] overlay hidden");
+// if (startBtn) {
+//   startBtn.addEventListener("click", async () => {
+//     const egg = document.getElementById("colorfulGlitchDiv");
+//     if (egg) {
+//       // restart hatch animation
+//       egg.style.display = "flex";
+//       egg.classList.remove("hatching");
+//       void egg.offsetWidth;        // reflow
+//       egg.classList.add("hatching");
 
-    // 🧿 Show the Glitch Egg
-    const glitchEgg = document.getElementById("colorfulGlitchDiv");
-    glitchEgg.style.display = "flex";
-    glitchEgg.classList.add("hatching");
-    console.log("[Start] glitch egg shown...");
+//       // hide after hatch
+//       const hide = () => { egg.style.display = "none"; egg.classList.remove("hatching"); };
+//       egg.addEventListener("animationend", hide, { once: true });
+//       setTimeout(hide, 1600);
+//     }
 
-    // Resume audio here if using WebAudio
-    const theme = document.getElementById("bg-music");
-    if (theme) {
-      theme.muted = false;
-      theme.currentTime = 0;
-      await theme
-        .play()
-        .then(() => console.log("[Start] theme playing"))
-        .catch((err) => console.warn("[Start] theme blocked:", err));
-    }
-
-    // Load pet while glitch egg animates
-    console.log("[Start] calling startGame()");
-    await startGame();
-    console.log("[Start] startGame() finished");
-
-    // Wait 5s before hiding glitch egg
-    setTimeout(() => {
-      glitchEgg.classList.remove("hatching");
-      glitchEgg.style.display = "none";
-      console.log("[Start] glitch egg hidden");
-    }, 5000);
-  } catch (err) {
-    console.error("[Start] failed:", err);
-  }
-});
+//     await startGame();             // start game AFTER triggering hatch
+//   });
+// }
 // Event delegation for overlay buttons
 document.addEventListener("DOMContentLoaded", () => {
   // TRY AGAIN button
@@ -2221,219 +2388,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-feedButton.addEventListener("click", async () => {
-  if (actionInProgress || gameOverTriggered || feedButton.disabled) return;
-  actionInProgress = true;
-  stopWhiteEmissionTimer();
-  console.log("🔒 Feed button pressed - Action locked");
-  try {
-    if (!animationConfig[currentStage]?.feed) {
-      console.log(`⚠️ Feed action not available for ${currentStage} stage`);
-      actionInProgress = false;
-      return;
-    }
-    myPet.feed();
-    buttonTracker.feed = true;
-    console.log(
-      `🍽️ Feed action completed. Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
-      buttonTracker
-    );
-    // Play stutterMask.wav 3ms before glitch stutter
-    const stutterMaskAudio = document.getElementById("stutterMask");
-    if (stutterMaskAudio) {
-      stutterMaskAudio.currentTime = 0;
-      stutterMaskAudio.volume = 1.0;
-      stutterMaskAudio.play().catch((err) => {
-        console.log("🔇 stutterMask.wav audio play() blocked:", err);
-      });
-    }
-    await new Promise((resolve) => setTimeout(resolve, 3));
-    triggerGlitchStutter(90);
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    const selectedAction = await playActionThenShareIdle("feed", currentStage);
-    checkForEvolution();
-  } finally {
-    actionInProgress = false;
-    if (currentStage === "white") {
-      startWhiteEmissionTimer();
-    }
-    console.log("🔓 Feed button unlocked - Action available");
-  }
-});
-
-danceButton.addEventListener("click", async () => {
-  if (actionInProgress || gameOverTriggered || danceButton.disabled) return;
-  actionInProgress = true;
-  stopWhiteEmissionTimer();
-  console.log("🔒 Dance button pressed - Action locked");
-  try {
-    myPet.dance();
-    // Play radiance.mp3 at 18s when dance or dance2 is triggered
-    let radianceAudio = document.getElementById("radiance-music");
-    if (!radianceAudio) {
-      radianceAudio = document.createElement("audio");
-      radianceAudio.id = "radiance-music";
-      radianceAudio.src = "music/radiance.mp3";
-      radianceAudio.preload = "auto";
-      document.body.appendChild(radianceAudio);
-    }
-    // Pause 3dc_theme when radiance.mp3 starts
-    let themeAudio = document.getElementById("bg-music");
-    if (themeAudio) {
-      themeAudio.pause();
-    }
-    radianceAudio.pause();
-    radianceAudio.currentTime = 18;
-    radianceAudio.volume = 0.5;
-    radianceAudio.play().catch((err) => {
-      console.log("🔇 radiance.mp3 audio play() blocked:", err);
-    });
-    // Play stutterMask.wav 3ms before glitch stutter
-    const stutterMaskAudio = document.getElementById("stutterMask");
-    if (stutterMaskAudio) {
-      stutterMaskAudio.currentTime = 0;
-      stutterMaskAudio.volume = 1.0;
-      stutterMaskAudio.play().catch((err) => {
-        console.log("🔇 stutterMask.wav audio play() blocked:", err);
-      });
-    }
-    await new Promise((resolve) => setTimeout(resolve, 3));
-    triggerGlitchStutter(90);
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    const selectedAction = await playDanceAction(currentStage);
-    if (selectedAction === "dance") {
-      buttonTracker.dance = true;
-    } else if (selectedAction === "dance2") {
-      buttonTracker.dance2 = true;
-    }
-    // After dance animation stops, discontinue radiance.mp3 and resume 3dc_theme
-    if (radianceAudio) {
-      radianceAudio.pause();
-      radianceAudio.currentTime = 0;
-    }
-    if (themeAudio) {
-      themeAudio.play().catch((err) => {
-        console.log("🔇 3dc_theme audio play() blocked:", err);
-      });
-    }
-    console.log(
-      `💃 Dance action completed (${selectedAction}). Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
-      buttonTracker
-    );
-    checkForEvolution();
-  } finally {
-    actionInProgress = false;
-    if (currentStage === "white") {
-      if (!whiteStageCareActions.dance || !whiteStageCareActions.train) {
-        startWhiteEmissionTimer();
-      }
-    }
-    console.log("🔓 Dance button unlocked - Action available");
-  }
-});
-
-sleepButton.addEventListener("click", async () => {
-  if (actionInProgress || gameOverTriggered || sleepButton.disabled) return;
-  actionInProgress = true;
-  stopWhiteEmissionTimer();
-  console.log("🔒 Sleep button pressed - Action locked");
-  try {
-    if (!animationConfig[currentStage]?.sleep) {
-      console.log(`⚠️ Sleep action not available for ${currentStage} stage`);
-      actionInProgress = false;
-      return;
-    }
-    myPet.sleepRest();
-    buttonTracker.sleep = true;
-    console.log(
-      `😴 Sleep action completed. Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
-      buttonTracker
-    );
-    // Play stutterMask.wav 3ms before glitch stutter
-    const stutterMaskAudio = document.getElementById("stutterMask");
-    if (stutterMaskAudio) {
-      stutterMaskAudio.currentTime = 0;
-      stutterMaskAudio.volume = 1.0;
-      stutterMaskAudio.play().catch((err) => {
-        console.log("🔇 stutterMask.wav audio play() blocked:", err);
-      });
-    }
-    await new Promise((resolve) => setTimeout(resolve, 3));
-    triggerGlitchStutter(90);
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    const selectedAction = await playActionThenShareIdle("sleep", currentStage);
-    checkForEvolution();
-  } finally {
-    actionInProgress = false;
-    if (currentStage === "white") {
-      startWhiteEmissionTimer();
-    }
-    console.log("🔓 Sleep button unlocked - Action available");
-  }
-});
-
-trainButton.addEventListener("click", async () => {
-  if (actionInProgress || gameOverTriggered || trainButton.disabled) return;
-  actionInProgress = true;
-  stopWhiteEmissionTimer();
-  console.log("🔒 Train button pressed - Action locked");
-  try {
-    myPet.train();
-    // Play stutterMask.wav 3ms before glitch stutter
-    const stutterMaskAudio = document.getElementById("stutterMask");
-    if (stutterMaskAudio) {
-      stutterMaskAudio.currentTime = 0;
-      stutterMaskAudio.volume = 1.0;
-      stutterMaskAudio.play().catch((err) => {
-        console.log("🔇 stutterMask.wav audio play() blocked:", err);
-      });
-    }
-    await new Promise((resolve) => setTimeout(resolve, 3));
-    triggerGlitchStutter(90);
-    await new Promise((resolve) => setTimeout(resolve, 20));
-
-    // Only in white stage: play white_gong.mp3 2.5s after train button
-    if (currentStage === "white") {
-      setTimeout(() => {
-        let whiteGongAudio = document.getElementById("white-gong");
-        if (!whiteGongAudio) {
-          whiteGongAudio = document.createElement("audio");
-          whiteGongAudio.id = "white-gong";
-          whiteGongAudio.src = "music/white_gong.mp3";
-          whiteGongAudio.preload = "auto";
-          document.body.appendChild(whiteGongAudio);
-        }
-        whiteGongAudio.currentTime = 0;
-        whiteGongAudio.volume = 1.0;
-        whiteGongAudio.play().catch((err) => {
-          console.log("🔇 white_gong.mp3 audio play() blocked:", err);
-        });
-      }, 1250);
-    }
-
-    const selectedAction = await playActionThenShareIdle("train", currentStage);
-    if (selectedAction === "train") {
-      buttonTracker.train = true;
-    } else if (selectedAction === "train2") {
-      buttonTracker.train2 = true;
-    }
-    console.log(
-      `💪 Train action completed (${selectedAction}). Evolution progress: ${myPet.stage} (${myPet.evolutionLevel}) | Button tracker:`,
-      buttonTracker
-    );
-    checkForEvolution();
-  } finally {
-    actionInProgress = false;
-    if (currentStage === "white") {
-      if (!whiteStageCareActions.dance || !whiteStageCareActions.train) {
-        startWhiteEmissionTimer();
-      }
-    }
-    console.log("🔓 Train button unlocked - Action available");
-  }
-});
-
-// ✅ Replace the DOMContentLoaded block with this:
 document.addEventListener("click", (e) => {
   const id = e.target?.id;
   if (id === "tryAgainBtn" || id === "playAgainBtn") {
@@ -2441,5 +2395,45 @@ document.addEventListener("click", (e) => {
     e.stopPropagation();
     console.log(`[buttons] ${id} clicked`);
     resetGame();
+  }
+});
+
+// === Wire buttons AFTER the DOM exists ===
+window.addEventListener("DOMContentLoaded", () => {
+  const overlay    = document.getElementById("pageOverlay");
+  const overlayBtn = document.getElementById("overlayStartButton"); // START GAME
+  const startBtn   = document.querySelector(".StartButton");         // START
+  const egg        = document.getElementById("colorfulGlitchDiv");
+
+  // 1) START GAME: close overlay, show egg idle (do NOT hatch here)
+  if (overlayBtn) {
+    overlayBtn.addEventListener("click", async () => {
+      if (overlay) overlay.style.display = "none";
+      if (egg) {
+        egg.style.display = "flex";
+        egg.classList.remove("hatching");
+      }
+      // optional music
+      const theme = document.getElementById("bg-music");
+      if (theme) { try { theme.muted = false; theme.currentTime = 0; theme.volume = 0.8; await theme.play(); } catch {} }
+    });
+  }
+
+  // 2) START: hatch the egg, then start the game
+  if (startBtn) {
+    startBtn.addEventListener("click", async () => {
+      if (egg) {
+        egg.style.display = "flex";
+        egg.classList.remove("hatching");
+        void egg.offsetWidth; // force reflow
+        egg.classList.add("hatching");
+
+        const hide = () => { egg.style.display = "none"; egg.classList.remove("hatching"); };
+        egg.addEventListener("animationend", hide, { once: true });
+        setTimeout(hide, 1600);
+      }
+
+      await startGame();
+    });
   }
 });
