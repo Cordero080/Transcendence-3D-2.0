@@ -453,7 +453,7 @@ header {
   margin-top:30px;
   width: 90vw;
   width: 922px;
-  margin-left: -16px;
+  margin-left: 100px;
 }
 
 .dropdown-menu ul {
@@ -474,11 +474,11 @@ header {
   color: #eafefe !important;
   display: list-item !important;
   text-align: left;
-  line-height: 1.4;
+  line-height: 1.2;
   list-style: disc !important;
 }
 li::marker {
-  content:  "🧿";
+  color: oklch(87.046% 0.26369 146.32);
   position: relative;
 
   
@@ -740,8 +740,8 @@ button.Buttons.disabled:active
   margin-top: 40px;
   letter-spacing: 3px;
   font-family: "Future Z", sans-serif;
-  background: #1e1eeb;
-  color: #fff;
+  background: oklch(44.614% 0.27993 267.235);
+  color: oklch(100% 0.00011 271.152);
   border: none;
   border-radius: 8px;
   cursor:pointer;
@@ -792,8 +792,8 @@ button.Buttons.disabled:active
   font-size: 0.8em;
   letter-spacing: 3px;
   font-family: "Future Z", sans-serif;
-  background: #9d1eeb;
-  color: #eaf8fd;
+  background: oklch(55.657% 0.27058 306.568);
+  color: oklch(97.02% 0.01632 221.376);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -922,7 +922,7 @@ canvas {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(14, 2, 69, 0.409);
+  background-color: oklch(19.204% 0.11359 277.037 / 0.409);
   z-index: -1;
   border-radius: inherit;
 }
@@ -939,7 +939,7 @@ canvas {
   padding: 30px;
   border-radius: 15px;
   text-align: center;
-  color: #e6b3ff;
+  color: oklch(83.815% 0.11668 314.288);
   font-size: 1.2em;
   box-shadow: 0 8px 32px oklch(0% 0 0 / 0.5);
   border: solid 2px oklch(84.20% 0.160 176.83 / 0.673);
@@ -948,8 +948,8 @@ canvas {
 .overlay-content h2 {
   margin-bottom: 15px;
   font-size: 1.5em;
-  color: #ff6bb3;
-  text-shadow: 0 0 10px rgba(255, 107, 179, 0.5);
+  color: oklch(73.033% 0.19383 352.633);
+  text-shadow: 0 0 10px oklch(73.033% 0.19383 352.633 / 0.5);
   animation: wordDropDown 1.5s ease-out forwards;
   opacity: 0;
 }
@@ -960,30 +960,30 @@ canvas {
 }
 
 .overlay-content p:first-of-type {
-  color: #80b3ff;
-  text-shadow: 0 0 8px rgba(128, 179, 255, 0.4);
+  color: oklch(76.162% 0.1228 258.17);
+  text-shadow: 0 0 8px oklch(76.162% 0.1228 258.17 / 0.4);
 }
 
 .overlay-content p:last-of-type {
-  color: #b380ff;
-  text-shadow: 0 0 8px rgba(179, 128, 255, 0.4);
+  color: oklch(70.428% 0.18362 300.278);
+  text-shadow: 0 0 8px oklch(70.428% 0.18362 300.278 / 0.4);
 }
 
 /* Enhanced Start button styling for overlay */
 .page-overlay .OverlayStartButton {
-  background: linear-gradient(45deg, #ad0e5b, #1a4e93, #3d0c82);
+  background: linear-gradient(45deg, oklch(48.864% 0.19119 0.265), oklch(42.952% 0.12618 257.049), oklch(32.808% 0.17092 292.372));
   background-size: 200% 200%;
-  color: hsl(216, 56%, 79%);
+  color: oklch(81.132% 0.05752 258.392);
   font-family: 'Future Z', sans-serif;
   font-size: 1em;
   padding: 10px 25px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(204, 77, 138, 0.4);
+  box-shadow: 0 6px 20px oklch(60.717% 0.17189 353.607 / 0.4);
   transition: all 0.3s ease;
   font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 4px oklch(0% 0 0 / 0.5);
   animation: gradientShift 3s ease infinite;
   opacity: 0.8;
  
@@ -992,7 +992,7 @@ canvas {
 
 .page-overlay .OverlayStartButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(217, 9, 254, 0.6), 0 4px 15px rgba(90, 140, 204, 0.4);
+  box-shadow: 0 8px 25px oklch(64.654% 0.30805 319.806 / 0.6), 0 4px 15px oklch(63.248% 0.11123 255.194 / 0.4);
   background-size: 300% 300%;
   opacity: 1;
 }
@@ -1046,7 +1046,7 @@ canvas {
 
 .overlay-content h2:hover {
   transform: scale(1.15) rotateX(5deg) rotateY(5deg) translateZ(10px);
-  text-shadow: 0 0 15px rgba(255, 107, 179, 0.7);
+  text-shadow: 0 0 15px oklch(73.033% 0.19383 352.633 / 0.7);
 }
 
 .overlay-content p:hover {
@@ -1054,15 +1054,15 @@ canvas {
 }
 
 .overlay-content p:first-of-type:hover {
-  text-shadow: 0 0 12px rgba(128, 179, 255, 0.6);
+  text-shadow: 0 0 12px oklch(76.162% 0.1228 258.17 / 0.6);
 }
 
 .overlay-content p:nth-of-type(2):hover {
-  text-shadow: 0 0 12px rgba(255, 179, 128, 0.6);
+  text-shadow: 0 0 12px oklch(82.786% 0.11083 54.413 / 0.6);
 }
 
 .overlay-content p:last-of-type:hover {
-  text-shadow: 0 0 12px rgba(179, 128, 255, 0.6);
+  text-shadow: 0 0 12px oklch(70.428% 0.18362 300.278 / 0.6);
 }
 
 /* ============================================================================
@@ -1148,39 +1148,39 @@ canvas {
 
 @keyframes glitchText {
   0%, 80% { 
-    color: #00ff00;
+    color: oklch(86.645% 0.29481 142.511);
     text-shadow: 
-      0 0 10px #00ff00,
-      0 0 20px #00ff00,
-      0 0 30px #00ff00;
+      0 0 10px oklch(86.645% 0.29481 142.511),
+      0 0 20px oklch(86.645% 0.29481 142.511),
+      0 0 30px oklch(86.645% 0.29481 142.511);
   }
   81% { 
-    color: #ff0000;
+    color: oklch(62.793% 0.25768 29.223);
     text-shadow: 
-      0 0 10px #ff0000,
-      0 0 20px #ff0000,
-      0 0 30px #ff0000;
+      0 0 10px oklch(62.793% 0.25768 29.223),
+      0 0 20px oklch(62.793% 0.25768 29.223),
+      0 0 30px oklch(62.793% 0.25768 29.223);
   }
   82% { 
-    color: #0000ff;
+    color: oklch(45.203% 0.3133 264.073);
     text-shadow: 
-      0 0 10px #0000ff,
+      0 0 10px oklch(45.203% 0.3133 264.073),
       0 0 20px #0000ff,
-      0 0 30px #0000ff;
+      0 0 30px oklch(45.203% 0.3133 264.073);
   }
   83% { 
-    color: #ffff00;
+    color: oklch(96.798% 0.21094 109.783);
     text-shadow: 
-      0 0 10px #ffff00,
-      0 0 20px #ffff00,
-      0 0 30px #ffff00;
+      0 0 10px oklch(96.798% 0.21094 109.783),
+      0 0 20px oklch(96.798% 0.21094 109.783),
+      0 0 30px oklch(96.798% 0.21094 109.783);
   }
   84%, 100% { 
-    color: #00ff00;
+    color: oklch(86.645% 0.29481 142.511);
     text-shadow: 
-      0 0 10px #00ff00,
-      0 0 20px #00ff00,
-      0 0 30px #00ff00;
+      0 0 10px oklch(86.645% 0.29481 142.511),
+      0 0 20px oklch(86.645% 0.29481 142.511),
+      0 0 30px oklch(86.645% 0.29481 142.511);
   }
 }
 
@@ -1257,9 +1257,9 @@ canvas {
     filter: blur(1px) brightness(2.5) hue-rotate(300deg);
     z-index: 2;
     text-shadow: 
-      0 0 15px rgba(255, 128, 0, 1),
-      0 0 30px rgba(255, 0, 255, 1),
-      0 0 45px rgba(128, 128, 255, 0.9);
+      0 0 15px oklch(73.188% 0.18576 52.974),
+      0 0 30px oklch(70.166% 0.3226 328.352),
+      0 0 45px oklch(66.136% 0.18384 280.136 / 0.9);
   }
   95% {
     transform: translateY(0) translateX(-1px) translateZ(10px) rotate(-0.2deg) scale(1.02);
