@@ -146,6 +146,13 @@ function handleCareAction(actionName) {
   return async function () {
     const config = actionConfigs[actionName];
     if (!config) return;
+
+    // Prevent actions before game starts (before egg hatches)
+    if (!gameStarted) {
+      console.log(`⚠️ Game hasn't started yet - egg must hatch first!`);
+      return;
+    }
+
     if (actionInProgress || gameOverTriggered || config.button.disabled) return;
     actionInProgress = true;
     stopWhiteEmissionTimer && stopWhiteEmissionTimer();
