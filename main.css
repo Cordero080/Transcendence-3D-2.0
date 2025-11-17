@@ -7,6 +7,9 @@
 /* Sine wave canvas effect */
 @import url('./styles/effects/sine-wave.css');
 
+/* Stat bars component */
+@import url('./styles/components/stat-bars.css');
+
 :root {
   /* Global scaling factor removed - was causing overlay positioning issues */
   --scale: 1;
@@ -762,141 +765,6 @@ button.Buttons.disabled:active
   gap: 10px;
 }
 
-/* Energy bar styling */
-.stat-bar-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  border-radius: 5px;
-}
-
-.stat-bar {
-  width: 100%;
-  height: 18px;
-  background: oklch(20% 0.05 260 / 0.8);
-  border: 1px solid oklch(50% 0.15 260 / 0.6);
-  border-radius: 9px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 
-    inset 0 2px 4px oklch(0% 0 0 / 0.5),
-    0 0 8px oklch(0% 0 0 / 0.3);
-}
-
-.stat-bar-fill {
-  height: 100%;
-  transition: width 0.5s ease, background 0.3s ease;
-  position: relative;
-  border-radius: 5px;
-  box-shadow: 
-    0 0 10px currentColor,
-    inset 0 1px 2px oklch(100% 0 0 / 0.3);
-}
-
-/* Hunger bar - green when low (good), red when high (bad) */
-.hunger-bar .stat-bar-fill {
-  background: linear-gradient(90deg, 
-    oklch(85% 0.25 145) 0%,    /* Green - good */
-    oklch(80% 0.20 85) 50%,    /* Yellow - warning */
-    oklch(70% 0.28 25) 100%    /* Red - critical */
-  );
-  background-size: 200% 100%;
-  background-position: 0% 0%;
-}
-
-.hunger-bar .stat-bar-fill[style*="width: 0"] { background-position: 0% 0%; }
-.hunger-bar .stat-bar-fill[style*="width: 1"],
-.hunger-bar .stat-bar-fill[style*="width: 2"] { background-position: 10% 0%; }
-.hunger-bar .stat-bar-fill[style*="width: 3"],
-.hunger-bar .stat-bar-fill[style*="width: 4"] { background-position: 30% 0%; }
-.hunger-bar .stat-bar-fill[style*="width: 5"],
-.hunger-bar .stat-bar-fill[style*="width: 6"] { background-position: 50% 0%; }
-.hunger-bar .stat-bar-fill[style*="width: 7"],
-.hunger-bar .stat-bar-fill[style*="width: 8"] { background-position: 75% 0%; }
-.hunger-bar .stat-bar-fill[style*="width: 9"],
-.hunger-bar .stat-bar-fill[style*="width: 10"] { background-position: 100% 0%; }
-
-/* Fun bar - cyan/purple gradient */
-.fun-bar .stat-bar-fill {
-  background: linear-gradient(90deg, 
-    oklch(70% 0.25 310) 0%,    /* Purple/magenta */
-    oklch(75% 0.20 280) 50%,   /* Purple */
-    oklch(80% 0.22 220) 100%   /* Cyan */
-  );
-  box-shadow: 
-    0 0 12px oklch(75% 0.22 250 / 0.8),
-    inset 0 1px 2px oklch(100% 0 0 / 0.3);
-}
-
-/* Sleep bar - blue gradient (inverse like hunger) */
-.sleep-bar .stat-bar-fill {
-  background: linear-gradient(90deg, 
-    oklch(75% 0.20 230) 0%,    /* Light blue - good */
-    oklch(70% 0.22 250) 50%,   /* Blue - warning */
-    oklch(60% 0.25 270) 100%   /* Deep blue/purple - critical */
-  );
-  background-size: 200% 100%;
-  background-position: 0% 0%;
-  box-shadow: 
-    0 0 12px oklch(70% 0.22 240 / 0.8),
-    inset 0 1px 2px oklch(100% 0 0 / 0.3);
-}
-
-.sleep-bar .stat-bar-fill[style*="width: 0"] { background-position: 0% 0%; }
-.sleep-bar .stat-bar-fill[style*="width: 1"],
-.sleep-bar .stat-bar-fill[style*="width: 2"] { background-position: 10% 0%; }
-.sleep-bar .stat-bar-fill[style*="width: 3"],
-.sleep-bar .stat-bar-fill[style*="width: 4"] { background-position: 30% 0%; }
-.sleep-bar .stat-bar-fill[style*="width: 5"],
-.sleep-bar .stat-bar-fill[style*="width: 6"] { background-position: 50% 0%; }
-.sleep-bar .stat-bar-fill[style*="width: 7"],
-.sleep-bar .stat-bar-fill[style*="width: 8"] { background-position: 75% 0%; }
-.sleep-bar .stat-bar-fill[style*="width: 9"],
-.sleep-bar .stat-bar-fill[style*="width: 10"] { background-position: 100% 0%; }
-
-/* Power bar - gold/orange gradient */
-.power-bar .stat-bar-fill {
-  background: linear-gradient(90deg, 
-    oklch(75% 0.20 50) 0%,     /* Orange */
-    oklch(80% 0.20 75) 50%,    /* Yellow/gold */
-    oklch(85% 0.22 95) 100%    /* Bright gold */
-  );
-  box-shadow: 
-    0 0 12px oklch(80% 0.20 75 / 0.8),
-    inset 0 1px 2px oklch(100% 0 0 / 0.3);
-}
-
-.stat-label {
-  font-family: "Future Z", sans-serif;
-  font-size: 0.45em;
-  color: oklch(85% 0.15 180);
-  text-shadow: 0 0 4px oklch(75% 0.20 180 / 0.5);
-  letter-spacing: 1px;
-}
-
-.timer-display {
-  font-family: "Future Z";
-  font-size: 0.52em;
-  color: oklch(85.549% 0.24662 147.119 / 0.923);
-  background-color: oklch(58.62% 0.108 255.79 / 0.479);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 1px;
-  border-radius: 4px;
-  text-align: center;
-  min-width: 50px;
-  font-weight: bold;
-  gap: 2px;
-}
-
-/* Color coding for different stat levels */
-.timer-display.low { color: #ff6b6b; }    /* Red for bad levels */
-.timer-display.medium { color: #ffd93d; } /* Yellow for medium levels */
-.timer-display.high { color: #6bcf7f; }   /* Green for good levels */
 /*=====================START/RESET======================*/
 
 

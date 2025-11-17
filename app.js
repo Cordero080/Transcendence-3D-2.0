@@ -1194,10 +1194,7 @@ function triggerWhiteStageTranscendence() {
     triggerIntergalacticBeam();
   }, 8000); // Start beam effect during peak transcendence
 
-  // Show transcendence overlay after extended mystical effects complete
-  setTimeout(() => {
-    showWhiteTranscendenceOverlay();
-  }, 33500); // After the extended mystical effect completes (100% longer)
+  // Transcendence overlay will be shown at the end of triggerIntergalacticBeam (9s duration)
 }
 
 // New function for the dramatic intergalactic beam effect
@@ -1392,7 +1389,7 @@ window.triggerCyberPunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
 // ============ ✨ MYSTICAL TRANSCENDENCE EFFECT SYSTEM ============ \\
 function triggerMysticalTranscendence(duration = 16500) {
   // Extended from 11000 to 16500ms (50% longer)
-  if (transcendenceOverlay) {
+  if (transcendenceEffect) {
     console.log(
       "🌟✨ Mystical transcendence effect with mandala glow triggered"
     );
@@ -1402,18 +1399,18 @@ function triggerMysticalTranscendence(duration = 16500) {
 
     if (catData) {
       // Position the effect around the cat with even larger coverage for mystical aura + halo
-      transcendenceOverlay.style.left = `${catData.x}px`;
-      transcendenceOverlay.style.top = `${catData.y}px`;
-      transcendenceOverlay.style.width = `${catData.width * 4.2}px`; // 20% larger for halo effect
-      transcendenceOverlay.style.height = `${catData.height * 3.0}px`; // 20% larger for halo effect
-      transcendenceOverlay.style.transform = "translate(-50%, -50%)";
+      transcendenceEffect.style.left = `${catData.x}px`;
+      transcendenceEffect.style.top = `${catData.y}px`;
+      transcendenceEffect.style.width = `${catData.width * 4.2}px`; // 20% larger for halo effect
+      transcendenceEffect.style.height = `${catData.height * 3.0}px`; // 20% larger for halo effect
+      transcendenceEffect.style.transform = "translate(-50%, -50%)";
 
       // Note: Mask styling removed as transcendence effect is now self-contained in CSS
       console.log(`✨ Mystical transcendence effect positioned around cat`);
     }
 
     // Add active class for mystical transcendence effect
-    transcendenceOverlay.classList.add("active");
+    transcendenceEffect.classList.add("active");
 
     // Create mystical pulsing pattern with color shifts - SLOW BUILD-UP
     let pulseCount = 0;
@@ -1426,7 +1423,7 @@ function triggerMysticalTranscendence(duration = 16500) {
 
       if (phase === 0) {
         // Very subtle divine white-gold phase (starts almost invisible)
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(2px) 
           brightness(90%) 
           saturate(110%) 
@@ -1435,7 +1432,7 @@ function triggerMysticalTranscendence(duration = 16500) {
         `;
       } else if (phase === 1) {
         // Subtle pink-purple mystical phase
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(1.8px) 
           brightness(100%) 
           saturate(130%) 
@@ -1444,7 +1441,7 @@ function triggerMysticalTranscendence(duration = 16500) {
         `;
       } else if (phase === 2) {
         // Gentle indigo cosmic phase
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(1.5px) 
           brightness(110%) 
           saturate(150%) 
@@ -1453,7 +1450,7 @@ function triggerMysticalTranscendence(duration = 16500) {
         `;
       } else if (phase === 3) {
         // Building sky blue ethereal phase
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(1.3px) 
           brightness(130%) 
           saturate(180%) 
@@ -1462,7 +1459,7 @@ function triggerMysticalTranscendence(duration = 16500) {
         `;
       } else if (phase === 4) {
         // Gradual golden divine phase
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(1px) 
           brightness(150%) 
           saturate(200%) 
@@ -1471,7 +1468,7 @@ function triggerMysticalTranscendence(duration = 16500) {
         `;
       } else if (phase === 5) {
         // Growing rainbow harmony phase
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(0.8px) 
           brightness(170%) 
           saturate(250%) 
@@ -1482,7 +1479,7 @@ function triggerMysticalTranscendence(duration = 16500) {
         `;
       } else if (phase === 6) {
         // Intensifying cosmic phase
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(1px) 
           brightness(190%) 
           saturate(300%) 
@@ -1494,7 +1491,7 @@ function triggerMysticalTranscendence(duration = 16500) {
       } else {
         // Extended peak transcendence phase (lasts 50% longer)
         const intensity = Math.min(1.0 + (pulseCount / totalPhases) * 0.5, 1.5); // Gradual build to peak
-        transcendenceOverlay.style.filter = `
+        transcendenceEffect.style.filter = `
           blur(1.2px) 
           brightness(${210 * intensity}%) 
           saturate(${350 * intensity}%) 
@@ -1514,18 +1511,18 @@ function triggerMysticalTranscendence(duration = 16500) {
 
     // Remove the effect after specified duration
     setTimeout(() => {
-      transcendenceOverlay.classList.remove("active", "transcendence");
+      transcendenceEffect.classList.remove("active", "transcendence");
       clearInterval(mysticalInterval);
 
       // Reset all styles after effect
       setTimeout(() => {
-        transcendenceOverlay.style.left = "50%";
-        transcendenceOverlay.style.top = "50%";
-        transcendenceOverlay.style.width = "280px";
-        transcendenceOverlay.style.height = "380px";
-        transcendenceOverlay.style.webkitMask = "";
-        transcendenceOverlay.style.mask = "";
-        transcendenceOverlay.style.filter = "";
+        transcendenceEffect.style.left = "50%";
+        transcendenceEffect.style.top = "50%";
+        transcendenceEffect.style.width = "280px";
+        transcendenceEffect.style.height = "380px";
+        transcendenceEffect.style.webkitMask = "";
+        transcendenceEffect.style.mask = "";
+        transcendenceEffect.style.filter = "";
       }, 100);
       console.log("🌟✨ Mystical transcendence effect ended");
     }, duration);
