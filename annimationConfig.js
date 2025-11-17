@@ -490,9 +490,9 @@ const animationConfig = {
     // },
 
     train: {
-      file: "./models/white_spell.fbx",
+      file: "./models/translucent-spell.fbx",
       pose: {
-        scale: [0.0021, 0.0021, 0.0021],
+        scale: [0.023, 0.023, 0.023],
         position: [0, -1.5, -3.5],
         rotationY: -Math.PI / -11,
         rotationX: 0,
@@ -508,9 +508,9 @@ const animationConfig = {
     //   },
     // },
     idle: {
-      file: "./models/SLOW_QI.fbx",
+      file: "./models/translucent-idle-1.fbx",
       pose: {
-        scale: [0.002, 0.002, 0.002],
+        scale: [0.023, 0.023, 0.023],
         position: [0, -1.5, -3],
         rotationY: -Math.PI / -6,
         rotationX: 0,

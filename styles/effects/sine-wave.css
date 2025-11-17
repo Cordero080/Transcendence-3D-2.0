@@ -1,0 +1,14 @@
+/* ============================================================================
+   SPECTRAL SINE WAVE CANVAS
+   Background animated sine wave effect
+   ============================================================================ */
+
+#spectralSineWaveBg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100vh !important;
+  z-index: 0;
+  pointer-events: none;
+}

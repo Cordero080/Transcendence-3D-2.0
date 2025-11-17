@@ -226,6 +226,23 @@ function hasActiveModel() {
 
 export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
 
+// Function to enable/disable white stage lighting
+export function setWhiteStageLighting(enabled) {
+  if (enabled) {
+    whiteStageLight1.intensity = 1.8; // Magenta - reduced
+    whiteStageLight2.intensity = 1.8; // Cyan - reduced
+    whiteStageLight3.intensity = 1.2; // Yellow - reduced
+    whiteStageLight4.intensity = 1.5; // Hot pink - reduced
+    ambientLight.intensity = 1.6; // Slight boost, not too bright
+  } else {
+    whiteStageLight1.intensity = 0;
+    whiteStageLight2.intensity = 0;
+    whiteStageLight3.intensity = 0;
+    whiteStageLight4.intensity = 0;
+    ambientLight.intensity = 1.4; // Return to normal
+  }
+}
+
 const scene = new THREE.Scene();
 const petRoot = new THREE.Group();
 scene.add(petRoot);
@@ -238,6 +255,23 @@ bgLoader.load("./images/4th_.jpg", function (texture) {
 
 const ambientLight = new THREE.AmbientLight(0x000ff, 1.4); // Soft purple ambient light
 scene.add(ambientLight);
+
+// Additional spectral lights for white stage (initially off)
+const whiteStageLight1 = new THREE.PointLight(0xff00ff, 0, 15); // Magenta
+whiteStageLight1.position.set(3, 5, 3);
+scene.add(whiteStageLight1);
+
+const whiteStageLight2 = new THREE.PointLight(0x00ffff, 0, 15); // Cyan
+whiteStageLight2.position.set(-3, 5, 3);
+scene.add(whiteStageLight2);
+
+const whiteStageLight3 = new THREE.DirectionalLight(0xffff00, 0); // Yellow
+whiteStageLight3.position.set(0, 10, 5);
+scene.add(whiteStageLight3);
+
+const whiteStageLight4 = new THREE.PointLight(0xff0080, 0, 12); // Hot pink
+whiteStageLight4.position.set(0, 3, -3);
+scene.add(whiteStageLight4);
 
 // Directional light (like sunlight)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);

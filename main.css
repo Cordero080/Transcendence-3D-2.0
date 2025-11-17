@@ -4,9 +4,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
+/* Sine wave canvas effect */
+@import url('./styles/effects/sine-wave.css');
+
 :root {
-  /* Global scaling factor - set to 0.67 to match your 67% browser zoom design */
-  --scale: 0.67;
+  /* Global scaling factor removed - was causing overlay positioning issues */
+  --scale: 1;
 }
 
 @font-face {
@@ -175,27 +178,9 @@ font-style: normal;
   transform: translateY(0);
 }
 
-/* Custom Scrollbar Styling */
+/* Scrollbar hidden for cleaner responsive design */
 ::-webkit-scrollbar {
-  width: 14px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a1a;
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, 
-    #ff006e,    /* Hot pink */
-    #8338ec,    /* Purple */
-    #3a86ff,    /* Blue */
-    #06ffa5,    /* Mint green */
-    #ffbe0b,    /* Yellow */
-    #fb5607     /* Orange */
-  );
-  border-radius: 8px;
-  border: 2px solid #000;
+  display: none;
 }
 
 /* respects width/height allowance*/
@@ -210,29 +195,28 @@ font-style: normal;
 /* html element where we can determine vp behavior*/
 html, body {
   height: 100%;
- height: auto;
+  height: auto;
   width: 100%;
   margin:0;
   padding:0;
-  overflow-x: hidden;
+  overflow: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-html {
-  /* Apply zoom-like scaling at the root level */
+/* Zoom removed - was causing overlay positioning issues */
+/* html {
   zoom: var(--scale);
-  /* For Firefox compatibility (doesn't support zoom) */
   -moz-transform: scale(var(--scale));
   -moz-transform-origin: 0 0;
-}
+} */
 
 .scaling-root {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  transform-origin: top left;
-  /* default: no scaling */
-  transform: scale(1);
-  
+  transform-origin: top center;
+  transform: scale(0.67);
 }
 @media (max-width: 1200px) {
   .scaling-root {
@@ -246,82 +230,24 @@ html {
 }
  body {
   font-family: "Doto", sans-serif;
-  font-size: 3vh;
+  font-size: 2vh;
   display: flex;
   font-weight: 200;
   font-style: bold;
-  background: url('./images/grid-b.jpg') no-repeat center center fixed;
-  border: solid 4px oklch(34.36% 0.328 265.87);
   color: oklch(87.87% 0.211 149.57 / 0.923);
   min-height: 100vh;
   margin-top: 0;
-  padding-bottom: 15vh;
-  background-size: cover;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  justify-content: center;
+  padding-bottom: 10vh;
+  justify-content: flex-start;
   align-items: center;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   flex-direction: column;
   align-items: center;
   position: relative;
-
+  padding-top: 2vh;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 50%;
-  left: -100%;
-  width: calc(300% - 14px);
-  height: 4px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    oklch(90.85% 0.274 195.85 / 0.8) 2%,
-    oklch(70.10% 0.322 328.36) 4%,
-    oklch(90.85% 0.274 195.85 / 0.8) 6%,
-    transparent 8%,
-    transparent 12%,
-    oklch(70.10% 0.322 328.36) 14%,
-    oklch(90.85% 0.274 195.85 / 0.8) 16%,
-    oklch(70.10% 0.322 328.36) 18%,
-    transparent 20%,
-    transparent 30%,
-    oklch(90.85% 0.274 195.85 / 0.8) 32%,
-    oklch(70.10% 0.322 328.36) 34%,
-    oklch(90.85% 0.274 195.85 / 0.8) 36%,
-    transparent 38%,
-    transparent 42%,
-    oklch(70.10% 0.322 328.36) 44%,
-    oklch(90.85% 0.274 195.85 / 0.8) 46%,
-    oklch(70.10% 0.322 328.36) 48%,
-    transparent 50%,
-    transparent 60%,
-    oklch(90.85% 0.274 195.85 / 0.8) 62%,
-    oklch(70.10% 0.322 328.36) 64%,
-    oklch(90.85% 0.274 195.85 / 0.8) 66%,
-    transparent 68%,
-    transparent 72%,
-    oklch(70.10% 0.322 328.36) 74%,
-    oklch(90.85% 0.274 195.85 / 0.8) 76%,
-    oklch(70.10% 0.322 328.36) 78%,
-    transparent 80%,
-    transparent 90%,
-    oklch(90.85% 0.274 195.85 / 0.8) 92%,
-    oklch(70.10% 0.322 328.36) 94%,
-    oklch(90.85% 0.274 195.85 / 0.8) 96%,
-    transparent 98%,
-    transparent 100%);
-  pointer-events: none;
-  z-index: -1;
-  animation: sineWaveFlow 20s linear infinite;
-  box-shadow: 0 0 8px oklch(90.85% 0.274 195.85 / 0.5), 0 0 16px oklch(70.10% 0.322 328.36 / 0.363),
-   0 0 16px oklch(55.84% 0.203 347.66 / 0.474);
-  transform: translateY(-2px);
-}
-
-
+/* body::before sine wave removed - using canvas spectralSineWaveBg instead */
 
 header h1 {
   font-family: "Doto", sans-serif;
@@ -414,9 +340,11 @@ header {
   background: linear-gradient(oklch(69.17% 0.154 260.76 / 0.275));
   overflow: visible;
   border-radius: 5px;
+  border: 2px solid oklch(73.033% 0.19383 352.633 / 0.6);
 }
 
-#main-wrapper::before {
+/* Removed gradient border pseudo-element to fix background bleeding issue */
+/* #main-wrapper::before {
   content: '';
   position: absolute;
   top: -4px;
@@ -432,19 +360,18 @@ header {
   );
   pointer-events: none;
   z-index: -1;
-}
+} */
 
 /* ============================================================================
    DROPDOWN MENU SYSTEM
    ============================================================================ */
 .info-question-mark {
-  position: fixed;
-  top: calc(14vh + 12vh - 25px);
-  left: 50%;
-  transform: translateX(-50%);
-  margin-left: -572px;
+  position: absolute;
+  top: 195px; /* Just above the CornerRoundButton */
+  left: .9rem;
+  transform: none;
   color: #00ffff;
-  font-size: 1.5em;
+  font-size: 2em;
   font-weight: bold;
   font-family: "Doto", sans-serif;
   text-shadow: 
@@ -654,11 +581,18 @@ li::marker {
     width: 45%;
     max-width: 45%;
     min-width: unset;
+    overflow: hidden; /* Prevent bleeding */
   }
   
   .infoBox_petChat {
     width: 55%;
     max-width: 55%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .infoBox-controls {
+    flex-wrap: wrap; /* Wrap on medium screens where 45% is too narrow for 4 items */
   }
 }
 
@@ -680,11 +614,13 @@ li::marker {
   padding: 20px;
   gap: 10px;
   margin: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Prevent wrapping on desktop */
   border-radius: 5px;
   background: oklch(10% 0.05 280 / 0.15);
   backdrop-filter: blur(2px);
 }
+
+
 
 .infoBox_petChat {
   padding: 20px;
@@ -817,8 +753,9 @@ button.Buttons.disabled:active
 /* Button container and timer display styles */
 .button-container {
   height: 65px;
-  min-width: 110px;
-  max-width:110px;
+  min-width: 80px;
+  width: 23%;
+  flex: 1 1 23%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -964,8 +901,8 @@ button.Buttons.disabled:active
 
 
 .StartButton {
-  padding: 12px 36px;
-  font-size: 1em;
+  padding: 14px 45px;
+  font-size: 1.4em;
   margin-top: 40px;
   letter-spacing: 3px;
   font-family: "Future Z", sans-serif;
@@ -1017,8 +954,8 @@ button.Buttons.disabled:active
 
 
 .ResetButton {
-  padding: 12px 36px;
-  font-size: 1em;
+  padding: 14px 45px;
+  font-size: 1.4em;
   letter-spacing: 3px;
   font-family: "Future Z", sans-serif;
   background: oklch(55.657% 0.27058 306.568);
@@ -1747,8 +1684,7 @@ canvas {
     0 0 50px rgba(17, 0, 255, 0.6),
     inset 0 0 15px rgba(255, 0, 0, 0.2);
   background: linear-gradient(40deg, #1a1a1a, #392f2f, #1a1a1a);
-  text-shadow: 
-    
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .game-over-button:active {
@@ -2930,8 +2866,8 @@ canvas {
 
 /* === Mobile background + scale fixes (portrait + landscape) === */
 
-/* 0) Avoid white flash */
-html, body { height: 100%; background-color: #000; }
+/* 0) Avoid white flash - removed background-color to show grid image */
+html, body { height: 100%; }
 
 /* 1) Always-on grid layer behind the app (works in all orientations) */
 html::before {

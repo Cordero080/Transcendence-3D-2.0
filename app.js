@@ -26,6 +26,7 @@ import {
   loadAndDisplayFBX,
   clearActiveModel,
   hasActiveModel,
+  setWhiteStageLighting,
 } from "./main-test.js";
 import { getCatMaskData } from "./main-test.js";
 import animationConfig from "./annimationConfig.js";
@@ -882,14 +883,19 @@ function startGame() {
 
     // TEMPORARY BYPASS to WHITE EVOLUTION
 
-    currentStage = "blue";
-    myPet.stage = "blue"; // uncomment to start at white
+    currentStage = "white";
+    myPet.stage = "white"; // uncomment to start at white
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
       animationConfig[currentStage].idle.file,
       animationConfig[currentStage].idle.pose
     ).then(() => {
+      // Enable bright lighting for white stage
+      if (currentStage === "white") {
+        setWhiteStageLighting(true);
+      }
+
       // (white_gong.mp3 is now only played after train in white stage)
       resetButtonTracker();
       gameStarted = true;

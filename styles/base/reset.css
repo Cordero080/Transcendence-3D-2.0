@@ -21,23 +21,12 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Avoid white flash */
+/* Avoid white flash - removed background-color to show grid image */
 html, body {
   height: 100%;
-  background-color: #000;
 }
 
-/* Always-on grid layer behind the app (works in all orientations) */
-html::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: url("../images/grid-b.jpg") center/cover no-repeat;
-  image-rendering: auto;
-  background-attachment: fixed;
-}
+/* Always-on grid layer removed - duplicated in main.css */
 
 /* Mobile: avoid iOS fixed-background jank */
 @media (max-width: 767px) {

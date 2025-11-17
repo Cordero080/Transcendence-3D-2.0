@@ -77,6 +77,7 @@ Created organized folder structure:
 **Status:** ❌ **FAILED** - Reverted via `git stash`
 
 **Issues Encountered:**
+
 - Care buttons stopped working
 - Stat timers not running
 - Evolution system broken
@@ -112,12 +113,14 @@ After 8 successful extractions and 1 failed attempt (Pet class), we've reached t
 ### Reasons to Stop:
 
 1. **Pet Class Extraction Failed**
+
    - Too tightly coupled with global state
    - Depends on: `currentStage`, `gameOverTriggered`, `animationConfig`, `loadAndDisplayFBX`, `buttonTracker`, etc.
    - Multiple attempts to fix with `window` globals unsuccessful
    - Breaking changes: care buttons, stat timers, evolution system all stopped working
 
 2. **Remaining Code is Highly Interdependent**
+
    - Game loop, animation system, and pet logic are deeply intertwined
    - Cannot extract one without refactoring all of them
    - Incremental extraction would introduce high risk of bugs
@@ -132,15 +135,18 @@ After 8 successful extractions and 1 failed attempt (Pet class), we've reached t
 To continue safely, the project would need:
 
 1. **State Management System**
+
    - Central `GameState` class or store
    - Eliminate global variables
    - Proper state subscription/notification pattern
 
 2. **Dependency Injection**
+
    - Pass dependencies explicitly rather than relying on globals
    - Pet class should receive all needed services as constructor parameters
 
 3. **Event/Messaging System**
+
    - Decouple modules via events instead of direct function calls
    - Reduce tight coupling between game loop, animations, and pet logic
 
@@ -175,7 +181,7 @@ To continue safely, the project would need:
 These items **cannot be safely extracted** without architectural changes:
 
 - **Pet Class** - Requires state management system and dependency injection
-- **Animation System** - Tightly coupled with game loop and Pet class  
+- **Animation System** - Tightly coupled with game loop and Pet class
 - **Game Loop** - Central to all game logic, needs event/messaging system
 - **Evolution System** - Intertwined with Pet class and global state
 
@@ -201,9 +207,13 @@ These items **cannot be safely extracted** without architectural changes:
 2. `Extract dropdown menu to modules/ui/dropdown.js` - Dropdown extraction
 3. `Extract name overlay to modules/ui/nameOverlay.js` - Name overlay extraction
 4. `Lower background music volume to 0.3` - Audio improvement
-5. `Extract updatePetChat to modules/ui/petChat.js` - Chat helper extraction (pending commit)
+5. `Extract updatePetChat to modules/ui/petChat.js` - Chat helper extraction
+6. `Extract hideGlitchEgg to modules/ui/eggAnimation.js` - Egg animation extraction
+7. `Extract restorePetContainer to modules/ui/petContainer.js` - Pet container helper
+8. `Fix music continuity - prevent restart on overlay transitions` - Music bug fix
 
-**Unpushed commits:** 4 (will push after completing current phase)
+**Unpushed commits:** 5 commits ready to push  
+**Stashed changes:** 1 (failed Pet class extraction - preserved for reference)
 
 ## Methodology
 
@@ -214,8 +224,14 @@ These items **cannot be safely extracted** without architectural changes:
 
 ## Success Metrics
 
-- ✅ Zero breaking changes
-- ✅ Improved code organization
-- ✅ Smaller main app.js file
-- ✅ Better separation of concerns
-- ✅ Easier future maintenance
+✅ **Zero breaking changes** (after Pet class reversion)  
+✅ **Improved code organization** - 8 new focused modules  
+✅ **Smaller main app.js file** - 8% reduction (~215 lines)  
+✅ **Better separation of concerns** - UI, audio, config clearly separated  
+✅ **Easier future maintenance** - Smaller, focused files  
+✅ **No functionality lost** - All features working as before  
+✅ **Music UX improved** - Better volume, no restarts
+
+## Conclusion
+
+**Phase 2 is complete.** We successfully extracted 8 self-contained modules with zero breaking changes. The failed Pet class extraction revealed the architectural limits of incremental refactoring. Further modularization requires major state management refactoring, which is beyond the scope of incremental extraction. Current progress represents a successful, safe improvement to code organization.
