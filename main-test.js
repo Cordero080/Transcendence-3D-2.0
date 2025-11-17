@@ -224,24 +224,55 @@ function hasActiveModel() {
   return !!activeModel;
 }
 
-export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
+// White stage lighting setup (initially off)
+const whiteStageBottomLight = new THREE.PointLight(0xff99cc, 0, 35); // Lighter pink with white/yellow tones from above
+whiteStageBottomLight.position.set(0, 6, 8); // Above and closer to camera
 
-// Function to enable/disable white stage lighting
+const whiteStageLeftLight = new THREE.PointLight(0x0066ff, 0, 35); // Pure deep blue from left above
+whiteStageLeftLight.position.set(-8, 6, 6); // Above and closer to camera
+
+const whiteStageTopRightLight = new THREE.PointLight(0xff0066, 0, 35); // Pure hot pink from top right
+whiteStageTopRightLight.position.set(5, 10, 7); // High above and closer to camera
+
+const whiteStageTopLeftLight = new THREE.PointLight(0x00ff66, 0, 35); // Pure spring green from top left
+whiteStageTopLeftLight.position.set(-5, 10, 7); // High above and closer to camera
+
+const whiteStageInnerLight = new THREE.PointLight(0x9966ff, 0, 15); // Purple inner glow - no white
+whiteStageInnerLight.position.set(0, 2, 0); // Slightly above center
+
 export function setWhiteStageLighting(enabled) {
   if (enabled) {
-    whiteStageLight1.intensity = 1.8; // Magenta - reduced
-    whiteStageLight2.intensity = 1.8; // Cyan - reduced
-    whiteStageLight3.intensity = 1.2; // Yellow - reduced
-    whiteStageLight4.intensity = 1.5; // Hot pink - reduced
-    ambientLight.intensity = 1.6; // Slight boost, not too bright
+    // Maximum white light for brightness
+    ambientLight.intensity = 2.5; // Very high for brightness
+    directionalLight.intensity = 1.5; // Strong white light
+    light.intensity = 1.2; // Strong magenta
+    topLight.intensity = 1.0; // Strong pink
+    sideLight.intensity = 3.5; // Ultra high blue - boosted
+    backLight.intensity = 1.2; // Much higher cyan - boosted
+
+    // Spectral rainbow lights with ultra-extreme intensity
+    whiteStageBottomLight.intensity = 30; // Lighter pink - reduced from 45
+    whiteStageLeftLight.intensity = 90; // Deep blue - 50% increase from 60
+    whiteStageTopRightLight.intensity = 40; // Hot pink - ultra extreme
+    whiteStageTopLeftLight.intensity = 82; // Spring green - 50% increase from 55
+    whiteStageInnerLight.intensity = 28; // Purple inner - ultra extreme
   } else {
-    whiteStageLight1.intensity = 0;
-    whiteStageLight2.intensity = 0;
-    whiteStageLight3.intensity = 0;
-    whiteStageLight4.intensity = 0;
-    ambientLight.intensity = 1.4; // Return to normal
+    // Restore default light intensities
+    ambientLight.intensity = 1.4;
+    directionalLight.intensity = 1;
+    light.intensity = 1.5;
+    topLight.intensity = 0.8;
+    sideLight.intensity = 0.5;
+    backLight.intensity = 0.3;
+
+    whiteStageBottomLight.intensity = 0;
+    whiteStageLeftLight.intensity = 0;
+    whiteStageTopRightLight.intensity = 0;
+    whiteStageTopLeftLight.intensity = 0;
+    whiteStageInnerLight.intensity = 0;
   }
 }
+export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
 
 const scene = new THREE.Scene();
 const petRoot = new THREE.Group();
@@ -256,22 +287,12 @@ bgLoader.load("./images/4th_.jpg", function (texture) {
 const ambientLight = new THREE.AmbientLight(0x000ff, 1.4); // Soft purple ambient light
 scene.add(ambientLight);
 
-// Additional spectral lights for white stage (initially off)
-const whiteStageLight1 = new THREE.PointLight(0xff00ff, 0, 15); // Magenta
-whiteStageLight1.position.set(3, 5, 3);
-scene.add(whiteStageLight1);
-
-const whiteStageLight2 = new THREE.PointLight(0x00ffff, 0, 15); // Cyan
-whiteStageLight2.position.set(-3, 5, 3);
-scene.add(whiteStageLight2);
-
-const whiteStageLight3 = new THREE.DirectionalLight(0xffff00, 0); // Yellow
-whiteStageLight3.position.set(0, 10, 5);
-scene.add(whiteStageLight3);
-
-const whiteStageLight4 = new THREE.PointLight(0xff0080, 0, 12); // Hot pink
-whiteStageLight4.position.set(0, 3, -3);
-scene.add(whiteStageLight4);
+// Add white stage lights to scene
+scene.add(whiteStageBottomLight);
+scene.add(whiteStageLeftLight);
+scene.add(whiteStageTopRightLight);
+scene.add(whiteStageTopLeftLight);
+scene.add(whiteStageInnerLight);
 
 // Directional light (like sunlight)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -305,22 +326,18 @@ camera.aspect = PET_WIDTH / PET_HEIGHT;
 camera.updateProjectionMatrix();
 
 // Light
-const light = new THREE.DirectionalLight(0xff00ff, 1); // this light coms from the right
-const topLight = new THREE.DirectionalLight(0xff00ff, 0.4); // pink light from above
+const light = new THREE.DirectionalLight(0xff00ff, 1.5); // Saturated magenta from the right - increased
+const topLight = new THREE.DirectionalLight(0xff0099, 0.8); // Saturated pink light from above - increased
 topLight.position.set(0, 5, 0); // x = left/right, y = up/down, z = front/back
 
 topLight.castShadow = true; // ✅ Enable shadow casting
 topLight.shadow.mapSize.width = 512; // default is 512
 
-const sideLight = new THREE.DirectionalLight(0x0000ff, 0.2); // Pink light from left
+const sideLight = new THREE.DirectionalLight(0x0000ff, 0.5); // Pure saturated blue from left - increased
 sideLight.position.set(-5, 2, 0); // X = left/right, Y = up/down, Z = front/back
 sideLight.castShadow = true; // ✅ Enable shadow casting
 
-const bottomLight = new THREE.DirectionalLight(0xff0000, 0.2); // Red from below
-bottomLight.position.set(0, -3, 0); // X = left/right, Y = up/down, Z = front/back
-bottomLight.castShadow = true; // ✅ Enable shadow casting
-
-const backLight = new THREE.DirectionalLight(0x00ffff, 0.1);
+const backLight = new THREE.DirectionalLight(0x00ffff, 0.3); // Saturated cyan - increased
 backLight.position.set(0, 2, -5);
 backLight.target.position.set(0, 1, 0);
 scene.add(backLight);
@@ -346,7 +363,7 @@ const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = -Math.PI / 2;
 ground.position.y = -1.7;
 ground.receiveShadow = true;
-scene.add(light, ground, topLight, bottomLight, sideLight, directionalLight);
+scene.add(light, ground, topLight, sideLight, directionalLight);
 
 function animate() {
   requestAnimationFrame(animate);

@@ -490,7 +490,7 @@ const animationConfig = {
     // },
 
     train: {
-      file: "./models/translucent-spell.fbx",
+      file: "./models/cosmic-cat-spell.fbx",
       pose: {
         scale: [0.023, 0.023, 0.023],
         position: [0, -1.5, -3.5],
@@ -508,7 +508,7 @@ const animationConfig = {
     //   },
     // },
     idle: {
-      file: "./models/translucent-idle-1.fbx",
+      file: "./models/cosmic-cat-qi.fbx",
       pose: {
         scale: [0.023, 0.023, 0.023],
         position: [0, -1.5, -3],
@@ -520,7 +520,7 @@ const animationConfig = {
     death: {
       file: "./models/white_dies.fbx",
       pose: {
-        scale: [0.002, 0.002, 0.002],
+        scale: [0.0024, 0.0024, 0.0024],
         position: [0, -1.5, -3.2],
         rotationY: -Math.PI / -50,
         rotationX: 0,

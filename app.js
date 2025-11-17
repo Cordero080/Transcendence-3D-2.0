@@ -891,7 +891,7 @@ function startGame() {
       animationConfig[currentStage].idle.file,
       animationConfig[currentStage].idle.pose
     ).then(() => {
-      // Enable bright lighting for white stage
+      // Enable bright spectral lighting for white stage only
       if (currentStage === "white") {
         setWhiteStageLighting(true);
       }
