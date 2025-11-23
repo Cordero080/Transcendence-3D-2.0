@@ -26,23 +26,28 @@ export function drawSpectralSineWave() {
   const repeatCount = Math.ceil(w / gradientWidth) + 2;
 
   const spectralColors = [
-    "#ff00cc",
+    "#ff00ccb9",
     "#8e00ff",
     "#3333ff",
     "#00bfff",
     "#00fff7",
     "#03eda3",
     "#00ff00",
+    "#66ff00", // Add intermediate yellow-green
     "#aaff00",
+    "#ddff00", // Add intermediate yellow
     "#ffff00",
-    "#ff8800",
+    "#ffcc00", // Add intermediate orange-yellow
+    "#ff8800d9",
+    "#ff5500", // Add intermediate red-orange
     "#ff3300",
     "#ff0000",
-    "#ff00bf",
+    "#ff00bfbc",
   ];
 
   // First line - moving right with smooth repeating gradient
   ctx.save();
+  ctx.filter = "blur(3px)";
   for (let i = -1; i < repeatCount; i++) {
     const offsetX =
       ((speed1 + i * gradientWidth) % (w + gradientWidth * 2)) - gradientWidth;
@@ -52,9 +57,14 @@ export function drawSpectralSineWave() {
       offsetX + gradientWidth,
       yCenter - offset1
     );
-    spectralColors.forEach((color, idx) => {
-      grad1.addColorStop(idx / (spectralColors.length - 1), color);
-    });
+
+    // Create smoother color distribution with more gradient stops
+    const colorCount = spectralColors.length;
+    for (let c = 0; c < colorCount; c++) {
+      const position = c / (colorCount - 1);
+      grad1.addColorStop(position, spectralColors[c]);
+    }
+
     ctx.strokeStyle = grad1;
     ctx.beginPath();
     ctx.moveTo(Math.max(0, offsetX), yCenter - offset1);
@@ -69,6 +79,7 @@ export function drawSpectralSineWave() {
   ctx.save();
   ctx.globalAlpha = 0.8;
   ctx.lineWidth = 3;
+  ctx.filter = "blur(1px)";
   for (let i = -1; i < repeatCount; i++) {
     const offsetX =
       ((speed2 + i * gradientWidth) % (w + gradientWidth * 2)) - gradientWidth;
@@ -78,9 +89,14 @@ export function drawSpectralSineWave() {
       offsetX + gradientWidth,
       yCenter + offset2
     );
-    spectralColors.forEach((color, idx) => {
-      grad2.addColorStop(idx / (spectralColors.length - 1), color);
-    });
+
+    // Create smoother color distribution
+    const colorCount = spectralColors.length;
+    for (let c = 0; c < colorCount; c++) {
+      const position = c / (colorCount - 1);
+      grad2.addColorStop(position, spectralColors[c]);
+    }
+
     ctx.strokeStyle = grad2;
     ctx.beginPath();
     ctx.moveTo(Math.max(0, offsetX), yCenter + offset2);
@@ -95,6 +111,7 @@ export function drawSpectralSineWave() {
   ctx.save();
   ctx.globalAlpha = 0.8;
   ctx.lineWidth = 3;
+  ctx.filter = "blur(3px)";
   for (let i = -1; i < repeatCount; i++) {
     const offsetX =
       ((speed3 + i * gradientWidth) % (w + gradientWidth * 2)) - gradientWidth;
@@ -104,15 +121,20 @@ export function drawSpectralSineWave() {
       offsetX + gradientWidth,
       yCenter + offset3
     );
-    spectralColors.forEach((color, idx) => {
-      grad3.addColorStop(idx / (spectralColors.length - 1), color);
-    });
+
+    // Create smoother color distribution
+    const colorCount = spectralColors.length;
+    for (let c = 0; c < colorCount; c++) {
+      const position = c / (colorCount - 1);
+      grad3.addColorStop(position, spectralColors[c]);
+    }
+
     ctx.strokeStyle = grad3;
     ctx.beginPath();
-    ctx.moveTo(Math.max(0, offsetX), yCenter + offset3);
+    ctx.moveTo(Math.max(4, offsetX), yCenter + offset3);
     ctx.lineTo(Math.min(w, offsetX + gradientWidth), yCenter + offset3);
     ctx.shadowColor = "#fff";
-    ctx.shadowBlur = 20;
+   
     ctx.stroke();
   }
   ctx.restore();

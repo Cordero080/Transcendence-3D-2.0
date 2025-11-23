@@ -1,8 +1,4 @@
-// === Spectral Sine Wave Background Animation
-import { drawSpectralSineWave } from "./modules/effects/spectralSineWave.js";
 window.addEventListener("DOMContentLoaded", () => {
-  drawSpectralSineWave();
-
   // Set initial background music volume
   const bgMusic = document.getElementById("bg-music");
   if (bgMusic) {
@@ -881,19 +877,19 @@ function startGame() {
     const petName = window.petName || "Coco";
     myPet = new Pet(petName);
 
-    // TEMPORARY BYPASS to WHITE EVOLUTION
-
-    currentStage = "white";
-    myPet.stage = "white"; // uncomment to start at white
+    // Start at blue stage
+    currentStage = "blue";
+    myPet.stage = "blue";
+    myPet.evolutionLevel = 0;
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
       animationConfig[currentStage].idle.file,
       animationConfig[currentStage].idle.pose
     ).then(() => {
-      // Enable bright spectral lighting for white stage only
-      if (currentStage === "white") {
-        setWhiteStageLighting(true);
+      // Disable white stage lighting for blue stage
+      if (currentStage === "blue") {
+        setWhiteStageLighting(false);
       }
 
       // (white_gong.mp3 is now only played after train in white stage)
