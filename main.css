@@ -7,6 +7,9 @@
 /* Sine wave canvas effect */
 @import url('./styles/effects/sine-wave.css');
 
+/* Transcendence effect */
+@import url('./styles/effects/transcendence.css');
+
 /* Stat bars component */
 @import url('./styles/components/stat-bars.css');
 

@@ -22,7 +22,9 @@
 
 .transcendence-effect.active {
   opacity: 1;
-  width: 5280px;
+  width: 550px;
+  height: 550px;
+  transform: translate(-50%, -50%);
   animation: 
     mysticalTranscendenceGlow 8s ease-in-out,
     mandalaRotation 12s linear infinite,
@@ -380,7 +382,7 @@
 
 @keyframes mysticalTranscendenceGlow {
   0% { 
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(0.15);
     filter: blur(0.5px) brightness(120%) saturate(150%);
     box-shadow: 
       0 0 30px rgba(255, 255, 255, 0.4),
@@ -389,7 +391,7 @@
       0 0 120px rgba(138, 43, 226, 0.15);
   }
   25% { 
-    transform: translate(-50%, -50%) scale(1.1);
+    transform: translate(-50%, -50%) scale(0.175);
     filter: blur(0.8px) brightness(140%) saturate(180%);
     box-shadow: 
       0 0 40px rgba(255, 255, 255, 0.5),
@@ -398,7 +400,7 @@
       0 0 160px rgba(138, 43, 226, 0.2);
   }
   50% { 
-    transform: translate(-50%, -50%) scale(1.2);
+    transform: translate(-50%, -50%) scale(0.2);
     filter: blur(1px) brightness(160%) saturate(200%);
     box-shadow: 
       0 0 50px rgba(255, 255, 255, 0.6),
@@ -408,7 +410,7 @@
       0 0 250px rgba(75, 0, 130, 0.2);
   }
   75% { 
-    transform: translate(-50%, -50%) scale(1.15);
+    transform: translate(-50%, -50%) scale(0.1875);
     filter: blur(1.2px) brightness(180%) saturate(220%);
     box-shadow: 
       0 0 60px rgba(255, 255, 255, 0.7),
@@ -418,7 +420,7 @@
       0 0 300px rgba(75, 0, 130, 0.25);
   }
   100% { 
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(0.15);
     filter: blur(0.5px) brightness(120%) saturate(150%);
     box-shadow: 
       0 0 50px rgba(255, 255, 255, 0.6),

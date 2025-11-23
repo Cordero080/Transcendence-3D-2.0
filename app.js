@@ -1290,9 +1290,9 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
     const catData = getCatMaskData();
 
     if (catData) {
-      // Position the effect around the cat
-      glitchOverlay.style.left = `${catData.x}px`;
-      glitchOverlay.style.top = `${catData.y}px`;
+      // Position the effect centered on viewport
+      glitchOverlay.style.left = `50%`;
+      glitchOverlay.style.top = `50%`;
       glitchOverlay.style.width = `${catData.width * 1.5}px`; // Larger for particles
       glitchOverlay.style.height = `${catData.height * 1.5}px`;
       glitchOverlay.style.transform = "translate(-50%, -50%)";
@@ -1393,21 +1393,6 @@ function triggerMysticalTranscendence(duration = 16500) {
     console.log(
       "🌟✨ Mystical transcendence effect with mandala glow triggered"
     );
-
-    // Get the current cat position and dimensions
-    const catData = getCatMaskData();
-
-    if (catData) {
-      // Position the effect around the cat with even larger coverage for mystical aura + halo
-      transcendenceEffect.style.left = `${catData.x}px`;
-      transcendenceEffect.style.top = `${catData.y}px`;
-      transcendenceEffect.style.width = `${catData.width * 4.2}px`; // 20% larger for halo effect
-      transcendenceEffect.style.height = `${catData.height * 3.0}px`; // 20% larger for halo effect
-      transcendenceEffect.style.transform = "translate(-50%, -50%)";
-
-      // Note: Mask styling removed as transcendence effect is now self-contained in CSS
-      console.log(`✨ Mystical transcendence effect positioned around cat`);
-    }
 
     // Add active class for mystical transcendence effect
     transcendenceEffect.classList.add("active");
