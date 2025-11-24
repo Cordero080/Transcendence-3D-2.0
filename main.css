@@ -1,5 +1,3 @@
-
-
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Honk&family=Monoton&family=Poiret+One&family=Splash&family=Tektur:wght@400..900&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
@@ -653,6 +651,8 @@ li::marker {
   background: linear-gradient(45deg, 
     oklch(73.033% 0.19383 352.633),     /* Pink */
     oklch(76.162% 0.1228 258.17),     /* Light blue */
+    oklch(70.428% 0.18362 300.278),     /* Purple */
+    oklch(89.385% 0.19155 151.458),     /* Green */
     oklch(70.428% 0.18362 300.278),     /* Purple */
     oklch(89.385% 0.19155 151.458),     /* Green */
     oklch(82.405% 0.12878 64.68),     /* Orange */
@@ -2065,23 +2065,21 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   background: repeating-linear-gradient(
     0deg,
-    transparent,
-    transparent 1px,
-    rgba(255, 0, 255, 0.6) 1px,
-    rgba(255, 0, 255, 0.6) 3px,
-    transparent 3px,
-    transparent 5px,
-    rgba(0, 255, 255, 0.5) 5px,
-    rgba(0, 255, 255, 0.5) 7px,
-    transparent 7px,
-    transparent 9px,
-    rgba(0, 255, 8, 0.4) 9px,
-    rgba(255, 191, 0, 0.4) 11px
+    #ff00ff 0px,
+    #ff00ea 2px,
+    #ff00ff 4px,
+    #d400ff 6px,
+    #ff00ea 8px,
+    #b000ff 10px,
+    #ff00ff 12px
   );
-  animation: stutterScan 0.08s linear infinite;
+  animation: stutterScan 0.08s linear infinite, scanlinesWarp 1.2s linear infinite;
   mix-blend-mode: screen;
+  filter: blur(0px) saturate(3) brightness(2);
+  box-shadow: 0 0 30px #ff00ff, inset 0 0 30px #ff00ff;
 }
 
 .stutter-static {
@@ -2090,9 +2088,13 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.6"/></svg>');
-  animation: stutterStatic 0.07s linear infinite;
-  mix-blend-mode: overlay;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00ffff 0%, #00d4ff 25%, #0080ff 50%, #00fff7 75%, #00ffff 100%);
+  opacity: 1;
+  mix-blend-mode: screen;
+  animation: stutterStatic 0.07s linear infinite, staticWarp 2.2s linear infinite;
+  filter: saturate(3) brightness(2);
+  box-shadow: 0 0 40px #00ffff, inset 0 0 40px #00ffff;
 }
 
 .stutter-flash {
@@ -2101,16 +2103,20 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    45deg,
-    rgba(187, 89, 253, 0.931) 0%,
-    rgba(255, 0, 255, 0.7) 25%,
-    rgba(0, 255, 255, 0.731) 50%,
-    rgba(255, 255, 0, 0.5) 75%,
-    rgba(123, 203, 196, 0.4) 100%
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    #ffff00 0%,
+    #ffe600 20%,
+    #ffaa00 40%,
+    #ff8800 60%,
+    #ffaa00 80%,
+    #ffe600 100%
   );
-  animation: stutterFlash 0.1s ease-out;
-  mix-blend-mode: color-dodge;
+  animation: stutterFlash 0.1s ease-out, flashWarp 1.7s linear infinite;
+  mix-blend-mode: screen;
+  filter: saturate(3) brightness(2.5);
+  box-shadow: 0 0 50px #ffff00, inset 0 0 50px #ffe600;
 }
 
 /* ============ ⚡ INVERTED GLITCH STUTTER OVERLAY (LAYER 2) ============ */
@@ -2313,6 +2319,40 @@ canvas {
     opacity: 0; 
     transform: scale(1) skew(0deg, 0deg);
   }
+}
+
+@keyframes teleportPulse {
+  0% { 
+    transform: scale(0.95);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% { 
+    transform: scale(1.0);
+    opacity: 0.6;
+  }
+}
+
+@keyframes scanlinesWarp {
+  0% { filter: hue-rotate(0deg) brightness(2) saturate(3); }
+  50% { filter: hue-rotate(90deg) brightness(2.5) saturate(4); }
+  100% { filter: hue-rotate(360deg) brightness(2) saturate(3); }
+}
+
+@keyframes staticWarp {
+  0% { filter: hue-rotate(0deg) brightness(2) saturate(3); }
+  50% { filter: hue-rotate(180deg) brightness(2.5) saturate(4); }
+  100% { filter: hue-rotate(360deg) brightness(2) saturate(3); }
+}
+
+@keyframes flashWarp {
+  0% { filter: hue-rotate(0deg) saturate(3) brightness(2.5); }
+  40% { filter: hue-rotate(120deg) saturate(4) brightness(3); }
+  80% { filter: hue-rotate(270deg) saturate(5) brightness(3.5); }
+  100% { filter: hue-rotate(360deg) saturate(3) brightness(2.5); }
 }
 
 @keyframes dynamicCatGlitch {
@@ -2866,6 +2906,24 @@ html::before {
   pointer-events: none;
   z-index: 99999;
 }
+
+/* Glitch overlay for action transitions */
+#glitchOverlay,
+#glitchOverlay2 {
+  position: absolute;
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+  visibility: hidden;
+}
+
+#glitchOverlay.active,
+#glitchOverlay2.active {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* ==========COLORFUL GLITCH ANIMATION CONTAINER =========*/
 .colorful-glitch-container {
   width: 150px;

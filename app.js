@@ -1403,6 +1403,17 @@ function triggerMysticalTranscendence(duration = 16500) {
       "🌟✨ Mystical transcendence effect with mandala glow triggered"
     );
 
+    // Set size for transcendence effect
+    const catData = getCatMaskData();
+    if (catData) {
+      const size = Math.max(catData.width, catData.height) * 1.55;
+      transcendenceEffect.style.left = "50%";
+      transcendenceEffect.style.top = "calc(50% 40px)"; // MOVED UP - was +20px, now -30px
+      transcendenceEffect.style.width = `${size}px`;
+      transcendenceEffect.style.height = `${size}px`;
+      transcendenceEffect.style.transform = "translate(-50%, -50%)";
+    }
+
     // Add active class for mystical transcendence effect
     transcendenceEffect.classList.add("active");
 
@@ -1525,6 +1536,120 @@ function triggerMysticalTranscendence(duration = 16500) {
 
 // ============ ⚡ QUICK MANDALA FLASH EFFECT ============ \\
 // ============ ⚡ QUICK MANDALA FLASH EFFECT ============ \\
+// NEW: Separate glitch transition flash (not using transcendenceEffect)
+function triggerGlitchTransitionFlash(duration = 120) {
+  // Play stutterMask.wav audio
+  const glitchStutterAudio = document.getElementById("stutterMask");
+  if (glitchStutterAudio) {
+    glitchStutterAudio.currentTime = 0;
+    glitchStutterAudio.volume = 0.3;
+    glitchStutterAudio.play().catch((err) => {
+      console.log("🔇 stutterMask.wav audio play() blocked:", err);
+    });
+  }
+
+  // GLITCH STUTTER OVERLAY TRANSITION------------------------------------------------------------------------------------------------------------------
+  const glitchOverlay = document.getElementById("glitchOverlay");
+  if (glitchOverlay) {
+    const catData = getCatMaskData();
+
+    if (catData) {
+      // GLITCH TRANSITION - Teleport effect, cat-shaped mask (reduced by 20%)
+      const width = catData.width * 1.2;
+      const height = catData.height * 1;
+
+      glitchOverlay.style.left = "50%";
+      glitchOverlay.style.top = "60%";
+      glitchOverlay.style.width = `${width}px`;
+      glitchOverlay.style.height = `${height}px`;
+      glitchOverlay.style.transform = "translate(-50%, -50%)";
+      glitchOverlay.style.borderRadius = "50%";
+
+      // NO MASK on parent - let the children show their distinct colors!
+      glitchOverlay.style.background = "transparent";
+      glitchOverlay.style.mixBlendMode = "screen";
+
+      // LAYER THE CHILD ELEMENTS - each smaller than the last
+      const scanlines = glitchOverlay.querySelector(".stutter-scanlines");
+      const staticEl = glitchOverlay.querySelector(".stutter-static");
+      const flash = glitchOverlay.querySelector(".stutter-flash");
+
+      if (scanlines) {
+        scanlines.style.display = "block";
+        scanlines.style.transform = "scale(1.0) rotate(-3deg)";
+        scanlines.style.opacity = "1";
+        scanlines.style.transition = "opacity 0.6s ease-out";
+        scanlines.style.animation = "teleportPulse 0.12s ease-in-out";
+      }
+
+      if (staticEl) {
+        staticEl.style.display = "block";
+        staticEl.style.transform = "scale(0.7) translateY(-3px)";
+        staticEl.style.opacity = "0.9";
+        staticEl.style.transition = "opacity 0.6s ease-out";
+        staticEl.style.animation = "teleportPulse 0.12s ease-in-out 0.04s";
+      }
+
+      if (flash) {
+        flash.style.display = "block";
+        flash.style.transform = "scale(0.4) rotate(3deg) translateY(3px)";
+        flash.style.opacity = "1";
+        flash.style.transition = "opacity 0.6s ease-out";
+        flash.style.animation = "teleportPulse 0.12s ease-in-out 0.08s";
+      }
+    }
+
+    glitchOverlay.classList.add("active");
+    glitchOverlay.style.opacity = "1";
+    glitchOverlay.style.transition = "opacity 0.6s ease-out";
+    glitchOverlay.style.filter = `
+      saturate(400%) 
+      brightness(250%) 
+      contrast(150%)
+    `;
+
+    setTimeout(() => {
+      // Start fading out
+      glitchOverlay.style.opacity = "0";
+      const scanlines = glitchOverlay.querySelector(".stutter-scanlines");
+      const staticEl = glitchOverlay.querySelector(".stutter-static");
+      const flash = glitchOverlay.querySelector(".stutter-flash");
+
+      if (scanlines) scanlines.style.opacity = "0";
+      if (staticEl) staticEl.style.opacity = "0";
+      if (flash) flash.style.opacity = "0";
+
+      // Clean up after fade completes
+      setTimeout(() => {
+        glitchOverlay.classList.remove("active");
+        glitchOverlay.style.transition = "";
+        glitchOverlay.style.filter = "";
+        glitchOverlay.style.mixBlendMode = "";
+        glitchOverlay.style.background = "";
+
+        if (scanlines) {
+          scanlines.style.display = "none";
+          scanlines.style.transform = "";
+          scanlines.style.opacity = "";
+          scanlines.style.transition = "";
+        }
+        if (staticEl) {
+          staticEl.style.display = "none";
+          staticEl.style.transform = "";
+          staticEl.style.opacity = "";
+          staticEl.style.transition = "";
+        }
+        if (flash) {
+          flash.style.display = "none";
+          flash.style.transform = "";
+          flash.style.opacity = "";
+          flash.style.transition = "";
+        }
+      }, 600);
+    }, duration);
+  }
+}
+
 function triggerQuickMandalaFlash(duration = 200) {
   // Play stutterMask.wav audio
   const glitchStutterAudio = document.getElementById("stutterMask");
@@ -1575,15 +1700,15 @@ function triggerQuickMandalaFlash(duration = 200) {
   }
 }
 
-// Legacy glitch stutter calls now use mandala flash
+// Legacy glitch stutter calls now use the new glitch transition flash
 function triggerGlitchStutter(duration = 120) {
-  triggerQuickMandalaFlash(duration);
+  triggerGlitchTransitionFlash(duration);
 }
 
 // Enhanced animation transition with cat-shaped glitch stutter masking
 async function playAnimationWithStutterMask(actionType, stage) {
   // Trigger glitch stutter effect ONCE at the start of each action
-  triggerGlitchStutter(90);
+  triggerGlitchStutter(320);
 
   // Small delay to let stutter effect start
   await new Promise((resolve) => setTimeout(resolve, 20));
