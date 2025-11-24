@@ -223,55 +223,50 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
 function hasActiveModel() {
   return !!activeModel;
 }
-
+// DIGITS set(X, Y, Z)
+// X: Negative ----> left Positive = right
+// Y: Up / Down ----> Positive = up
+// Z: Forward / Back (toward or away from the camera)
 // White stage lighting setup (initially off)
+// Positive = toward camera, Negative = away from camera
+//--------------------------------------------------------
+// THREE.Point.Light(color, intensity, distance)
+// Intensity: higher= brighter (max 200 +) Lower = dimmer
+// Distance: This is how far the light reaches before fading out.
+// Small number = tight local glow Large number = long, wide reach and 0 = infinite (no falloff)
 const whiteStageBottomLight = new THREE.PointLight(0xff99cc, 0, 35); // Lighter pink with white/yellow tones from above
 whiteStageBottomLight.position.set(0, 6, 8); // Above and closer to camera
 
-const whiteStageLeftLight = new THREE.PointLight(0x0066ff, 0, 35); // Pure deep blue from left above
-whiteStageLeftLight.position.set(-8, 6, 6); // Above and closer to camera
+const whiteStageLeftLight = new THREE.PointLight(0x00bbff, 90, 40); // Hyper Neon Blue-Aqua from left
+whiteStageLeftLight.position.set(-13, 6, 6); // Above and closer to camera
+whiteStageLeftLight.decay = 1.2;
 
-const whiteStageTopRightLight = new THREE.PointLight(0xff0066, 0, 35); // Pure hot pink from top right
-whiteStageTopRightLight.position.set(5, 10, 7); // High above and closer to camera
+const whiteStageTopRightLight = new THREE.PointLight(0xff00ff, 250, 90); // Pure hot pink from top right
+whiteStageTopRightLight.position.set(0, 10, 7); // High above and closer to camera
 
-const whiteStageTopLeftLight = new THREE.PointLight(0x00ff66, 0, 35); // Pure spring green from top left
-whiteStageTopLeftLight.position.set(-5, 10, 7); // High above and closer to camera
+const whiteStageTopLeftLight = new THREE.PointLight(0xff5500, 80, 35); // Tangerine Neon from top left
+whiteStageTopLeftLight.position.set(-7, 10, 7); // High above and closer to camera
 
-const whiteStageInnerLight = new THREE.PointLight(0x9966ff, 0, 15); // Purple inner glow - no white
-whiteStageInnerLight.position.set(0, 2, 0); // Slightly above center
+const whiteStageInnerLight = new THREE.PointLight(0xffcc33, 50, 15); // True Golden Yellow (warm & rich)
+whiteStageInnerLight.position.set(7, 2, 0); // Slightly above center
 
 export function setWhiteStageLighting(enabled) {
-  if (enabled) {
-    // Maximum white light for brightness
-    ambientLight.intensity = 2.5; // Very high for brightness
-    directionalLight.intensity = 1.5; // Strong white light
-    light.intensity = 1.2; // Strong magenta
-    topLight.intensity = 1.0; // Strong pink
-    sideLight.intensity = 3.5; // Ultra high blue - boosted
-    backLight.intensity = 1.2; // Much higher cyan - boosted
+  // Apply white stage lighting as default for all stages
+  ambientLight.intensity = 1.2;
+  directionalLight.intensity = 0.7;
+  light.intensity = 0.7;
+  topLight.intensity = 0.5;
+  sideLight.intensity = 2.0;
+  backLight.intensity = 0.5;
 
-    // Spectral rainbow lights with ultra-extreme intensity
-    whiteStageBottomLight.intensity = 30; // Lighter pink - reduced from 45
-    whiteStageLeftLight.intensity = 90; // Deep blue - 50% increase from 60
-    whiteStageTopRightLight.intensity = 40; // Hot pink - ultra extreme
-    whiteStageTopLeftLight.intensity = 82; // Spring green - 50% increase from 55
-    whiteStageInnerLight.intensity = 28; // Purple inner - ultra extreme
-  } else {
-    // Restore default light intensities
-    ambientLight.intensity = 1.4;
-    directionalLight.intensity = 1;
-    light.intensity = 1.5;
-    topLight.intensity = 0.8;
-    sideLight.intensity = 0.5;
-    backLight.intensity = 0.3;
-
-    whiteStageBottomLight.intensity = 0;
-    whiteStageLeftLight.intensity = 0;
-    whiteStageTopRightLight.intensity = 0;
-    whiteStageTopLeftLight.intensity = 0;
-    whiteStageInnerLight.intensity = 0;
-  }
+  // Spectral rainbow lights always on
+  whiteStageBottomLight.intensity = 12;
+  whiteStageLeftLight.intensity = 50;
+  whiteStageTopRightLight.intensity = 18;
+  whiteStageTopLeftLight.intensity = 40;
+  whiteStageInnerLight.intensity = 12;
 }
+
 export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
 
 const scene = new THREE.Scene();

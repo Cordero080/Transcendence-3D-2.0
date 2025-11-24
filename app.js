@@ -887,10 +887,8 @@ function startGame() {
       animationConfig[currentStage].idle.file,
       animationConfig[currentStage].idle.pose
     ).then(() => {
-      // Disable white stage lighting for blue stage
-      if (currentStage === "blue") {
-        setWhiteStageLighting(false);
-      }
+      // Apply bright lighting for all stages
+      setWhiteStageLighting(true);
 
       // (white_gong.mp3 is now only played after train in white stage)
       resetButtonTracker();

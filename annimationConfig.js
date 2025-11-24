@@ -508,9 +508,9 @@ const animationConfig = {
     //   },
     // },
     idle: {
-      file: "./models/cosmic-cat-qi.fbx",
+      file: "./models/slow-white-qi.fbx",
       pose: {
-        scale: [0.023, 0.023, 0.023],
+        scale: [0.0021, 0.0021, 0.0021],
         position: [0, -1.5, -3],
         rotationY: -Math.PI / -6,
         rotationX: 0,
@@ -520,7 +520,7 @@ const animationConfig = {
     death: {
       file: "./models/white_dies.fbx",
       pose: {
-        scale: [0.0024, 0.0024, 0.0024],
+        scale: [0.0021, 0.0021, 0.0021],
         position: [0, -1.5, -3.2],
         rotationY: -Math.PI / -50,
         rotationX: 0,
