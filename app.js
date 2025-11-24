@@ -883,8 +883,8 @@ function startGame() {
     myPet = new Pet(petName);
 
     // Start at blue stage
-    currentStage = "blue";
-    myPet.stage = "blue";
+    currentStage = "white";
+    myPet.stage = "white";
     myPet.evolutionLevel = 0;
     evolutionInProgress = false; // Initialize evolution flag
 
@@ -1512,8 +1512,8 @@ function triggerMysticalTranscendence(duration = 16500) {
       setTimeout(() => {
         transcendenceEffect.style.left = "50%";
         transcendenceEffect.style.top = "50%";
-        transcendenceEffect.style.width = "280px";
-        transcendenceEffect.style.height = "380px";
+        transcendenceEffect.style.width = "400px";
+        transcendenceEffect.style.height = "400px";
         transcendenceEffect.style.webkitMask = "";
         transcendenceEffect.style.mask = "";
         transcendenceEffect.style.filter = "";
@@ -1523,9 +1523,10 @@ function triggerMysticalTranscendence(duration = 16500) {
   }
 }
 
-// ============ ⚡ GLITCH STUTTER EFFECT SYSTEM ============ \\
-function triggerGlitchStutter(duration = 120) {
-  // Play stutterMask.wav every time glitchOverlay is triggered
+// ============ ⚡ QUICK MANDALA FLASH EFFECT ============ \\
+// ============ ⚡ QUICK MANDALA FLASH EFFECT ============ \\
+function triggerQuickMandalaFlash(duration = 200) {
+  // Play stutterMask.wav audio
   const glitchStutterAudio = document.getElementById("stutterMask");
   if (glitchStutterAudio) {
     glitchStutterAudio.currentTime = 0;
@@ -1534,108 +1535,49 @@ function triggerGlitchStutter(duration = 120) {
       console.log("🔇 stutterMask.wav audio play() blocked:", err);
     });
   }
-  if (glitchOverlay) {
-    console.log(
-      "⚡ Dynamic cat-shaped glitch stutter triggered with inverted layer"
-    );
 
-    // Get the current cat position and dimensions
+  if (transcendenceEffect) {
+    // Get cat size for matching dimensions
     const catData = getCatMaskData();
 
     if (catData) {
-      // Apply dynamic positioning and sizing to BOTH overlays
-      const overlays = [glitchOverlay, glitchOverlay2].filter(Boolean);
-
-      overlays.forEach((overlay, index) => {
-        if (overlay) {
-          overlay.style.left = `${catData.x}px`;
-          overlay.style.top = `${catData.y}px`;
-
-          // Increase size by 20% for white stage
-          const sizeMultiplier = currentStage === "white" ? 1.2 : 1.0;
-          overlay.style.width = `${catData.width * sizeMultiplier}px`;
-          overlay.style.height = `${catData.height * sizeMultiplier}px`;
-
-          // First overlay: normal transform, Second overlay: reduced size to hide outline
-          if (index === 0) {
-            overlay.style.transform = "translate(-50%, -50%)";
-          } else {
-            overlay.style.transform = "translate(-50%, -50%) scale(0.85)";
-          }
-
-          // Apply same mask shape to both overlays based on current pose
-          let maskStyle = "";
-          if (catData.pose.includes("sleep")) {
-            // Sleeping cat - wider, shorter shape
-            maskStyle = `radial-gradient(ellipse 50% 35% at 50% 55%, black 0%, black 70%, transparent 80%)`;
-          } else if (
-            catData.pose.includes("dance") ||
-            catData.pose.includes("salsa")
-          ) {
-            // Dancing cat - more dynamic shape with extended limbs
-            maskStyle = `
-              radial-gradient(ellipse 45% 55% at 50% 45%, black 0%, black 65%, transparent 75%),
-              radial-gradient(ellipse 12% 18% at 35% 25%, black 0%, transparent 70%),
-              radial-gradient(ellipse 12% 18% at 65% 25%, black 0%, transparent 70%)
-            `;
-          } else {
-            // Default cat shape
-            maskStyle = `
-              radial-gradient(ellipse 40% 50% at 50% 45%, black 0%, black 60%, transparent 70%),
-              radial-gradient(ellipse 15% 20% at 35% 25%, black 0%, transparent 70%),
-              radial-gradient(ellipse 15% 20% at 65% 25%, black 0%, transparent 70%)
-            `;
-          }
-
-          overlay.style.webkitMask = maskStyle;
-          overlay.style.mask = maskStyle;
-        }
-      });
-
-      console.log(
-        `✅ Dynamic cat mask applied to ${overlays.length} layers - Position: (${catData.x}, ${catData.y}), Size: ${catData.width}x${catData.height}, Pose: ${catData.pose}`
-      );
+      //--------------------------------------------------------------------
+      //CIRCLE SPECTRAL MANDALA EFFECT
+      // Position at screen center - make it a perfect circle
+      const size = Math.max(catData.width, catData.height) * 1.3;
+      transcendenceEffect.style.left = "50%";
+      transcendenceEffect.style.top = "calc(50% + 20px)"; // move circle down by 2px
+      transcendenceEffect.style.width = `${size}px`;
+      transcendenceEffect.style.height = `${size}px`;
+      transcendenceEffect.style.transform = "translate(-50%, -50%)";
     }
 
-    // Add active class to trigger the effect on BOTH overlays
-    glitchOverlay.classList.add("active");
-    if (glitchOverlay2) {
-      glitchOverlay2.classList.add("active");
-    }
+    // Add active class for brief mandala effect
+    transcendenceEffect.classList.add("active");
+
+    // Quick color pulse
+    transcendenceEffect.style.filter = `
+      blur(1px) 
+      brightness(550%) 
+      saturate(900%) 
+      drop-shadow(0 0 60px rgba(255, 105, 180, 0.93))
+      drop-shadow(0 0 100px rgba(137, 43, 226, 0.9))
+      drop-shadow(0 0 140px rgba(0, 191, 255, 0.84))
+    `;
 
     // Remove the effect after specified duration
     setTimeout(() => {
-      glitchOverlay.classList.remove("active");
-      if (glitchOverlay2) {
-        glitchOverlay2.classList.remove("active");
-      }
-
-      // Reset positioning after effect for BOTH overlays
-      setTimeout(() => {
-        const overlays = [glitchOverlay, glitchOverlay2].filter(Boolean);
-        overlays.forEach((overlay, index) => {
-          if (overlay) {
-            overlay.style.left = "50%";
-            overlay.style.top = "50%";
-            overlay.style.width = "280px";
-            overlay.style.height = "380px";
-            overlay.style.webkitMask = "";
-            overlay.style.mask = "";
-
-            // Reset transform for both overlays
-            if (index === 0) {
-              overlay.style.transform = "translate(-50%, -50%)";
-            } else {
-              overlay.style.transform = "translate(-50%, -50%) scale(0.85)";
-            }
-          }
-        });
-      }, 50);
-      console.log(
-        "⚡ Dynamic cat-shaped glitch stutter effect ended (dual layer)"
-      );
+      transcendenceEffect.classList.remove("active");
+      transcendenceEffect.style.filter = "";
+      // DON'T reset size/position - let it stay as-is for transcendence
+      // Only reset the filter effect
     }, duration);
   }
+}
+
+// Legacy glitch stutter calls now use mandala flash
+function triggerGlitchStutter(duration = 120) {
+  triggerQuickMandalaFlash(duration);
 }
 
 // Enhanced animation transition with cat-shaped glitch stutter masking
@@ -2339,10 +2281,10 @@ window.addEventListener("DOMContentLoaded", () => {
 z-index:99999; opacity:1; transition:opacity 250ms ease;
 background: linear-gradient(45deg,
 oklch(71.384% 0.20314 353.227),
-oklch(61.9%   0.19284 258.775),
+oklch(61.9%0.19284 258.775),
 oklch(68.299% 0.18562 299.899),
 oklch(85.825% 0.23495 148.424),
-oklch(79.49%  0.14271 62.993),
+oklch(79.49%0.14271 62.993),
 oklch(73.033% 0.19383 352.633)
 );
 background-size:300% 300%; mix-blend-mode:normal;
