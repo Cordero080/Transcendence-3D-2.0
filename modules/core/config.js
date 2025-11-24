@@ -2,24 +2,39 @@
 export const gameSettings = {
   MAX_STAT: 10,
   EVOLUTION_THRESHOLD: 1,
+  baseDecayRate: 7000,
+  ageInterval: 10000,
 };
 
 export const stageMap = {
-  baby: "baby",
-  toddler: "toddler",
-  teen: "teen",
-  young_adult: "young_adult",
-  adult: "adult",
-  white: "white",
+  0: {
+    message: " is just hatching!",
+    chatMessage: "🔵 New life awakens... Time to grow strong!",
+  },
+  1: {
+    message: " is growing stronger!",
+    chatMessage: "🟡 Energy surges through me! I feel the power building!",
+  },
+  2: {
+    message: " is becoming powerful!",
+    chatMessage: "🟢 My strength is undeniable! The path forward is clear!",
+  },
+  3: {
+    message: " is reaching peak form!",
+    chatMessage: "🔴 This is my prime! Nothing can stop me now!",
+  },
+  4: {
+    message: " has transcended!",
+    chatMessage: "⚪ Beyond mortal limits... I have become infinite!",
+  },
 };
 
 export const stageEmojis = {
-  baby: "🥚",
-  toddler: "🐾",
-  teen: "⚡",
-  young_adult: "🔥",
-  adult: "💎",
-  white: "✨",
+  blue: "🔵",
+  yellow: "🟡",
+  green: "🟢",
+  red: "🔴",
+  white: "⚪",
 };
 
 export const timerMap = {
@@ -32,37 +47,33 @@ export const timerMap = {
 export const STAT_TYPES = ["hunger", "fun", "sleep", "power"];
 
 export const danceMap = {
-  baby: ["dance"],
-  toddler: ["dance"],
-  teen: ["dance"],
-  young_adult: ["dance", "dance2"],
-  adult: ["dance", "dance2"],
+  blue: ["dance"],
+  yellow: ["dance"],
+  green: ["dance", "dance2"],
+  red: ["dance", "dance2"],
   white: ["dance", "dance2"],
 };
 
 export const trainMap = {
-  baby: [],
-  toddler: [],
-  teen: ["train"],
-  young_adult: ["train", "train2"],
-  adult: ["train", "train2"],
+  blue: ["train"],
+  yellow: ["train", "train2"],
+  green: ["train", "train2"],
+  red: ["train", "train2"],
   white: ["train", "train2"],
 };
 
 export const danceIndices = {
-  baby: 0,
-  toddler: 0,
-  teen: 0,
-  young_adult: 0,
-  adult: 0,
+  blue: 0,
+  yellow: 0,
+  green: 0,
+  red: 0,
   white: 0,
 };
 
 export const trainIndices = {
-  baby: 0,
-  toddler: 0,
-  teen: 0,
-  young_adult: 0,
-  adult: 0,
+  blue: 0,
+  yellow: 0,
+  green: 0,
+  red: 0,
   white: 0,
 };

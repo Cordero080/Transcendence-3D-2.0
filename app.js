@@ -103,8 +103,6 @@ window._state = state;
 
 console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
 
-console.log("⚡️⚡️⚡️⚡️ ¡ ENGAGED ! ⚡️⚡️⚡️⚡️");
-
 // --- Modular Care Action Handler ---
 const actionConfigs = {
   feed: {
@@ -167,6 +165,19 @@ function handleCareAction(actionName) {
       if (buttonTracker.hasOwnProperty(actionName)) {
         buttonTracker[actionName] = true;
       }
+
+      // Restore stage message after 3 seconds
+      setTimeout(() => {
+        const petChat = document.getElementById("petChat");
+        if (petChat && myPet && stageMap[myPet.evolutionLevel]) {
+          petChat.textContent =
+            stageMap[myPet.evolutionLevel].chatMessage ||
+            `${stageEmojis[myPet.stage]} ${myPet.name}${
+              stageMap[myPet.evolutionLevel].message
+            }`;
+        }
+      }, 3000);
+
       // Play stutterMask.wav 3ms before glitch stutter (except dance, which has its own music logic)
       if (actionName !== "dance") {
         const stutterMaskAudio = document.getElementById("stutterMask");
@@ -723,11 +734,13 @@ class Pet {
 
       this.age += 5;
       console.log(`🐱 ${this.name} has aged to ${this.age} years old`);
-      // Show stageMap message in petChat for the new stage
+      // Show chatMessage in petChat for the new stage evolution
       if (petChat && stageMap[this.evolutionLevel]) {
-        petChat.textContent = `${stageEmojis[this.stage]} ${this.name}${
-          stageMap[this.evolutionLevel].message
-        }`;
+        petChat.textContent =
+          stageMap[this.evolutionLevel].chatMessage ||
+          `${stageEmojis[this.stage]} ${this.name}${
+            stageMap[this.evolutionLevel].message
+          }`;
       }
       this.render();
     } else {
@@ -857,16 +870,8 @@ class Pet {
     if (powerBar) powerBar.style.width = `${(this.power / 10) * 100}%`;
     if (powerValue) powerValue.textContent = this.power;
 
-    // Show stageMap message in petChat for the current stage
-    if (petChat && stageMap[this.evolutionLevel]) {
-      petChat.textContent = `${stageEmojis[this.stage]} ${this.name}${
-        stageMap[this.evolutionLevel].message
-      }`;
-    } else {
-      petChat.textContent = `${stageEmojis[this.stage]} ${
-        this.name
-      } is evolving...`;
-    }
+    // Note: petChat message is set during evolution/game start, not in render()
+    // to avoid overwriting special messages
   }
 }
 
@@ -898,6 +903,16 @@ function startGame() {
       updateButtonStatesForEvolution();
 
       document.querySelector(".infoBox").style.display = "flex";
+
+      // Show blue stage chatMessage after pet appears
+      const petChat = document.getElementById("petChat");
+      if (petChat && stageMap[myPet.evolutionLevel]) {
+        petChat.textContent =
+          stageMap[myPet.evolutionLevel].chatMessage ||
+          `${stageEmojis[myPet.stage]} ${myPet.name}${
+            stageMap[myPet.evolutionLevel].message
+          }`;
+      }
 
       myPet.render();
 
@@ -2253,6 +2268,13 @@ window.addEventListener("DOMContentLoaded", () => {
   // 3) START: hatch the egg, then start the game
   if (startBtn) {
     startBtn.addEventListener("click", async () => {
+      // Show hatching message immediately
+      const petChat = document.getElementById("petChat");
+      const petName = window.petName || "Coco";
+      if (petChat) {
+        petChat.textContent = `${petName} is just hatching!`;
+      }
+
       // Play egg hatch sound
       const eggHatchAudio = document.getElementById("egg-hatch");
       if (eggHatchAudio) {

@@ -252,12 +252,12 @@ whiteStageInnerLight.position.set(7, 2, 0); // Slightly above center
 
 export function setWhiteStageLighting(enabled) {
   // Apply white stage lighting as default for all stages
-  ambientLight.intensity = 1.2;
-  directionalLight.intensity = 0.7;
-  light.intensity = 0.7;
-  topLight.intensity = 0.5;
+  ambientLight.intensity = 1.5;
+  directionalLight.intensity = 1.3;
+  light.intensity = 1.3;
+  topLight.intensity = 0.9;
   sideLight.intensity = 2.0;
-  backLight.intensity = 0.5;
+  backLight.intensity = 0.6;
 
   // Spectral rainbow lights always on
   whiteStageBottomLight.intensity = 12;

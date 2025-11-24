@@ -103,7 +103,7 @@ const animationConfig = {
     death: {
       file: "./models/cat_dies.fbx",
       pose: {
-        scale: [0.00176, 0.00176, 0.00176],
+        scale: [0.00178, 0.00178, 0.00178],
         position: [0.1, -1.5, -3.7],
         rotationY: -Math.PI / -30,
         rotationX: 0,
