@@ -17,7 +17,10 @@ export function initEffectElements() {
 
 // ============ ⚡ CYBERPUNK EVOLUTION EFFECT ============ \\
 export function triggerCyberpunkEvolutionEffect(duration = 6000) {
-  console.log("⚡ triggerCyberpunkEvolutionEffect called with duration:", duration);
+  console.log(
+    "⚡ triggerCyberpunkEvolutionEffect called with duration:",
+    duration
+  );
 
   const glitchOverlay = document.getElementById("glitchOverlay");
   console.log("⚡ glitchOverlay element:", glitchOverlay);
@@ -33,7 +36,9 @@ export function triggerCyberpunkEvolutionEffect(duration = 6000) {
   }
 
   if (glitchOverlay) {
-    console.log("🌟✨ Cyberpunk magical evolution effect triggered - overlay found!");
+    console.log(
+      "🌟✨ Cyberpunk magical evolution effect triggered - overlay found!"
+    );
 
     const catData = getCatMaskData();
     console.log("⚡ catData:", catData);
@@ -101,7 +106,9 @@ export function triggerCyberpunkEvolutionEffect(duration = 6000) {
 // ============ ✨ MYSTICAL TRANSCENDENCE EFFECT ============ \\
 export function triggerMysticalTranscendence(duration = 16500) {
   if (transcendenceEffect) {
-    console.log("🌟✨ Mystical transcendence effect with mandala glow triggered");
+    console.log(
+      "🌟✨ Mystical transcendence effect with mandala glow triggered"
+    );
 
     const catData = getCatMaskData();
     if (catData) {

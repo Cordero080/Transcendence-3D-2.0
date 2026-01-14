@@ -50,8 +50,6 @@ import {
 import {
   triggerCyberpunkEvolutionEffect,
   triggerMysticalTranscendence,
-  triggerGlitchTransitionFlash,
-  triggerQuickMandalaFlash,
   triggerGlitchStutter,
   initEffectElements,
 } from "./modules/effects/evolutionEffects.js";
