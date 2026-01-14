@@ -5,6 +5,19 @@ window.addEventListener("DOMContentLoaded", () => {
     bgMusic.volume = 0.3;
   }
 });
+
+// 🔧 TEMPORARY: Trigger evolution effect every 3 seconds for testing - REMOVE AFTER ADJUSTING
+setTimeout(() => {
+  setInterval(() => {
+    console.log("🔧 TEST: Triggering evolution effect...");
+    if (typeof triggerCyberpunkEvolutionEffect === "function") {
+      triggerCyberpunkEvolutionEffect(2500);
+    } else {
+      console.log("⚠️ triggerCyberpunkEvolutionEffect not found");
+    }
+  }, 3000);
+}, 2000);
+
 // safety so missing function won't crash white-stage evolution
 window.startWhiteEmissionTimer =
   window.startWhiteEmissionTimer || function () {};
@@ -1283,6 +1296,15 @@ function showWhiteTranscendenceOverlay() {
 
 // ============ ⚡ CYBERPUNK EVOLUTION EFFECT SYSTEM ============ \\
 function triggerCyberpunkEvolutionEffect(duration = 6000) {
+  console.log(
+    "⚡ triggerCyberpunkEvolutionEffect called with duration:",
+    duration
+  );
+
+  // Get the glitch overlay element
+  const glitchOverlay = document.getElementById("glitchOverlay");
+  console.log("⚡ glitchOverlay element:", glitchOverlay);
+
   // Do NOT play stutterMask.wav during evolution
   const stutterMaskAudio = document.getElementById("stutterMask");
   if (stutterMaskAudio && !evolutionInProgress) {
@@ -1293,10 +1315,13 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
     });
   }
   if (glitchOverlay) {
-    console.log("🌟✨ Cyberpunk magical evolution effect triggered");
+    console.log(
+      "🌟✨ Cyberpunk magical evolution effect triggered - overlay found!"
+    );
 
     // Get the current cat position and dimensions
     const catData = getCatMaskData();
+    console.log("⚡ catData:", catData);
 
     if (catData) {
       // Position the effect centered on viewport
@@ -1317,7 +1342,7 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
         radial-gradient(circle 7px at 15% 60%, black 0%, transparent 50%)
       `;
       glitchOverlay.style.mask = `
-        radial-gradient(ellipse 60% 70% at 50% 45%, black 0%, black 40%, transparent 80%),
+        radial-gradient(ellipse 60% 70% at 50% 50%, black 0%, black 40%, transparent 80%),
         radial-gradient(circle 8px at 25% 30%, black 0%, transparent 50%),
         radial-gradient(circle 6px at 75% 25%, black 0%, transparent 50%),
         radial-gradient(circle 10px at 35% 70%, black 0%, transparent 50%),

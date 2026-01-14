@@ -205,6 +205,11 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
           if (options.loop === false) {
             action.setLoop(THREE.LoopOnce);
             action.clampWhenFinished = true;
+            // Stop mixer updates when animation finishes to freeze at death pose
+            mixer.addEventListener("finished", () => {
+              console.log("🛑 Animation finished, freezing at final frame");
+              mixer.timeScale = 0; // Freeze the mixer to prevent any further updates
+            });
           } else {
             action.setLoop(THREE.LoopRepeat);
           }

@@ -1682,29 +1682,6 @@ canvas {
   animation: stutterFlicker 0.15s linear, dynamicCatGlitch 0.3s ease-in-out;
 }
 
-/* Enhanced evolution effect */
-.glitch-stutter-overlay.active.evolution {
-  opacity: 1;
-  animation: 
-    cyberpunkEvolutionGlow 6s ease-in-out,
-    evolutionParticles 0.5s ease-in-out infinite,
-    evolutionShimmer 1s ease-in-out infinite;
-  background: radial-gradient(ellipse 60% 70% at 50% 45%, 
-    rgba(5, 45, 155, 0.9) 0%,
-    rgba(255, 0, 255, 0.8) 30%,
-    rgba(255, 255, 0, 0.7) 60%,
-    rgba(90, 5, 208, 0.854) 80%,
-    transparent 100%
-  );
-  background-image: 
-    radial-gradient(circle 8px at 25% 30%, rgba(255, 0, 255, 1) 0%, transparent 50%),
-    radial-gradient(circle 6px at 75% 25%, rgb(5, 124, 171) 0%, transparent 50%),
-    radial-gradient(circle 10px at 35% 70%, rgb(187, 187, 10) 0%, transparent 50%),
-    radial-gradient(circle 7px at 65% 75%, rgb(11, 173, 92) 0%, transparent 50%),
-    radial-gradient(circle 5px at 85% 50%, rgba(255, 128, 0, 1) 0%, transparent 50%),
-    radial-gradient(circle 9px at 15% 60%, rgba(128, 0, 255, 1) 0%, transparent 50%);
-}
-
 /* Mystical Transcendence Overlay with Mandala-like Glow */
 .glitch-stutter-overlay.active.transcendence {
   opacity: 1;
@@ -2143,28 +2120,6 @@ canvas {
   animation: stutterFlickerInverted 0.18s linear, dynamicCatGlitchInverted 0.12s ease-in-out;
 }
 
-.glitch-stutter-overlay.glitch-inverted.active.evolution {
-  opacity: 1;
-  animation: 
-    cyberpunkEvolutionGlowInverted 6s ease-in-out,
-    evolutionParticlesInverted 0.6s ease-in-out infinite,
-    evolutionShimmerInverted 1.2s ease-in-out infinite;
-  background: radial-gradient(ellipse 60% 70% at 50% 45%, 
-    oklch(66.024% 0.18785 250.198 / 0.902) 0%,
-    oklch(86.645% 0.29481 142.511 / 0.8) 30%,
-    oklch(45.203% 0.3133 264.073 / 0.7) 60%,
-    oklch(66.124% 0.27741 348.534 / 0.733) 80%,
-    transparent 100%
-  );
-  background-image: 
-    radial-gradient(circle 6px at 30% 35%, rgba(1, 176, 182, 0.932) 0%, transparent 50%),
-    radial-gradient(circle 8px at 70% 30%, rgba(255, 0, 0, 1) 0%, transparent 50%),
-    radial-gradient(circle 7px at 40% 65%, rgb(102, 0, 255) 0%, transparent 50%),
-    radial-gradient(circle 9px at 60% 70%, rgba(255, 0, 127, 1) 0%, transparent 50%),
-    radial-gradient(circle 7px at 80% 45%, rgba(0, 127, 255, 1) 0%, transparent 50%),
-    radial-gradient(circle 6px at 20% 55%, rgb(0, 255, 149) 0%, transparent 50%);
-}
-
 /* Inverted scanlines */
 .glitch-stutter-overlay.glitch-inverted .stutter-scanlines {
   background: repeating-linear-gradient(
@@ -2247,27 +2202,6 @@ canvas {
   50% { filter: invert(1) hue-rotate(160deg) contrast(180%) brightness(60%); }
   75% { filter: invert(1) hue-rotate(220deg) contrast(110%) brightness(140%); }
   100% { filter: invert(1) hue-rotate(180deg) contrast(100%) brightness(100%); }
-}
-
-@keyframes cyberpunkEvolutionGlowInverted {
-  0% { filter: invert(1) hue-rotate(180deg) brightness(100%) saturate(100%); }
-  20% { filter: invert(1) hue-rotate(200deg) brightness(150%) saturate(200%); }
-  40% { filter: invert(1) hue-rotate(160deg) brightness(80%) saturate(300%); }
-  60% { filter: invert(1) hue-rotate(220deg) brightness(200%) saturate(150%); }
-  80% { filter: invert(1) hue-rotate(140deg) brightness(60%) saturate(250%); }
-  100% { filter: invert(1) hue-rotate(180deg) brightness(100%) saturate(100%); }
-}
-
-@keyframes evolutionParticlesInverted {
-  0% { transform: translate(-50%, -50%) scale(0.85) rotate(0deg); }
-  50% { transform: translate(-50%, -50%) scale(0.9) rotate(180deg); }
-  100% { transform: translate(-50%, -50%) scale(0.85) rotate(360deg); }
-}
-
-@keyframes evolutionShimmerInverted {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
 }
 
 @keyframes stutterFlicker {
@@ -2375,92 +2309,6 @@ canvas {
   100% { 
     transform: translate(-50%, -50%) scale(1) skew(0deg, 0deg);
     filter: hue-rotate(360deg);
-  }
-}
-
-/* ============ ⚡ CYBERPUNK EVOLUTION EFFECT KEYFRAMES ============ */
-@keyframes cyberpunkEvolutionGlow {
-  0% { 
-    transform: translate(-50%, -50%) scale(1);
-    filter: brightness(100%) contrast(100%) saturate(100%);
-  }
-  10% { 
-    transform: translate(-50%, -50%) scale(1.1);
-    filter: brightness(200%) contrast(150%) saturate(200%) hue-rotate(60deg);
-  }
-  20% { 
-    transform: translate(-50%, -50%) scale(0.9);
-    filter: brightness(300%) contrast(200%) saturate(300%) hue-rotate(120deg);
-  }
-  30% { 
-    transform: translate(-50%, -50%) scale(1.2);
-    filter: brightness(400%) contrast(250%) saturate(400%) hue-rotate(180deg);
-  }
-  50% { 
-    transform: translate(-50%, -50%) scale(1.05);
-    filter: brightness(500%) contrast(300%) saturate(500%) hue-rotate(240deg);
-  }
-  70% { 
-    transform: translate(-50%, -50%) scale(1.15);
-    filter: brightness(600%) contrast(350%) saturate(600%) hue-rotate(300deg);
-  }
-  90% { 
-    transform: translate(-50%, -50%) scale(1.3);
-    filter: brightness(700%) contrast(400%) saturate(700%) hue-rotate(360deg);
-  }
-  100% { 
-    transform: translate(-50%, -50%) scale(1);
-    filter: brightness(100%) contrast(100%) saturate(100%);
-  }
-}
-
-@keyframes evolutionParticles {
-  0% { 
-    background-position: 0% 0%, 10% 10%, 20% 20%, 30% 30%, 40% 40%, 50% 50%;
-    opacity: 0.8;
-  }
-  25% { 
-    background-position: 5% -5%, 15% 5%, 25% 15%, 35% 25%, 45% 35%, 55% 45%;
-    opacity: 1;
-  }
-  50% { 
-    background-position: -5% 5%, 5% 15%, 15% 25%, 25% 35%, 35% 45%, 45% 55%;
-    opacity: 0.9;
-  }
-  75% { 
-    background-position: 2% -2%, 12% 8%, 22% 18%, 32% 28%, 42% 38%, 52% 48%;
-    opacity: 1;
-  }
-  100% { 
-    background-position: 0% 0%, 10% 10%, 20% 20%, 30% 30%, 40% 40%, 50% 50%;
-    opacity: 0.8;
-  }
-}
-
-@keyframes evolutionShimmer {
-  0% { 
-    box-shadow: 
-      0 0 20px rgba(0, 255, 255, 0.5),
-      0 0 40px rgba(255, 0, 255, 0.4),
-      0 0 60px rgba(255, 255, 0, 0.3);
-  }
-  33% { 
-    box-shadow: 
-      0 0 30px rgba(255, 0, 255, 0.6),
-      0 0 50px rgba(255, 255, 0, 0.5),
-      0 0 70px rgba(0, 255, 128, 0.4);
-  }
-  66% { 
-    box-shadow: 
-      0 0 25px rgba(255, 255, 0, 0.7),
-      0 0 45px rgba(0, 255, 128, 0.6),
-      0 0 65px rgba(0, 255, 255, 0.5);
-  }
-  100% { 
-    box-shadow: 
-      0 0 20px rgba(0, 255, 255, 0.5),
-      0 0 40px rgba(255, 0, 255, 0.4),
-      0 0 60px rgba(255, 255, 0, 0.3);
   }
 }
 
