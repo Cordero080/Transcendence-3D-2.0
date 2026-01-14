@@ -1331,27 +1331,7 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
       glitchOverlay.style.height = `${catData.height * 1.5}px`;
       glitchOverlay.style.transform = "translate(-50%, -50%)";
 
-      // Create cyberpunk magical glow mask with particles
-      glitchOverlay.style.webkitMask = `
-        radial-gradient(ellipse 60% 70% at 50% 45%, black 0%, black 40%, transparent 80%),
-        radial-gradient(circle 8px at 25% 30%, black 0%, transparent 50%),
-        radial-gradient(circle 6px at 75% 25%, black 0%, transparent 50%),
-        radial-gradient(circle 8px at 35% 70%, black 0%, transparent 50%),
-        radial-gradient(circle 7px at 65% 75%, black 0%, transparent 50%),
-        radial-gradient(circle 5px at 85% 50%, black 0%, transparent 50%),
-        radial-gradient(circle 7px at 15% 60%, black 0%, transparent 50%)
-      `;
-      glitchOverlay.style.mask = `
-        radial-gradient(ellipse 60% 70% at 50% 50%, black 0%, black 40%, transparent 80%),
-        radial-gradient(circle 8px at 25% 30%, black 0%, transparent 50%),
-        radial-gradient(circle 6px at 75% 25%, black 0%, transparent 50%),
-        radial-gradient(circle 10px at 35% 70%, black 0%, transparent 50%),
-        radial-gradient(circle 7px at 65% 75%, black 0%, transparent 50%),
-        radial-gradient(circle 5px at 85% 50%, black 0%, transparent 50%),
-        radial-gradient(circle 9px at 15% 60%, black 0%, transparent 50%)
-      `;
-
-      console.log(`✨ Cyberpunk evolution particles applied around cat`);
+      console.log(`✨ Cyberpunk evolution effect positioned around cat`);
     }
 
     // Add evolution-specific class for enhanced effect
@@ -1404,8 +1384,6 @@ function triggerCyberpunkEvolutionEffect(duration = 6000) {
         glitchOverlay.style.top = "50%";
         glitchOverlay.style.width = "280px";
         glitchOverlay.style.height = "380px";
-        glitchOverlay.style.webkitMask = "";
-        glitchOverlay.style.mask = "";
         glitchOverlay.style.filter = "";
       }, 100);
       console.log("✨ Cyberpunk magical evolution effect ended");
