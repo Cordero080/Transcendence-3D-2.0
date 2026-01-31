@@ -4,7 +4,6 @@ import { OrbitControls, Grid, Environment, Html } from '@react-three/drei';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
-import Scene2FightingArena from './Scene2_AnimationExperiment';
 
 // Animated character component
 function Character({ url, position, color, isWalking, walkDirection = 1, zDirection = 0, scale = 0.00124, rotationY = 0 }) {
@@ -96,14 +95,12 @@ function Loader() {
 }
 
 export default function BattleArena() {
-  const [currentScene, setCurrentScene] = useState(1);
   const [walking, setWalking] = useState(false);
   const [retreating, setRetreating] = useState(false);
   const [movingUp, setMovingUp] = useState(false);
   const [movingDown, setMovingDown] = useState(false);
   const [charAPos, setCharAPos] = useState([-3, -1, 0]);
   const [charBPos, setCharBPos] = useState([3, -1, 0]);
-  const [controlsOpen, setControlsOpen] = useState(true);
   
   // Keyboard controls
   useEffect(() => {
@@ -148,55 +145,6 @@ export default function BattleArena() {
     };
   }, []);
   
-  // If Scene 2 is selected, render that instead
-  if (currentScene === 2) {
-    return (
-      <div style={{ width: '100vw', height: '100vh' }}>
-        <Scene2FightingArena />
-        {/* Scene Selector overlay */}
-        <div style={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-          display: 'flex',
-          gap: 10,
-          zIndex: 1000
-        }}>
-          <button 
-            onClick={() => setCurrentScene(1)}
-            style={{
-              padding: '10px 20px',
-              background: 'rgba(0,0,0,0.6)',
-              color: '#00ff88',
-              border: '1px solid #00ff88',
-              borderRadius: 8,
-              fontFamily: 'monospace',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}
-          >
-            Scene 1
-          </button>
-          <button 
-            style={{
-              padding: '10px 20px',
-              background: '#ff6b6b',
-              color: '#1a1a2e',
-              border: 'none',
-              borderRadius: 8,
-              fontFamily: 'monospace',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              boxShadow: '0 0 15px #ff6b6b'
-            }}
-          >
-            Scene 2
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#1a1a2e' }}>
       <Canvas camera={{ position: [0, 8, 20], fov: 45 }}>
@@ -245,7 +193,7 @@ export default function BattleArena() {
         <OrbitControls />
       </Canvas>
       
-      {/* UI Overlay - Title (Left) */}
+      {/* UI Overlay */}
       <div style={{
         position: 'absolute',
         top: 20,
@@ -257,97 +205,21 @@ export default function BattleArena() {
       }}>
         <h1 style={{ margin: 0, fontSize: '28px' }}>🎮 EXODUS</h1>
         <p style={{ opacity: 0.7 }}>React Three Fiber Battle Test</p>
-      </div>
-      
-      {/* Controls Panel - Top Center, Collapsible */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        color: '#00ff88',
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        textShadow: '0 0 10px #00ff88'
-      }}>
-        <button
-          onClick={() => setControlsOpen(!controlsOpen)}
-          style={{
-            background: 'rgba(0,0,0,0.6)',
-            color: '#00ff88',
-            border: '1px solid #00ff88',
-            borderRadius: controlsOpen ? '8px 8px 0 0' : '8px',
-            padding: '8px 20px',
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 8
-          }}
-        >
-          <span>Controls</span>
-          <span style={{ fontSize: '10px' }}>{controlsOpen ? '▲' : '▼'}</span>
-        </button>
         
-        {controlsOpen && (
-          <div style={{ 
-            padding: 15, 
-            background: 'rgba(0,0,0,0.6)', 
-            borderRadius: '0 0 8px 8px',
-            border: '1px solid #00ff88',
-            borderTop: 'none'
-          }}>
-            <p style={{ margin: '4px 0' }}>SPACE - Walk toward each other</p>
-            <p style={{ margin: '4px 0' }}>⌘ CMD - Walk away from each other</p>
-            <p style={{ margin: '4px 0' }}>D - Walk up (into screen)</p>
-            <p style={{ margin: '4px 0' }}>⌥ OPT - Walk down (toward camera)</p>
-            <p style={{ margin: '4px 0' }}>Mouse - Orbit camera</p>
-          </div>
-        )}
-      </div>
-      
-      {/* Scene Selector - Top Right */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        display: 'flex',
-        gap: 10
-      }}>
-        <button 
-          onClick={() => setCurrentScene(1)}
-          style={{
-            padding: '10px 20px',
-            background: '#00ff88',
-            color: '#1a1a2e',
-            border: 'none',
-            borderRadius: 8,
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 0 15px #00ff88'
-          }}
-        >
-          Scene 1
-        </button>
-        <button 
-          onClick={() => setCurrentScene(2)}
-          style={{
-            padding: '10px 20px',
-            background: 'rgba(0,0,0,0.6)',
-            color: '#00ff88',
-            border: '1px solid #00ff88',
-            borderRadius: 8,
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          Scene 2
-        </button>
+        <div style={{ 
+          marginTop: 20, 
+          padding: 15, 
+          background: 'rgba(0,0,0,0.6)', 
+          borderRadius: 8,
+          border: '1px solid #00ff88'
+        }}>
+          <p><strong>Controls:</strong></p>
+          <p>SPACE - Walk toward each other</p>
+          <p>⌘ CMD - Walk away from each other</p>
+          <p>D - Walk up (into screen)</p>
+          <p>⌥ OPT - Walk down (toward camera)</p>
+          <p>Mouse - Orbit camera</p>
+        </div>
       </div>
     </div>
   );
