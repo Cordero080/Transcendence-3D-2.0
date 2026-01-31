@@ -10,6 +10,11 @@
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "three": "^0.178.0"
   },
   "devDependencies": {

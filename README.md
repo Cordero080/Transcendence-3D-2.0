@@ -121,52 +121,52 @@ POWER OFF → save state → shutdown animation
 
 ### Power On / Intro Screen
 
-![Power On Screen](screenshots/name-pet.jpg)
+![Power On Screen](public/screenshots/name-pet.jpg)
 
 ### Glitch Egg / Hatch Sequence
 
-![Glitch Egg](screenshots/egg.jpg)
+![Glitch Egg](public/screenshots/egg.jpg)
 
 ### Blue Form (First Evolution)
 
-![Blue Form](screenshots/blue.jpg)
+![Blue Form](public/screenshots/blue.jpg)
 
 ### Yellow Form
 
-![Yellow Form](screenshots/yellow.jpg)
+![Yellow Form](public/screenshots/yellow.jpg)
 
 ### Green Form
 
-![Green Form](screenshots/green-balance.jpg)
+![Green Form](public/screenshots/green-balance.jpg)
 
 ### Red Form
 
-![Red Form](screenshots/red.jpg)
+![Red Form](public/screenshots/red.jpg)
 
 ### Translucent White (Transcendence)
 
-![Translucent White](screenshots/white.jpg)
+![Translucent White](public/screenshots/white.jpg)
 
 ### Gameplay Interface
 
-![Gameplay UI](screenshots/8th_.jpg)
+![Gameplay UI](public/screenshots/8th_.jpg)
 
 ### Additional Screenshots
 
-![Screenshot 9](screenshots/death.jpg)
-![Screenshot 11](screenshots/game-over.jpg)
-![Screenshot 13](screenshots/transcendence.jpg)
-![Screenshot 14](screenshots/win.jpg)
-![Screenshot 15](screenshots/15th_.jpg)
-![Screenshot 16](screenshots/16th.jpg)
-![Screenshot 17](screenshots/17th.jpg)
-![Screenshot 20](screenshots/20th.jpg)
-![Screenshot 21](screenshots/21.png)
-![Screenshot 22](screenshots/22.png)
-![Screenshot 23](screenshots/23.png)
-![Screenshot 25](screenshots/25.png)
-![Screenshot 26](screenshots/26.png)
-![Screenshot 27](screenshots/27.png)
+![Screenshot 9](public/screenshots/death.jpg)
+![Screenshot 11](public/screenshots/game-over.jpg)
+![Screenshot 13](public/screenshots/transcendence.jpg)
+![Screenshot 14](public/screenshots/win.jpg)
+![Screenshot 15](public/screenshots/15th_.jpg)
+![Screenshot 16](public/screenshots/16th.jpg)
+![Screenshot 17](public/screenshots/17th.jpg)
+![Screenshot 20](public/screenshots/20th.jpg)
+![Screenshot 21](public/screenshots/21.png)
+![Screenshot 22](public/screenshots/22.png)
+![Screenshot 23](public/screenshots/23.png)
+![Screenshot 25](public/screenshots/25.png)
+![Screenshot 26](public/screenshots/26.png)
+![Screenshot 27](public/screenshots/27.png)
 
 ## 🙌 Credits
 
@@ -189,6 +189,15 @@ POWER OFF → save state → shutdown animation
 - [ ] Easter egg: alternate game after user wins the game
 - [ ] Mobile touch controls
 - [ ] Save/load game state to localStorage
+
+### 🚀 Stretch Goals
+
+- [ ] **Level 2: Battle Mode** — Two creatures face off in turn-based combat/dance-off
+  - New creature designs + new background environment
+  - Rock-paper-scissors style move system (Attack > Taunt > Counter > Attack)
+  - Three.js particle burst effects on impact
+  - Animation breakpoint detection for synced hit effects
+  - Move options: Attack, Counter, Power Up, Dance (heal via style points)
 
 ## 🎯 Game Rules Deep Dive
 

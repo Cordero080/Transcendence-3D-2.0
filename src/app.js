@@ -911,8 +911,8 @@ function startGame() {
     myPet = new Pet(petName);
 
     // Start at blue stage
-    currentStage = "white";
-    myPet.stage = "white";
+    currentStage = "blue";
+    myPet.stage = "blue";
     myPet.evolutionLevel = 0;
     evolutionInProgress = false; // Initialize evolution flag
 
