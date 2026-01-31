@@ -236,7 +236,7 @@ const animationConfig = {
       },
     },
     dance: {
-      file: "./models/salsa.fbx",
+      file: "./models/Salsa.fbx",
       pose: {
         scale: [0.00392, 0.003912, 0.003912],
         position: [0, -5, -9.7],

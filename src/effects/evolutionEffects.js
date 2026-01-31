@@ -3,7 +3,7 @@
 // Pure visual effects - safe to modularize, no game state dependencies
 // ============================================================================
 
-import { getCatMaskData } from "../../main-test.js";
+import { getCatMaskData } from "@/main-test.js";
 
 // DOM element references (set on init)
 let transcendenceEffect = null;
@@ -19,7 +19,7 @@ export function initEffectElements() {
 export function triggerCyberpunkEvolutionEffect(duration = 6000) {
   console.log(
     "⚡ triggerCyberpunkEvolutionEffect called with duration:",
-    duration
+    duration,
   );
 
   const glitchOverlay = document.getElementById("glitchOverlay");
@@ -37,7 +37,7 @@ export function triggerCyberpunkEvolutionEffect(duration = 6000) {
 
   if (glitchOverlay) {
     console.log(
-      "🌟✨ Cyberpunk magical evolution effect triggered - overlay found!"
+      "🌟✨ Cyberpunk magical evolution effect triggered - overlay found!",
     );
 
     const catData = getCatMaskData();
@@ -107,7 +107,7 @@ export function triggerCyberpunkEvolutionEffect(duration = 6000) {
 export function triggerMysticalTranscendence(duration = 16500) {
   if (transcendenceEffect) {
     console.log(
-      "🌟✨ Mystical transcendence effect with mandala glow triggered"
+      "🌟✨ Mystical transcendence effect with mandala glow triggered",
     );
 
     const catData = getCatMaskData();
@@ -364,10 +364,5 @@ export function triggerGlitchStutter(duration = 120) {
   triggerGlitchTransitionFlash(duration);
 }
 
-// Expose to window for backward compatibility
+// Expose to window for backward compatibility (canonical name only)
 window.triggerCyberpunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
-window.TriggerCyberpunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
-window.TriggerCyberPunkEvolutionEffect = triggerCyberpunkEvolutionEffect;
-window.TriggerCyberPunkEvilutionEffect = triggerCyberpunkEvolutionEffect;
-window.triggerCyberpunkEvilutionEffect = triggerCyberpunkEvolutionEffect;
-window.triggerCyberPunkEvolutionEffect = triggerCyberpunkEvolutionEffect;

@@ -19,16 +19,16 @@ window.addEventListener("unhandledrejection", (e) => {
 
 // --- imports and code ---
 
-import { createState } from "./modules/core/state.js";
-import { initUI } from "./modules/ui/ui.js";
+import { createState } from "@core/state.js";
+import { initUI } from "@ui/ui.js";
 import {
   loadAndDisplayFBX,
   clearActiveModel,
   hasActiveModel,
   setWhiteStageLighting,
-} from "./main-test.js";
-import { getCatMaskData } from "./main-test.js";
-import animationConfig from "./annimationConfig.js";
+  getCatMaskData,
+} from "@/main-test.js";
+import animationConfig from "@/annimationConfig.js";
 
 // Import extracted modules
 import {
@@ -41,18 +41,18 @@ import {
   trainMap,
   danceIndices,
   trainIndices,
-} from "./modules/core/config.js";
+} from "@core/config.js";
 import {
   fadeOutBgMusic,
   playEvolutionSound,
   playSound,
-} from "./modules/effects/audio.js";
+} from "@effects/audio.js";
 import {
   triggerCyberpunkEvolutionEffect,
   triggerMysticalTranscendence,
   triggerGlitchStutter,
   initEffectElements,
-} from "./modules/effects/evolutionEffects.js";
+} from "@effects/evolutionEffects.js";
 import {
   showTranscendenceOverlay,
   showGameOverOverlayLoss,
@@ -60,12 +60,12 @@ import {
   hidePageOverlay,
   showNameOverlay,
   hideNameOverlay,
-} from "./modules/ui/overlays.js";
-import { setupDropdownMenu } from "./modules/ui/dropdown.js";
-import { setupNameOverlay } from "./modules/ui/nameOverlay.js";
-import { updatePetChat } from "./modules/ui/petChat.js";
-import { hideGlitchEgg } from "./modules/ui/eggAnimation.js";
-import { restorePetContainer } from "./modules/ui/petContainer.js";
+} from "@ui/overlays.js";
+import { setupDropdownMenu } from "@ui/dropdown.js";
+import { setupNameOverlay } from "@ui/nameOverlay.js";
+import { updatePetChat } from "@ui/petChat.js";
+import { hideGlitchEgg } from "@ui/eggAnimation.js";
+import { restorePetContainer } from "@ui/petContainer.js";
 
 const {
   evolutionAudio,
@@ -163,7 +163,7 @@ function handleCareAction(actionName) {
     try {
       if (!config.available(currentStage)) {
         console.log(
-          `⚠️ ${actionName} action not available for ${currentStage} stage`
+          `⚠️ ${actionName} action not available for ${currentStage} stage`,
         );
         actionInProgress = false;
         return;
@@ -318,6 +318,7 @@ let careCycles = 0;
 let gameOverTriggered = false;
 let gameOverTimeout = null;
 let whiteEmissionTimer = null;
+let petIsDead = false; // Prevents model loading after death
 
 // Evolution System Variables
 let buttonTracker = {
@@ -348,7 +349,7 @@ function allCareActionsCompleted() {
   if (myPet && myPet.stage === "white") {
     const whiteEvolutionReady = whiteStageAnimationCount >= 2;
     console.log(
-      `⚪ White stage evolution check - Animation count: ${whiteStageAnimationCount}/2, Evolution ready: ${whiteEvolutionReady}`
+      `⚪ White stage evolution check - Animation count: ${whiteStageAnimationCount}/2, Evolution ready: ${whiteEvolutionReady}`,
     );
     return whiteEvolutionReady;
   }
@@ -363,7 +364,7 @@ function allCareActionsCompleted() {
     buttonTracker.train2;
   console.log(
     `🔍 Evolution requirements - Feed: ${buttonTracker.feed}, Sleep: ${buttonTracker.sleep}, Dance: ${buttonTracker.dance}, Dance2: ${buttonTracker.dance2}, Train: ${buttonTracker.train}, Train2: ${buttonTracker.train2}`,
-    `Evolution ready: ${completed}`
+    `Evolution ready: ${completed}`,
   );
   return completed;
 }
@@ -371,7 +372,7 @@ function allCareActionsCompleted() {
 function resetButtonTracker() {
   console.log(
     `🔄 RESETTING button tracker - Previous state:`,
-    JSON.parse(JSON.stringify(buttonTracker))
+    JSON.parse(JSON.stringify(buttonTracker)),
   );
   buttonTracker = {
     feed: false,
@@ -385,7 +386,7 @@ function resetButtonTracker() {
   console.log(
     `🔄 Button tracker RESET - New state:`,
     buttonTracker,
-    `Dance sequence reset to: ${danceSequenceIndex}`
+    `Dance sequence reset to: ${danceSequenceIndex}`,
   );
 
   // Also reset white stage care actions and transcendence timer
@@ -477,7 +478,7 @@ function updateButtonStatesForEvolution() {
     }
 
     console.log(
-      "⚪ White evolution reached - Feed and Sleep buttons disabled, dance/train disabled after both pressed, hunger/sleep timers greyed"
+      "⚪ White evolution reached - Feed and Sleep buttons disabled, dance/train disabled after both pressed, hunger/sleep timers greyed",
     );
   } else {
     // All other evolution levels - all buttons are active
@@ -521,21 +522,21 @@ function checkForEvolution() {
 
   console.log(
     `🔍 Checking evolution - Current stage: ${myPet.stage} (${myPet.evolutionLevel}), Button tracker:`,
-    buttonTracker
+    buttonTracker,
   );
 
   if (allCareActionsCompleted()) {
     careCycles++;
 
     console.log(
-      `✅ Care cycle complete! (${careCycles} total) - Current evolution level: ${myPet.evolutionLevel}`
+      `✅ Care cycle complete! (${careCycles} total) - Current evolution level: ${myPet.evolutionLevel}`,
     );
 
     // Only evolve if not at max level (4 = white)
     if (careCycles >= 1 && myPet.evolutionLevel < 4) {
       evolutionInProgress = true; // Block further evolution checks
       console.log(
-        `⚡️⚡️⚡️ All care actions complete. Evolving from ${myPet.stage} (level ${myPet.evolutionLevel}) in 1 second after idle...`
+        `⚡️⚡️⚡️ All care actions complete. Evolving from ${myPet.stage} (level ${myPet.evolutionLevel}) in 1 second after idle...`,
       );
       evolutionTimeout = setTimeout(() => {
         // Play evolve_effect_2.wav 500ms before pet evolution
@@ -580,7 +581,7 @@ function checkForEvolution() {
           const oldStage = myPet.stage;
           myPet.evolveToNextStage();
           console.log(
-            `🔄 Evolution completed: ${oldStage} → ${myPet.stage} (currentStage: ${currentStage})`
+            `🔄 Evolution completed: ${oldStage} → ${myPet.stage} (currentStage: ${currentStage})`,
           );
 
           // Update button states based on new evolution level
@@ -594,10 +595,10 @@ function checkForEvolution() {
           setTimeout(() => {
             loadAndDisplayFBX(
               animationConfig[currentStage].idle.file,
-              animationConfig[currentStage].idle.pose
+              animationConfig[currentStage].idle.pose,
             ).then(() => {
               console.log(
-                `🎬 Evolution idle animation loaded for ${currentStage} stage with masking`
+                `🎬 Evolution idle animation loaded for ${currentStage} stage with masking`,
               );
 
               // Start white emission timer if evolved to white stage
@@ -612,8 +613,9 @@ function checkForEvolution() {
           careCycles = 0;
           resetButtonTracker();
           evolutionInProgress = false; // Allow next evolution cycle
+          actionInProgress = false; // Ensure buttons can be clicked again
           console.log(
-            `🔄 Post-evolution reset: careCycles=${careCycles}, buttonTracker reset for next evolution cycle`
+            `🔄 Post-evolution reset: careCycles=${careCycles}, buttonTracker reset for next evolution cycle`,
           );
         }, 1000); // Wait 1 second for magical effect to build up
       }, 3000); // 3 seconds after pet is idle
@@ -621,7 +623,7 @@ function checkForEvolution() {
       // White stage transcendence handling
       if (myPet.stage === "white" && whiteStageAnimationCount >= 2) {
         console.log(
-          `⚪✨ White stage transcendence ready! Animation count: ${whiteStageAnimationCount}/2`
+          `⚪✨ White stage transcendence ready! Animation count: ${whiteStageAnimationCount}/2`,
         );
 
         evolutionInProgress = true; // Block further evolution checks
@@ -637,13 +639,13 @@ function checkForEvolution() {
         }, 5000);
 
         console.log(
-          "⚪ White stage transcendence will trigger mystical and beam in 5 seconds..."
+          "⚪ White stage transcendence will trigger mystical and beam in 5 seconds...",
         );
         whiteStageAnimationCount = 0;
         resetButtonTracker();
       } else {
         console.log(
-          `⚪ ${myPet.name} has reached white evolution! Waiting for 2 care animations (${whiteStageAnimationCount}/2)`
+          `⚪ ${myPet.name} has reached white evolution! Waiting for 2 care animations (${whiteStageAnimationCount}/2)`,
         );
         careCycles = 0; // Reset care cycles but don't evolve
         resetButtonTracker();
@@ -721,7 +723,7 @@ class Pet {
   // 🌱 Trigger Evolution
   evolveToNextStage() {
     console.log(
-      `🔄 Evolution attempt: Current level ${this.evolutionLevel} (${this.stage})`
+      `🔄 Evolution attempt: Current level ${this.evolutionLevel} (${this.stage})`,
     );
 
     if (this.evolutionLevel < 4) {
@@ -735,10 +737,10 @@ class Pet {
       currentStage = this.stage; // SYNC GLOBAL currentStage
 
       console.log(
-        `🌟 ${this.name} evolved from ${oldStage} (Level ${oldLevel}) to ${this.stage} (Level ${this.evolutionLevel})!`
+        `🌟 ${this.name} evolved from ${oldStage} (Level ${oldLevel}) to ${this.stage} (Level ${this.evolutionLevel})!`,
       );
       console.log(
-        `📊 Evolution progression: blue(0) → yellow(1) → green(2) → red(3) → white(4)`
+        `📊 Evolution progression: blue(0) → yellow(1) → green(2) → red(3) → white(4)`,
       );
 
       this.age += 5;
@@ -754,7 +756,7 @@ class Pet {
       this.render();
     } else {
       console.log(
-        `✨ ${this.name} has reached the final form: ${this.stage} (Level ${this.evolutionLevel})! No further evolution possible.`
+        `✨ ${this.name} has reached the final form: ${this.stage} (Level ${this.evolutionLevel})! No further evolution possible.`,
       );
     }
   }
@@ -775,6 +777,7 @@ class Pet {
       return;
     }
     gameOverTriggered = true;
+    petIsDead = true; // Prevent any further model loading
 
     console.log(`💀 GAME OVER: ${reason}`);
 
@@ -797,7 +800,7 @@ class Pet {
       const deathDuration = await loadAndDisplayFBX(
         deathAnim.file,
         deathAnim.pose,
-        { loop: false }
+        { loop: false },
       );
 
       // 1 loop + 0.5s pad, then show overlay
@@ -817,20 +820,36 @@ class Pet {
   // ⏳ Stat decay //
 
   createStatTimer(type, interval = 7000) {
+    console.log(
+      `⏰ Creating stat timer for ${type} with interval ${interval}ms`,
+    );
     const timer = setInterval(() => {
+      console.log(
+        `⏰ Stat timer tick: ${type} - hunger:${this.hunger} fun:${this.fun} sleep:${this.sleep} power:${this.power}`,
+      );
       if (type === "hunger") this.hunger++;
       if (type === "fun") this.fun--;
       if (type === "sleep") this.sleep++;
       if (type === "power") this.power--;
       this.render();
 
-      // Game over conditions
-      if (this.hunger >= 10)
+      // Game over conditions - check if any stat triggers death
+      if (this.hunger >= 10) {
+        console.log(`💀 DEATH TRIGGER: hunger >= 10 (${this.hunger})`);
         this.triggerGameOver("Starved to death! Why are you like this?...lmao");
-      if (this.fun <= 0)
+      }
+      if (this.fun <= 0) {
+        console.log(`💀 DEATH TRIGGER: fun <= 0 (${this.fun})`);
         this.triggerGameOver("Life was meaningless without fun :(");
-      if (this.sleep >= 10) this.triggerGameOver("Burned my life-force out!");
-      if (this.power <= 0) this.triggerGameOver("I slacked on my training!");
+      }
+      if (this.sleep >= 10) {
+        console.log(`💀 DEATH TRIGGER: sleep >= 10 (${this.sleep})`);
+        this.triggerGameOver("Burned my life-force out!");
+      }
+      if (this.power <= 0) {
+        console.log(`💀 DEATH TRIGGER: power <= 0 (${this.power})`);
+        this.triggerGameOver("I slacked on my training!");
+      }
     }, interval);
 
     // Store the timer in the pet instance
@@ -850,7 +869,7 @@ class Pet {
   // 🖥️ Update UI or log state (placeholder)
   render() {
     console.log(
-      `🧾 ${this.name} | Age: ${this.age} | Hunger: ${this.hunger} | Fun: ${this.fun} | Sleep: ${this.sleep} |Power: ${this.power} |  Stage: ${this.stage}`
+      `🧾 ${this.name} | Age: ${this.age} | Hunger: ${this.hunger} | Fun: ${this.fun} | Sleep: ${this.sleep} |Power: ${this.power} |  Stage: ${this.stage}`,
     );
 
     // Update energy bars and values
@@ -892,14 +911,14 @@ function startGame() {
     myPet = new Pet(petName);
 
     // Start at blue stage
-    currentStage = "blue";
-    myPet.stage = "blue";
+    currentStage = "white";
+    myPet.stage = "white";
     myPet.evolutionLevel = 0;
     evolutionInProgress = false; // Initialize evolution flag
 
     loadAndDisplayFBX(
       animationConfig[currentStage].idle.file,
-      animationConfig[currentStage].idle.pose
+      animationConfig[currentStage].idle.pose,
     ).then(() => {
       // Apply bright lighting for all stages
       setWhiteStageLighting(true);
@@ -927,16 +946,16 @@ function startGame() {
 
       statTimers.hunger = myPet.createStatTimer(
         "hunger",
-        gameSettings.baseDecayRate
+        gameSettings.baseDecayRate,
       );
       statTimers.fun = myPet.createStatTimer("fun", gameSettings.baseDecayRate);
       statTimers.sleep = myPet.createStatTimer(
         "sleep",
-        gameSettings.baseDecayRate
+        gameSettings.baseDecayRate,
       );
       statTimers.power = myPet.createStatTimer(
         "power",
-        gameSettings.baseDecayRate
+        gameSettings.baseDecayRate,
       );
 
       resolve(); // ✅ tell the overlay it’s safe to hide the egg
@@ -1047,6 +1066,7 @@ function resetGame() {
   careCycles = 0;
   resetButtonTracker();
   gameOverTriggered = false;
+  petIsDead = false; // Reset death flag so new game can load models
   actionInProgress = false;
   evolutionInProgress = false;
   danceSequenceIndex = 0;
@@ -1184,7 +1204,7 @@ function triggerTranscendence() {
 // ============ ⚪ WHITE STAGE TRANSCENDENCE WITH EVOLUTION EFFECTS ============ \\
 function triggerWhiteStageTranscendence() {
   console.log(
-    "⚪✨ WHITE STAGE TRANSCENDENCE - Using evolution glitch effects!"
+    "⚪✨ WHITE STAGE TRANSCENDENCE - Using evolution glitch effects!",
   );
 
   // Stop all game systems
@@ -1317,7 +1337,7 @@ async function playDanceAction(stage) {
 
     if (!animationConfig[stage] || !animationConfig[stage][selectedAction]) {
       console.log(
-        `⚠️ ${selectedAction} animation not available for ${stage} stage`
+        `⚠️ ${selectedAction} animation not available for ${stage} stage`,
       );
       // Try the other dance if this one doesn't exist
       const fallbackAction = danceVariants[1 - danceSequenceIndex];
@@ -1327,7 +1347,7 @@ async function playDanceAction(stage) {
           buttonTracker[fallbackAction] = true;
         }
         console.log(
-          `🎬 Playing fallback dance: ${fallbackAction} for ${stage} stage`
+          `🎬 Playing fallback dance: ${fallbackAction} for ${stage} stage`,
         );
         const anim = animationConfig[stage][fallbackAction];
         const baseDurationMs = await loadAndDisplayFBX(anim.file, anim.pose);
@@ -1335,17 +1355,22 @@ async function playDanceAction(stage) {
         // Both dance and dance2 loop 1 time
         const totalDurationMs = baseDurationMs * 1;
         console.log(
-          `🔄 Dance animation will loop 1 time, total duration: ${totalDurationMs}ms`
+          `🔄 Dance animation will loop 1 time, total duration: ${totalDurationMs}ms`,
         );
 
         // Wait for loops to complete, then transition to idle
         setTimeout(() => {
           triggerGlitchStutter(60);
           setTimeout(() => {
+            // Don't load idle if pet has died
+            if (petIsDead) {
+              resolve(fallbackAction);
+              return;
+            }
             const idleAnim = animationConfig[myPet.stage]["idleAfterDance"];
             if (idleAnim) {
               console.log(
-                `🎬 Transitioning to idleAfterDance for ${myPet.stage} stage with glitch masking`
+                `🎬 Transitioning to idleAfterDance for ${myPet.stage} stage with glitch masking`,
               );
               loadAndDisplayFBX(idleAnim.file, idleAnim.pose).then(() => {
                 resolve(fallbackAction);
@@ -1366,7 +1391,7 @@ async function playDanceAction(stage) {
     console.log(
       `🎬 Playing dance sequence ${
         danceSequenceIndex + 1
-      }/2: ${selectedAction} for ${stage} stage`
+      }/2: ${selectedAction} for ${stage} stage`,
     );
 
     // Mark the correct dance as completed for evolution tracking
@@ -1382,13 +1407,13 @@ async function playDanceAction(stage) {
     const baseDurationMs = await loadAndDisplayFBX(
       anim.file,
       anim.pose,
-      loopOptions
+      loopOptions,
     );
 
     // Both dance and dance2 loop 1 time
     const totalDurationMs = baseDurationMs * 1;
     console.log(
-      `🔄 ${selectedAction} will loop 1 time, total duration: ${totalDurationMs}ms`
+      `🔄 ${selectedAction} will loop 1 time, total duration: ${totalDurationMs}ms`,
     );
 
     // Advance to next dance in sequence (0 -> 1 -> 0 -> 1...)
@@ -1400,11 +1425,16 @@ async function playDanceAction(stage) {
       triggerGlitchStutter(60);
 
       setTimeout(() => {
+        // Don't load idle if pet has died
+        if (petIsDead) {
+          resolve(selectedAction);
+          return;
+        }
         const currentActiveStage = myPet.stage;
         const idleAnim = animationConfig[currentActiveStage]["idleAfterDance"];
         if (idleAnim) {
           console.log(
-            `🎬 Transitioning to idleAfterDance for ${currentActiveStage} stage with glitch masking`
+            `🎬 Transitioning to idleAfterDance for ${currentActiveStage} stage with glitch masking`,
           );
           loadAndDisplayFBX(idleAnim.file, idleAnim.pose).then(() => {
             resolve(selectedAction);
@@ -1425,13 +1455,13 @@ async function playActionThenShareIdle(actionType, stage) {
 
     // Filter variants to only include those that exist for this stage
     const availableVariants = variants.filter(
-      (variant) => animationConfig[stage] && animationConfig[stage][variant]
+      (variant) => animationConfig[stage] && animationConfig[stage][variant],
     );
 
     // If no variants available, skip this action
     if (availableVariants.length === 0) {
       console.log(
-        `⚠️ No ${actionType} animations available for ${stage} stage`
+        `⚠️ No ${actionType} animations available for ${stage} stage`,
       );
       resolve(actionType); // Return the base action type
       return;
@@ -1776,7 +1806,7 @@ async function playActionThenShareIdle(actionType, stage) {
     // Calculate total duration based on loop count
     const totalDurationMs = baseDurationMs * loopCount;
     console.log(
-      `🔄 Animation will loop ${loopCount} times, total duration: ${totalDurationMs}ms`
+      `🔄 Animation will loop ${loopCount} times, total duration: ${totalDurationMs}ms`,
     );
 
     let idleKey = "";
@@ -1800,12 +1830,17 @@ async function playActionThenShareIdle(actionType, stage) {
 
       // Small delay to sync with action completion and let stutter effect start
       setTimeout(() => {
+        // Don't load idle if pet has died
+        if (petIsDead) {
+          resolve(selectedAction);
+          return;
+        }
         // Use current stage (might have evolved since action started)
         const currentActiveStage = myPet.stage;
         const idleAnim = animationConfig[currentActiveStage][idleKey];
         if (idleAnim) {
           console.log(
-            `🎬 Transitioning to ${idleKey} for ${currentActiveStage} stage (action was ${stage}) with glitch masking`
+            `🎬 Transitioning to ${idleKey} for ${currentActiveStage} stage (action was ${stage}) with glitch masking`,
           );
           loadAndDisplayFBX(idleAnim.file, idleAnim.pose).then(() => {
             // If this was train in white stage, trigger transcendence after 3s
@@ -1889,7 +1924,7 @@ document.addEventListener("DOMContentLoaded", () => {
     playAgainBtn.addEventListener("click", () => {
       console.log("PLAY AGAIN button clicked");
       const transcendenceOverlay = document.getElementById(
-        "transcendenceOverlay"
+        "transcendenceOverlay",
       );
       if (transcendenceOverlay) transcendenceOverlay.style.display = "none";
       resetGame();
@@ -1964,67 +1999,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-// === One canonical PET-ONLY effect + aliases for every spelling/casing ===
-(() => {
-  // minimal, zero-CSS pet-only overlay (solid gradient), then remove
-  function petOnlyBurst(ms = 1600) {
-    const pc = document.getElementById("pet-container");
-    if (!pc) {
-      console.error("❌ #pet-container not found");
-      return;
-    }
-    if (getComputedStyle(pc).position === "static")
-      pc.style.position = "relative"; // optional: quick stutter flash if your overlays exist
 
-    ["glitchOverlay", "glitchOverlay2"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.style.opacity = "1";
-        el.style.transition = "opacity 120ms steps(2)";
-        setTimeout(() => (el.style.opacity = "0"), Math.min(ms, 400));
-      }
-    });
-
-    const veil = document.createElement("div");
-    veil.style.cssText = `
-:absolute; inset:0; pointer-events:none;
-z-index:99999; opacity:1; transition:opacity 250ms ease;
-background: linear-gradient(45deg,
-oklch(71.384% 0.20314 353.227),
-oklch(61.9%0.19284 258.775),
-oklch(68.299% 0.18562 299.899),
-oklch(85.825% 0.23495 148.424),
-oklch(79.49%0.14271 62.993),
-oklch(73.033% 0.19383 352.633)
-);
-background-size:300% 300%; mix-blend-mode:normal;
-`;
-    pc.appendChild(veil);
-    setTimeout(() => {
-      veil.style.opacity = "0";
-    }, Math.max(0, ms - 250));
-    setTimeout(() => {
-      veil.remove();
-    }, ms + 20);
-  } // expose the same function under ALL common spellings/casings
-
-  const names = [
-    "triggerCyberpunkEvolutionEffect", // canonical
-    "TriggerCyberpunkEvolutionEffect",
-    "TriggerCyberPunkEvolutionEffect",
-    "triggerCyberPunkEvolutionEffect",
-    "TriggerCyberPunkEvilutionEffect", // your current call
-    "triggerCyberpunkEvilutionEffect",
-  ];
-  names.forEach((n) => {
-    window[n] = petOnlyBurst;
-  }); // safety: if this helper was missing, don’t crash your flow
-
-  window.startWhiteEmissionTimer =
-    window.startWhiteEmissionTimer || (() => null);
-
-  console.log(
-    "[transcendence] pet-only effect wired under names:",
-    names.join(", ")
-  );
-})();
+// Safety fallback for window functions
+window.startWhiteEmissionTimer = window.startWhiteEmissionTimer || (() => null);

@@ -1,7 +1,7 @@
-import * as THREE from "./libs/three.module.js";
-import { FBXLoader } from "./libs/FBXLoader.js";
+import * as THREE from "@lib/three.module.js";
+import { FBXLoader } from "@lib/FBXLoader.js";
 
-// import { TextureLoader } from "./libs/three.module.js";
+// import { TextureLoader } from "@libs/three.module.js";
 const textureLoader = new THREE.TextureLoader();
 console.log("✅ Three.js and FBXLoader loaded successfully!");
 
@@ -220,7 +220,7 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
         resolve(duration * 1000);
       },
       undefined,
-      (err) => reject(err)
+      (err) => reject(err),
     );
   });
 }
@@ -280,7 +280,7 @@ scene.add(petRoot);
 // scene.background = new THREE.Color("black"); // Light gray background
 // Ambient light (softens all shadows, adds base brightness)
 const bgLoader = new THREE.TextureLoader();
-bgLoader.load("./images/4th_.jpg", function (texture) {
+bgLoader.load("/src/assets/images/4th_.jpg", function (texture) {
   scene.background = texture;
 });
 
@@ -305,7 +305,7 @@ const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  1000,
 );
 camera.position.set(0, 1.5, 3);
 

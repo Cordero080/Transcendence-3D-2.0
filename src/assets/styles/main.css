@@ -3,13 +3,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
 /* Sine wave canvas effect */
-@import url('./styles/effects/sine-wave.css');
+@import url('./effects/sine-wave.css');
 
 /* Transcendence effect */
-@import url('./styles/effects/transcendence.css');
+@import url('./effects/transcendence.css');
 
 /* Stat bars component */
-@import url('./styles/components/stat-bars.css');
+@import url('./components/stat-bars.css');
 
 :root {
   /* Global scaling factor removed - was causing overlay positioning issues */
@@ -18,7 +18,7 @@
 
 @font-face {
   font-family: "Future Z";
-  src: url('./Fonts/FutureZ.otf') format('truetype');
+  src: url('../fonts/Future Z.otf') format('truetype');
   font-weight: normal;
 font-style: normal;
 }
@@ -536,6 +536,10 @@ li::marker {
   justify-content: flex-start;
   align-items: stretch;
   background-color: oklch(0% 0 0 / 0.7);
+  background-image: url("../images/4th_.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   
   box-shadow: 0 0 25px oklch(84.93% 0.196 204.92 / 0.486);
   overflow: hidden;
@@ -907,7 +911,7 @@ canvas {
   width: 100%;
   height: 100%;
   background-color: oklch(74.31% 0.054 261.29);
-  background-image: url("./images/grid-b.jpg");
+  background-image: url("../images/grid-b.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -2635,7 +2639,7 @@ html::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: url("./images/grid-b.jpg") center/cover no-repeat;
+  background: url("../images/grid-b.jpg") center/cover no-repeat;
   image-rendering: auto;        /* let browser optimize for device */
   background-attachment: fixed; /* keeps scale uniform */
 }

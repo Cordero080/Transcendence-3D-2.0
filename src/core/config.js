@@ -2,7 +2,7 @@
 export const gameSettings = {
   MAX_STAT: 10,
   EVOLUTION_THRESHOLD: 1,
-  baseDecayRate: 7000,
+  baseDecayRate: 12000, // 12 seconds between stat changes (slowed down)
   ageInterval: 10000,
 };
 
