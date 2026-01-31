@@ -174,12 +174,61 @@ POWER OFF → save state → shutdown animation
 - **Contact**: cordero080@gmail.com
 - Inspired by Tamagotchi + spectrum-of-light/energy ideas
 
-## 🔭 Next Ideas
+## 🔭 Next Ideas / TODO
 
-- Alternate evolution branch (Pink/Purple variants)
-- Device "battery" meta stat tied to Power
-- Soft achievements (e.g., Perfect Discipline chain)
-- Easter egg: alternate game after user wins the game
+### 🔥 In Progress
+
+- [ ] **Final evolution stutter fix** — smooth transition when reaching Translucent White
+- [ ] **Glitch stutter between evolutions** — add visual glitch effect during stage transitions
+
+### 🌟 Future Features
+
+- [ ] Alternate evolution branch (Pink/Purple variants)
+- [ ] Device "battery" meta stat tied to Power
+- [ ] Soft achievements (e.g., Perfect Discipline chain)
+- [ ] Easter egg: alternate game after user wins the game
+- [ ] Mobile touch controls
+- [ ] Save/load game state to localStorage
+
+## 🎯 Game Rules Deep Dive
+
+### Evolution Requirements
+
+To evolve to the next stage, you must complete **one full care cycle**:
+
+1. ✅ Feed your pet
+2. ✅ Make it Dance (x2 different dances)
+3. ✅ Let it Sleep
+4. ✅ Train it (x2 different training moves)
+
+Once all actions are performed, your pet **evolves** to the next color stage!
+
+### Stat Decay
+
+- Stats decrease automatically over time (every 12 seconds)
+- If **any stat reaches 0**, your pet **dies** 💀
+- Keep all stats balanced to survive!
+
+### Special Rules by Stage
+
+| Stage | Color     | Special Rules                                     |
+| ----- | --------- | ------------------------------------------------- |
+| 1     | 🔵 Blue   | Standard care cycle                               |
+| 2     | 🟡 Yellow | Standard care cycle                               |
+| 3     | 🟢 Green  | Standard care cycle                               |
+| 4     | 🔴 Red    | Standard care cycle                               |
+| 5     | ⚪ White  | **Training ONLY** — Transcendent meditation state |
+
+### Death & Game Over
+
+- When any stat hits 0, your pet plays a death animation
+- The pet freezes in its final pose
+- A glitchy "GAME OVER" overlay appears
+- Press **Reset** to start a new game
+
+### Victory Condition
+
+Reach **Translucent White** stage and maintain your pet through continuous training. You've achieved transcendence! 🌟
 
 ## 📄 License
 
