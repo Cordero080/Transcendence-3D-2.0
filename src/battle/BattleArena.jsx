@@ -10,7 +10,7 @@ import './BattleArena.scss';
 
 // Panoramic background for Scene 1
 function Scene1PanoramicBackground() {
-  const texture = useTexture('/src/assets/images/21.png');
+  const texture = useTexture('/21.png');
   
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
