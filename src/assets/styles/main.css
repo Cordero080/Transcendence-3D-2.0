@@ -536,7 +536,7 @@ li::marker {
   justify-content: flex-start;
   align-items: stretch;
   background-color: oklch(0% 0 0 / 0.7);
-  background-image: url("../images/4th_.jpg");
+  background-image: url("/4th_.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
