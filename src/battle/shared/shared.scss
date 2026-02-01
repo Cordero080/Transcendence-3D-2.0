@@ -96,6 +96,12 @@ $color-dark-overlay: rgba(0, 0, 0, 0.6);
     @include box-glow($color-green);
   }
   
+  &--blue {
+    background: $color-blue;
+    color: $color-dark;
+    @include box-glow($color-blue);
+  }
+  
   &--red {
     background: $color-red;
     color: $color-dark;
@@ -106,6 +112,19 @@ $color-dark-overlay: rgba(0, 0, 0, 0.6);
     background: $color-gold;
     color: $color-dark;
     @include box-glow($color-gold);
+  }
+  
+  &--back {
+    background: transparent;
+    color: #aaa;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 5px;
+    padding-top: 8px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
   }
 }
 

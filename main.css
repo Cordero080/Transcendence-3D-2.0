@@ -571,47 +571,49 @@ li::marker {
     0 4px 20px oklch(0% 0 0 / 0.5);
 }
 
+/* Easter egg battle button - subtle and blends into background */
+.battle-arena-container {
+  position: fixed;
+  bottom: 30px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  z-index: 9999;
+  background: red;
+  padding: 10px;
+}
+
+.battle-arena-container:hover {
+  opacity: 0.4;
+}
+
 .battle-btn {
-  background: linear-gradient(135deg, 
-    oklch(55% 0.25 25) 0%,
-    oklch(45% 0.30 15) 50%,
-    oklch(55% 0.25 25) 100%
-  ) !important;
-  border: 2px solid oklch(70% 0.25 30) !important;
-  box-shadow: 
-    0 0 10px oklch(60% 0.25 25 / 0.5),
-    inset 0 1px 0 oklch(80% 0.15 30 / 0.3) !important;
-  animation: battlePulse 2s ease-in-out infinite;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: none !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 0.75rem !important;
+  padding: 6px 12px !important;
+  min-width: auto !important;
+  animation: none !important;
 }
 
 .battle-btn:hover {
-  background: linear-gradient(135deg, 
-    oklch(60% 0.28 25) 0%,
-    oklch(50% 0.32 15) 50%,
-    oklch(60% 0.28 25) 100%
-  ) !important;
-  box-shadow: 
-    0 0 20px oklch(65% 0.25 25 / 0.7),
-    inset 0 1px 0 oklch(85% 0.15 30 / 0.4) !important;
-}
-
-@keyframes battlePulse {
-  0%, 100% { box-shadow: 0 0 10px oklch(60% 0.25 25 / 0.5); }
-  50% { box-shadow: 0 0 20px oklch(65% 0.30 20 / 0.8); }
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2) !important;
 }
 
 .hidden-level {
-  font-size: 0.7rem;
-  color: oklch(70% 0.20 25);
-  text-shadow: 0 0 5px oklch(60% 0.25 25 / 0.5);
-  margin-top: 5px;
-  text-align: center;
-}
-
-.battle-arena-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: none;
+  margin-top: 3px;
+  text-align: left;
 }
 .infoBox-controls, .infoBox_petChat{
   width: 100%;

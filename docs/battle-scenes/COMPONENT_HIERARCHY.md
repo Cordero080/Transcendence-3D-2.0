@@ -111,10 +111,10 @@ export default function Scene3TrainingDojo()  // Default export (3D scene)
 
 ## Key Relationships
 
-| Parent | Child | Relationship |
-|--------|-------|--------------|
-| BattleArena | Scene3TrainingDojo | Props: autoAnimate, movements, resetKey |
-| BattleArena | CherryBlossomCanvas | Sibling to Canvas (outside R3F) |
-| Scene3TrainingDojo | TrainingCat × 3 | Each cat receives its own movement props |
-| TrainingPole | JapaneseLantern | Nested at top of pole |
-| JapaneseLantern | pointLight | Light source for glow effect |
+| Parent             | Child               | Relationship                             |
+| ------------------ | ------------------- | ---------------------------------------- |
+| BattleArena        | Scene3TrainingDojo  | Props: autoAnimate, movements, resetKey  |
+| BattleArena        | CherryBlossomCanvas | Sibling to Canvas (outside R3F)          |
+| Scene3TrainingDojo | TrainingCat × 3     | Each cat receives its own movement props |
+| TrainingPole       | JapaneseLantern     | Nested at top of pole                    |
+| JapaneseLantern    | pointLight          | Light source for glow effect             |

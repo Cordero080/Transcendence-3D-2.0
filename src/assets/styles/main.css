@@ -3141,4 +3141,47 @@ html::before {
   75%     { opacity: 0.30; }
 }
 
+/* Easter egg battle button - subtle and blends into background */
+.battle-arena-container {
+  position: fixed;
+  bottom: 30px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  opacity: 0.2;
+  transition: opacity 0.5s ease;
+  z-index: 9999;
+}
+
+.battle-arena-container:hover {
+  opacity: 0.5;
+}
+
+.battle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: none !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 0.5rem !important;
+  padding: 6px 12px !important;
+  min-width: auto !important;
+  animation: none !important;
+}
+
+.battle-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2) !important;
+}
+
+.hidden-level {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: none;
+  margin-top: 3px;
+  text-align: left;
+}
+
 

@@ -2,6 +2,8 @@
 
 // Battle Arena (Scene 1) specific background
 $battle-arena-background: #1a1a2e;
+$scene1-primary: #4a90ff;      // Blue from grid
+$scene1-accent: #ff69b4;       // Pink accent
 
 .battle-arena {
   &__container {
@@ -17,18 +19,19 @@ $battle-arena-background: #1a1a2e;
     text-align: center;
     font-family: $font-primary;
     font-size: 16px;
-    background: rgba(0, 20, 10, 0.8);
-    border: 1px solid $color-green;
+    background: rgba(10, 10, 30, 0.85);
+    border: 1px solid $scene1-primary;
     border-radius: 8px;
     padding: 10px 30px;
+    box-shadow: 0 0 15px rgba($scene1-primary, 0.3);
   }
   
   &__title {
     font-family: $font-primary;
     margin: 0;
     font-size: 32px;
-    color: $color-green;
-    @include glow($color-green);
+    color: $scene1-primary;
+    @include glow($scene1-primary);
     letter-spacing: 0.3em;
   }
   
@@ -40,16 +43,21 @@ $battle-arena-background: #1a1a2e;
     position: absolute;
     top: 20px;
     left: 20px;
-    color: $color-green;
+    color: $scene1-primary;
     font-family: $font-primary;
     font-size: 14px;
-    @include glow($color-green);
+    @include glow($scene1-primary);
   }
   
   &__controls-toggle {
     @extend .controls-panel__toggle;
-    color: $color-green;
-    border-color: $color-green;
+    color: $scene1-primary;
+    border-color: $scene1-primary;
+    background: rgba(10, 10, 30, 0.85);
+    
+    &:hover {
+      background: rgba($scene1-primary, 0.15);
+    }
     
     &--open {
       border-radius: 8px 8px 0 0;
@@ -62,7 +70,8 @@ $battle-arena-background: #1a1a2e;
   
   &__controls-content {
     @extend .controls-panel__content;
-    border-color: $color-green;
+    border-color: $scene1-primary;
+    background: rgba(10, 10, 30, 0.85);
   }
   
   &__control-item {
@@ -71,5 +80,43 @@ $battle-arena-background: #1a1a2e;
   
   &__toggle-icon {
     font-size: 10px;
+  }
+}
+
+// Scene 1 specific scene selector styling
+.battle-arena__container {
+  .scene-selector {
+    &__toggle {
+      color: $scene1-primary;
+      border-color: $scene1-primary;
+      background: rgba(10, 10, 30, 0.85);
+      
+      &:hover {
+        background: rgba($scene1-primary, 0.15);
+      }
+    }
+    
+    &__dropdown {
+      border-color: $scene1-primary;
+      background: rgba(10, 10, 30, 0.85);
+    }
+  }
+  
+  .scene-btn {
+    border-bottom-color: rgba($scene1-primary, 0.3);
+    
+    &--inactive {
+      color: $scene1-primary;
+      
+      &:hover {
+        background: rgba($scene1-primary, 0.15);
+      }
+    }
+    
+    &--blue {
+      background: $scene1-primary;
+      color: #0a0a1e;
+      @include box-glow($scene1-primary);
+    }
   }
 }

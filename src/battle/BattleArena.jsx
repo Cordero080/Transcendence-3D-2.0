@@ -1,12 +1,109 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, Grid, Html } from '@react-three/drei';
+import { OrbitControls, Grid, Html, useTexture } from '@react-three/drei';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
 import Scene2FightingArena from './Scene2/Scene2FightingArena';
 import Scene3TrainingDojo, { CherryBlossomCanvas } from './Scene3/Scene3TrainingDojo';
 import './BattleArena.scss';
+
+// Panoramic background for Scene 1
+function Scene1PanoramicBackground() {
+  const texture = useTexture('/src/assets/images/21.png');
+  
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1, 1);
+  
+  return (
+    <mesh scale={[-1, 1, 1]}>
+      <sphereGeometry args={[18, 64, 64]} />
+      <meshBasicMaterial 
+        map={texture} 
+        side={THREE.BackSide}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
+// Animated glowing circle grid for Scene 1
+function AnimatedGrid() {
+  const groupRef = useRef();
+  const [circles] = useState(() => {
+    const arr = [];
+    const gridSize = 12;    // Number of circles in each direction from center
+    const spacing = 3;      // Distance between circle centers
+    const maxRadius = gridSize * spacing;  // Circular boundary radius
+    for (let x = -gridSize; x <= gridSize; x++) {
+      for (let z = -gridSize; z <= gridSize; z++) {
+        const posX = x * spacing;
+        const posZ = z * spacing;
+        // Only include circles within circular perimeter
+        const distFromCenter = Math.sqrt(posX * posX + posZ * posZ);
+        if (distFromCenter <= maxRadius) {
+          arr.push({ x: posX, z: posZ, dist: distFromCenter });
+        }
+      }
+    }
+    return arr;
+  });
+  
+  // Pulsing animation - cycles opacity between 0.4 and 0.9
+  useFrame((state) => {
+    if (groupRef.current) {
+      const pulse = (Math.sin(state.clock.elapsedTime * 2) + 1) / 2;  // Pulse speed: * 2
+      groupRef.current.children.forEach((child) => {
+        if (child.material) {
+          child.material.opacity = 0.4 + pulse * 0.5;  // Min opacity: 0.4, Max: 0.9
+        }
+      });
+    }
+  });
+  
+  return (
+    <group ref={groupRef} position={[0, -0.98, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      {/* Circle rings */}
+      {circles.map((c, i) => (
+        <mesh key={i} position={[c.x, c.z, 0]}>
+          {/* ringGeometry args: [innerRadius, outerRadius, segments] */}
+          <ringGeometry args={[1.2, 1.4, 32]} />
+          <meshBasicMaterial 
+            color="#4a90ff"       // Ring color - saturated blue
+            transparent 
+            opacity={0.6}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
+      {/* Connecting lines between circles (only if neighbor exists within circle) */}
+      {circles.map((c, i) => {
+        const maxRadius = 12 * 3;
+        const hasRightNeighbor = circles.some(n => n.x === c.x + 3 && n.z === c.z);
+        const hasBottomNeighbor = circles.some(n => n.x === c.x && n.z === c.z + 3);
+        return (
+          <group key={`lines-${i}`}>
+            {/* Horizontal line (if neighbor exists) */}
+            {hasRightNeighbor && (
+              <mesh position={[c.x + 1.5, c.z, 0]}>
+                <planeGeometry args={[1.2, 0.08]} />  {/* width, height */}
+                <meshBasicMaterial color="#4a90ff" transparent opacity={0.5} />
+              </mesh>
+            )}
+            {/* Vertical line (if neighbor exists) */}
+            {hasBottomNeighbor && (
+              <mesh position={[c.x, c.z + 1.5, 0]} rotation={[0, 0, Math.PI / 2]}>
+                <planeGeometry args={[1.2, 0.08]} />
+                <meshBasicMaterial color="#4a90ff" transparent opacity={0.5} />
+              </mesh>
+            )}
+          </group>
+        );
+      })}
+    </group>
+  );
+}
 
 // Animated character component
 function Character({ url, position, color, isWalking, walkDirection = 1, zDirection = 0, scale = 0.00124, rotationY = 0 }) {
@@ -21,8 +118,8 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
       if (child.isMesh) {
         child.material = new THREE.MeshStandardMaterial({
           color: color,
-          metalness: 0.3,
-          roughness: 0.7
+          metalness: 0.85,
+          roughness: 0.15
         });
       }
     });
@@ -86,8 +183,8 @@ export default function BattleArena() {
   const [retreating, setRetreating] = useState(false);
   const [movingUp, setMovingUp] = useState(false);
   const [movingDown, setMovingDown] = useState(false);
-  const [charAPos] = useState([-3, -1, 0]);
-  const [charBPos] = useState([3, -1, 0]);
+  const [charAPos] = useState([-3, -1, 12]);
+  const [charBPos] = useState([3, -1, 12]);
   const [controlsOpen, setControlsOpen] = useState(false);
   const [sceneSelectorOpen, setSceneSelectorOpen] = useState(false);
   
@@ -220,7 +317,7 @@ export default function BattleArena() {
       {sceneSelectorOpen && (
         <div className="scene-selector__dropdown">
           <button 
-            className={getButtonClass(1, 'green')}
+            className={getButtonClass(1, 'blue')}
             onClick={() => { setCurrentScene(1); setSceneSelectorOpen(false); }}
           >
             Scene 1
@@ -236,6 +333,12 @@ export default function BattleArena() {
             onClick={() => { setCurrentScene(3); setSceneSelectorOpen(false); }}
           >
             Scene 3
+          </button>
+          <button 
+            className="scene-btn scene-btn--back"
+            onClick={() => { window.location.href = 'index.html'; }}
+          >
+            ← Back to Game
           </button>
         </div>
       )}
@@ -327,31 +430,45 @@ export default function BattleArena() {
   return (
     <div className="battle-arena__container">
       <Canvas camera={{ position: [0, 3, 28], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <Suspense fallback={null}>
+          <Scene1PanoramicBackground />
+        </Suspense>
+        
+        <ambientLight intensity={0.7} />
+        <spotLight position={[-3, 15, 8]} intensity={80} angle={0.5} penumbra={0.8} color="#ff69b4" />
+        <spotLight position={[3, 15, 8]} intensity={80} angle={0.5} penumbra={0.8} color="#ff4444" />
+        <spotLight position={[-5, 12, 18]} intensity={60} angle={0.6} penumbra={0.7} color="#4169e1" />
+        <spotLight position={[5, 12, 18]} intensity={60} angle={0.6} penumbra={0.7} color="#ff1493" />
+        <pointLight position={[0, 10, 14]} intensity={40} color="#00bfff" distance={25} />
+        <directionalLight position={[0, 20, 10]} intensity={0.6} />
+        {/* Overhead lights */}
+        <pointLight position={[0, 15, 12]} intensity={60} color="#ffffff" distance={30} />
+        <spotLight position={[0, 20, 12]} intensity={100} angle={0.8} penumbra={1} color="#ffffff" />
+        {/* Surrounding fill lights */}
+        <pointLight position={[-8, 5, 12]} intensity={30} color="#ff99cc" distance={20} />
+        <pointLight position={[8, 5, 12]} intensity={30} color="#99ccff" distance={20} />
+        <pointLight position={[0, 5, 20]} intensity={25} color="#ffffff" distance={20} />
+        {/* Character spotlights */}
+        <spotLight position={[5, 10, 15]} intensity={70} angle={0.3} penumbra={0.5} color="#00ff00" />
+        <spotLight position={[1, 10, 10]} intensity={70} angle={0.3} penumbra={0.5} color="#ff69b4" />
+        <spotLight position={[-5, 10, 15]} intensity={70} angle={0.3} penumbra={0.5} color="#9932cc" />
         
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
           <planeGeometry args={[50, 50]} />
-          <meshStandardMaterial color="#3d5a80" />
+          <meshStandardMaterial color="#3d5a80" opacity={0.7} transparent />
         </mesh>
         
-        <Grid 
-          args={[50, 50]} 
-          cellSize={1} 
-          cellColor="#004400" 
-          sectionColor="#00ff00"
-          position={[0, -0.99, 0]}
-        />
+        <AnimatedGrid />
         
         <Suspense fallback={<Loader />}>
           <Character 
             url="./models/blue_robot.fbx"
             position={charAPos}
-            color="#00ff88"
+            color="#4169e1"
             isWalking={walking || retreating || movingUp || movingDown}
             walkDirection={walking ? 1 : retreating ? -1 : 0}
             zDirection={movingUp ? -1 : movingDown ? 1 : 0}
-            scale={0.00231}
+            scale={0.00172}
             rotationY={Math.PI / 2}
           />
           <Character 
@@ -361,7 +478,7 @@ export default function BattleArena() {
             isWalking={walking || retreating || movingUp || movingDown}
             walkDirection={walking ? -1 : retreating ? 1 : 0}
             zDirection={movingUp ? -1 : movingDown ? 1 : 0}
-            scale={0.00231}
+            scale={0.00172}
             rotationY={-Math.PI / 2}
           />
         </Suspense>

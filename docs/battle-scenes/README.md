@@ -31,12 +31,12 @@ src/battle/
 
 ### Key Technologies
 
-| Technology | Purpose |
-|------------|---------|
+| Technology        | Purpose                     |
+| ----------------- | --------------------------- |
 | React Three Fiber | React renderer for Three.js |
-| drei | Helper library for R3F |
-| Three.js | 3D graphics library |
-| SCSS | Styling with BEM naming |
+| drei              | Helper library for R3F      |
+| Three.js          | 3D graphics library         |
+| SCSS              | Styling with BEM naming     |
 
 ### Important Hooks
 
