@@ -280,7 +280,7 @@ scene.add(petRoot);
 // scene.background = new THREE.Color("black"); // Light gray background
 // Ambient light (softens all shadows, adds base brightness)
 const bgLoader = new THREE.TextureLoader();
-bgLoader.load("/src/assets/images/4th_.jpg", function (texture) {
+bgLoader.load("/4th_.jpg", function (texture) {
   scene.background = texture;
 });
 
