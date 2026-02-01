@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, Grid, Environment, Html } from '@react-three/drei';
+import { OrbitControls, Grid, Html } from '@react-three/drei';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
+import './Scene1.scss';
 
 // Animated character component
 function Character({ url, position, color, isWalking, walkDirection = 1, zDirection = 0, scale = 0.00124, rotationY = 0 }) {
@@ -11,14 +12,9 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
   const mixerRef = useRef();
   const fbx = useLoader(FBXLoader, url);
   
-  // Use SkeletonUtils.clone for proper skinned mesh cloning
   const model = useMemo(() => {
     const clone = SkeletonUtils.clone(fbx);
-    
-    // Apply scale
     clone.scale.set(scale, scale, scale);
-    
-    // Apply color
     clone.traverse((child) => {
       if (child.isMesh) {
         child.material = new THREE.MeshStandardMaterial({
@@ -28,7 +24,6 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
         });
       }
     });
-    
     return clone;
   }, [fbx, color, scale]);
   
@@ -42,18 +37,12 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
     }
   }, [fbx, model]);
   
-  // Start/stop animation based on walking state
   useEffect(() => {
     if (actionRef.current) {
-      if (isWalking) {
-        actionRef.current.paused = false;
-      } else {
-        actionRef.current.paused = true;
-      }
+      actionRef.current.paused = !isWalking;
     }
   }, [isWalking]);
   
-  // Reset position when position prop changes
   useEffect(() => {
     if (groupRef.current) {
       groupRef.current.position.set(position[0], position[1], position[2]);
@@ -65,12 +54,10 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
       mixerRef.current.update(delta);
     }
     
-    // Walk forward/backward (X axis)
     if (isWalking && groupRef.current && walkDirection !== 0) {
       groupRef.current.position.x += 0.02 * walkDirection;
     }
     
-    // Walk up/down (Z axis)
     if (isWalking && groupRef.current && zDirection !== 0) {
       groupRef.current.position.z += 0.02 * zDirection;
     }
@@ -83,26 +70,22 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
   );
 }
 
-// Loading fallback
 function Loader() {
   return (
     <Html center>
-      <div style={{ color: '#00ff88', fontFamily: 'monospace' }}>
-        Loading model...
-      </div>
+      <div className="loader">Loading model...</div>
     </Html>
   );
 }
 
-export default function BattleArena() {
+export default function Scene1WalkingCats() {
   const [walking, setWalking] = useState(false);
   const [retreating, setRetreating] = useState(false);
   const [movingUp, setMovingUp] = useState(false);
   const [movingDown, setMovingDown] = useState(false);
-  const [charAPos, setCharAPos] = useState([-3, -1, 0]);
-  const [charBPos, setCharBPos] = useState([3, -1, 0]);
+  const [charAPos] = useState([-3, -1, 0]);
+  const [charBPos] = useState([3, -1, 0]);
   
-  // Keyboard controls
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.code === 'Space') {
@@ -146,18 +129,16 @@ export default function BattleArena() {
   }, []);
   
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#1a1a2e' }}>
+    <div className="scene1__container">
       <Canvas camera={{ position: [0, 8, 20], fov: 45 }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         
-        {/* Ground */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
           <planeGeometry args={[50, 50]} />
           <meshStandardMaterial color="#3d5a80" />
         </mesh>
         
-        {/* Grid overlay */}
         <Grid 
           args={[50, 50]} 
           cellSize={1} 
@@ -166,7 +147,6 @@ export default function BattleArena() {
           position={[0, -0.99, 0]}
         />
         
-        {/* Characters */}
         <Suspense fallback={<Loader />}>
           <Character 
             url="./models/blue_robot.fbx"
@@ -193,32 +173,17 @@ export default function BattleArena() {
         <OrbitControls />
       </Canvas>
       
-      {/* UI Overlay */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        color: '#00ff88',
-        fontFamily: 'monospace',
-        fontSize: '16px',
-        textShadow: '0 0 10px #00ff88'
-      }}>
-        <h1 style={{ margin: 0, fontSize: '28px' }}>🎮 EXODUS</h1>
-        <p style={{ opacity: 0.7 }}>React Three Fiber Battle Test</p>
+      <div className="scene1__overlay">
+        <h1 className="scene1__title">🎮 EXODUS</h1>
+        <p className="scene1__subtitle">React Three Fiber Battle Test</p>
         
-        <div style={{ 
-          marginTop: 20, 
-          padding: 15, 
-          background: 'rgba(0,0,0,0.6)', 
-          borderRadius: 8,
-          border: '1px solid #00ff88'
-        }}>
-          <p><strong>Controls:</strong></p>
-          <p>SPACE - Walk toward each other</p>
-          <p>⌘ CMD - Walk away from each other</p>
-          <p>D - Walk up (into screen)</p>
-          <p>⌥ OPT - Walk down (toward camera)</p>
-          <p>Mouse - Orbit camera</p>
+        <div className="scene1__controls">
+          <p className="scene1__controls-title">Controls:</p>
+          <p className="scene1__controls-item">SPACE - Walk toward each other</p>
+          <p className="scene1__controls-item">⌘ CMD - Walk away from each other</p>
+          <p className="scene1__controls-item">D - Walk up (into screen)</p>
+          <p className="scene1__controls-item">⌥ OPT - Walk down (toward camera)</p>
+          <p className="scene1__controls-item">Mouse - Orbit camera</p>
         </div>
       </div>
     </div>

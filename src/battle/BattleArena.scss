@@ -1,0 +1,68 @@
+@import './shared/shared.scss';
+
+// Battle Arena (Scene 1) specific background
+$battle-arena-background: #1a1a2e;
+
+.battle-arena {
+  &__container {
+    @extend .scene-container;
+    background: $battle-arena-background;
+  }
+  
+  &__header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    
+    font-family: $font-primary;
+    font-size: 16px;
+    @include glow($color-green);
+  }
+  
+  &__title {
+    @extend .title;
+    @extend .title--green;
+  }
+  
+  &__subtitle {
+    @extend .subtitle;
+  }
+  
+  &__controls-wrapper {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: $color-green;
+    font-family: $font-primary;
+    font-size: 14px;
+    @include glow($color-green);
+  }
+  
+  &__controls-toggle {
+    @extend .controls-panel__toggle;
+    color: $color-green;
+    border-color: $color-green;
+    
+    &--open {
+      border-radius: 8px 8px 0 0;
+    }
+    
+    &--closed {
+      border-radius: 8px;
+    }
+  }
+  
+  &__controls-content {
+    @extend .controls-panel__content;
+    border-color: $color-green;
+  }
+  
+  &__control-item {
+    @extend .controls-panel__item;
+  }
+  
+  &__toggle-icon {
+    font-size: 10px;
+  }
+}

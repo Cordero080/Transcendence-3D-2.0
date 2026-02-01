@@ -1,0 +1,161 @@
+// Shared variables
+$font-primary: 'Doto', sans-serif;
+$color-green: #00ff88;
+$color-red: #ff6b6b;
+$color-gold: #FFD700;
+$color-blue: #0088ff;
+$color-dark: #1a1a2e;
+$color-dark-overlay: rgba(0, 0, 0, 0.6);
+
+// Shared mixins
+@mixin glow($color) {
+  text-shadow: 0 0 10px $color;
+}
+
+@mixin box-glow($color) {
+  box-shadow: 0 0 15px $color;
+}
+
+// Base scene container (no background - each scene controls its own)
+.scene-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+.loader {
+  color: $color-green;
+  font-family: $font-primary;
+}
+
+// Scene selector buttons
+.scene-selector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.scene-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: $font-primary;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &--inactive {
+    background: $color-dark-overlay;
+    color: $color-green;
+    border: 1px solid $color-green;
+  }
+  
+  &--green {
+    background: $color-green;
+    color: $color-dark;
+    border: none;
+    @include box-glow($color-green);
+  }
+  
+  &--red {
+    background: $color-red;
+    color: $color-dark;
+    border: none;
+    @include box-glow($color-red);
+  }
+  
+  &--gold {
+    background: $color-gold;
+    color: $color-dark;
+    border: none;
+    @include box-glow($color-gold);
+  }
+}
+
+// Title styles
+.title {
+  font-family: $font-primary;
+  margin: 0;
+  font-size: 28px;
+  
+  &--green {
+    color: $color-green;
+    @include glow($color-green);
+  }
+  
+  &--red {
+    color: $color-red;
+    @include glow($color-red);
+  }
+  
+  &--gold {
+    color: $color-gold;
+    @include glow($color-gold);
+  }
+}
+
+.subtitle {
+  font-family: $font-primary;
+  opacity: 0.7;
+}
+
+// Controls panel
+.controls-panel {
+  position: absolute;
+  font-family: $font-primary;
+  font-size: 14px;
+  
+  &__toggle {
+    background: $color-dark-overlay;
+    border: 1px solid;
+    padding: 8px 20px;
+    font-family: $font-primary;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    
+    &--open {
+      border-radius: 8px 8px 0 0;
+    }
+    
+    &--closed {
+      border-radius: 8px;
+    }
+  }
+  
+  &__content {
+    padding: 15px;
+    background: $color-dark-overlay;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid;
+    border-top: none;
+  }
+  
+  &__item {
+    margin: 4px 0;
+  }
+}
+
+// Cat label (for training dojo)
+.cat-label {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: $font-primary;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  
+  &--light {
+    color: #000;
+  }
+  
+  &--dark {
+    color: #fff;
+  }
+}

@@ -1,0 +1,46 @@
+@import '../shared/shared.scss';
+
+// Scene 1 specific background
+$scene1-background: #1a1a2e;
+
+.scene1 {
+  &__container {
+    @extend .scene-container;
+    background: $scene1-background;
+  }
+  
+  &__overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: $color-green;
+    font-family: $font-primary;
+    font-size: 16px;
+    @include glow($color-green);
+  }
+  
+  &__title {
+    @extend .title;
+    @extend .title--green;
+  }
+  
+  &__subtitle {
+    @extend .subtitle;
+  }
+  
+  &__controls {
+    margin-top: 20px;
+    padding: 15px;
+    background: $color-dark-overlay;
+    border-radius: 8px;
+    border: 1px solid $color-green;
+  }
+  
+  &__controls-title {
+    font-weight: bold;
+  }
+  
+  &__controls-item {
+    margin: 4px 0;
+  }
+}

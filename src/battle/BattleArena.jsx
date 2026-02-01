@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, Grid, Environment, Html } from '@react-three/drei';
+import { OrbitControls, Grid, Html } from '@react-three/drei';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
-import Scene2FightingArena from './Scene2_AnimationExperiment';
+import Scene2FightingArena from './Scene2/Scene2FightingArena';
+import Scene3TrainingDojo from './Scene3/Scene3TrainingDojo';
+import './BattleArena.scss';
 
 // Animated character component
 function Character({ url, position, color, isWalking, walkDirection = 1, zDirection = 0, scale = 0.00124, rotationY = 0 }) {
@@ -12,14 +14,9 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
   const mixerRef = useRef();
   const fbx = useLoader(FBXLoader, url);
   
-  // Use SkeletonUtils.clone for proper skinned mesh cloning
   const model = useMemo(() => {
     const clone = SkeletonUtils.clone(fbx);
-    
-    // Apply scale
     clone.scale.set(scale, scale, scale);
-    
-    // Apply color
     clone.traverse((child) => {
       if (child.isMesh) {
         child.material = new THREE.MeshStandardMaterial({
@@ -29,7 +26,6 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
         });
       }
     });
-    
     return clone;
   }, [fbx, color, scale]);
   
@@ -43,18 +39,12 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
     }
   }, [fbx, model]);
   
-  // Start/stop animation based on walking state
   useEffect(() => {
     if (actionRef.current) {
-      if (isWalking) {
-        actionRef.current.paused = false;
-      } else {
-        actionRef.current.paused = true;
-      }
+      actionRef.current.paused = !isWalking;
     }
   }, [isWalking]);
   
-  // Reset position when position prop changes
   useEffect(() => {
     if (groupRef.current) {
       groupRef.current.position.set(position[0], position[1], position[2]);
@@ -66,12 +56,10 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
       mixerRef.current.update(delta);
     }
     
-    // Walk forward/backward (X axis)
     if (isWalking && groupRef.current && walkDirection !== 0) {
       groupRef.current.position.x += 0.02 * walkDirection;
     }
     
-    // Walk up/down (Z axis)
     if (isWalking && groupRef.current && zDirection !== 0) {
       groupRef.current.position.z += 0.02 * zDirection;
     }
@@ -84,13 +72,10 @@ function Character({ url, position, color, isWalking, walkDirection = 1, zDirect
   );
 }
 
-// Loading fallback
 function Loader() {
   return (
     <Html center>
-      <div style={{ color: '#00ff88', fontFamily: 'monospace' }}>
-        Loading model...
-      </div>
+      <div className="loader">Loading model...</div>
     </Html>
   );
 }
@@ -101,13 +86,22 @@ export default function BattleArena() {
   const [retreating, setRetreating] = useState(false);
   const [movingUp, setMovingUp] = useState(false);
   const [movingDown, setMovingDown] = useState(false);
-  const [charAPos, setCharAPos] = useState([-3, -1, 0]);
-  const [charBPos, setCharBPos] = useState([3, -1, 0]);
+  const [charAPos] = useState([-3, -1, 0]);
+  const [charBPos] = useState([3, -1, 0]);
   const [controlsOpen, setControlsOpen] = useState(true);
   
-  // Keyboard controls
+  // Scene 3 controls
+  const [scene3AutoAnimate, setScene3AutoAnimate] = useState(true);
+  const [greenMoving, setGreenMoving] = useState(false);
+  const [greenDirection, setGreenDirection] = useState(0);
+  const [redMoving, setRedMoving] = useState(false);
+  const [redDirection, setRedDirection] = useState(0);
+  const [blueMoving, setBlueMoving] = useState(false);
+  const [blueDirection, setBlueDirection] = useState(0);
+  
   useEffect(() => {
     function handleKeyDown(e) {
+      // Scene 1 controls
       if (e.code === 'Space') {
         e.preventDefault();
         setWalking(true);
@@ -122,6 +116,39 @@ export default function BattleArena() {
       if (e.altKey || e.code === 'AltLeft' || e.code === 'AltRight') {
         e.preventDefault();
         setMovingDown(true);
+      }
+      
+      // Scene 3 controls (only when not in auto-animate mode)
+      if (currentScene === 3 && !scene3AutoAnimate) {
+        // Green cat: Q/E
+        if (e.code === 'KeyQ') {
+          setGreenMoving(true);
+          setGreenDirection(-1);
+        }
+        if (e.code === 'KeyE') {
+          setGreenMoving(true);
+          setGreenDirection(1);
+        }
+        // Red cat: Arrow keys
+        if (e.code === 'ArrowLeft') {
+          e.preventDefault();
+          setRedMoving(true);
+          setRedDirection(-1);
+        }
+        if (e.code === 'ArrowRight') {
+          e.preventDefault();
+          setRedMoving(true);
+          setRedDirection(1);
+        }
+        // Blue cat: Z/C
+        if (e.code === 'KeyZ') {
+          setBlueMoving(true);
+          setBlueDirection(-1);
+        }
+        if (e.code === 'KeyC') {
+          setBlueMoving(true);
+          setBlueDirection(1);
+        }
       }
     }
     
@@ -138,6 +165,20 @@ export default function BattleArena() {
       if (e.code === 'AltLeft' || e.code === 'AltRight' || !e.altKey) {
         setMovingDown(false);
       }
+      
+      // Scene 3 controls
+      if (e.code === 'KeyQ' || e.code === 'KeyE') {
+        setGreenMoving(false);
+        setGreenDirection(0);
+      }
+      if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+        setRedMoving(false);
+        setRedDirection(0);
+      }
+      if (e.code === 'KeyZ' || e.code === 'KeyC') {
+        setBlueMoving(false);
+        setBlueDirection(0);
+      }
     }
     
     window.addEventListener('keydown', handleKeyDown);
@@ -146,70 +187,147 @@ export default function BattleArena() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [currentScene, scene3AutoAnimate]);
   
-  // If Scene 2 is selected, render that instead
+  // Scene button helper
+  const getButtonClass = (sceneNum, activeColor) => {
+    if (currentScene === sceneNum) {
+      return `scene-btn scene-btn--${activeColor}`;
+    }
+    return 'scene-btn scene-btn--inactive';
+  };
+  
+  // Scene Selector Component
+  const SceneSelector = () => (
+    <div className="scene-selector">
+      <button 
+        className={getButtonClass(1, 'green')}
+        onClick={() => setCurrentScene(1)}
+      >
+        Scene 1
+      </button>
+      <button 
+        className={getButtonClass(2, 'red')}
+        onClick={() => setCurrentScene(2)}
+      >
+        Scene 2
+      </button>
+      <button 
+        className={getButtonClass(3, 'gold')}
+        onClick={() => setCurrentScene(3)}
+      >
+        Scene 3
+      </button>
+    </div>
+  );
+
+  // Scene 2 - Fighting Arena
   if (currentScene === 2) {
     return (
-      <div style={{ width: '100vw', height: '100vh' }}>
+      <div className="battle-arena__container">
         <Scene2FightingArena />
-        {/* Scene Selector overlay */}
-        <div style={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-          display: 'flex',
-          gap: 10,
-          zIndex: 1000
-        }}>
-          <button 
-            onClick={() => setCurrentScene(1)}
-            style={{
-              padding: '10px 20px',
-              background: 'rgba(0,0,0,0.6)',
-              color: '#00ff88',
-              border: '1px solid #00ff88',
-              borderRadius: 8,
-              fontFamily: 'monospace',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}
+        <SceneSelector />
+      </div>
+    );
+  }
+
+  // Scene 3 - Training Dojo
+  if (currentScene === 3) {
+    return (
+      <div className="scene3__container">
+        <Canvas camera={{ position: [0, 8, 15], fov: 50 }}>
+          <Suspense fallback={<Loader />}>
+            <Scene3TrainingDojo 
+              autoAnimate={scene3AutoAnimate}
+              greenMoving={greenMoving}
+              greenDirection={greenDirection}
+              redMoving={redMoving}
+              redDirection={redDirection}
+              blueMoving={blueMoving}
+              blueDirection={blueDirection}
+            />
+          </Suspense>
+        </Canvas>
+        <div className="scene3__header">
+          <h1 className="scene3__title">🏯 Training Dojo</h1>
+          <div className="scene3__scene-buttons">
+            <button 
+              className={getButtonClass(1, 'green')}
+              onClick={() => setCurrentScene(1)}
+            >
+              Scene 1
+            </button>
+            <button 
+              className={getButtonClass(2, 'red')}
+              onClick={() => setCurrentScene(2)}
+            >
+              Scene 2
+            </button>
+            <button 
+              className={getButtonClass(3, 'gold')}
+              onClick={() => setCurrentScene(3)}
+            >
+              Scene 3
+            </button>
+          </div>
+        </div>
+        
+        <div className="scene3__controls-wrapper">
+          <button
+            className={`scene3__controls-toggle ${controlsOpen ? 'scene3__controls-toggle--open' : 'scene3__controls-toggle--closed'}`}
+            onClick={() => setControlsOpen(!controlsOpen)}
           >
-            Scene 1
+            <span>Controls</span>
+            <span className="scene3__toggle-icon">{controlsOpen ? '▲' : '▼'}</span>
           </button>
-          <button 
-            style={{
-              padding: '10px 20px',
-              background: '#ff6b6b',
-              color: '#1a1a2e',
-              border: 'none',
-              borderRadius: 8,
-              fontFamily: 'monospace',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              boxShadow: '0 0 15px #ff6b6b'
-            }}
-          >
-            Scene 2
-          </button>
+          
+          {controlsOpen && (
+            <div className="scene3__controls-content">
+              <div className="scene3__mode-toggle">
+                <label className="scene3__toggle-label">
+                  <input
+                    type="checkbox"
+                    checked={scene3AutoAnimate}
+                    onChange={(e) => setScene3AutoAnimate(e.target.checked)}
+                  />
+                  <span>Auto-Animate</span>
+                </label>
+              </div>
+              
+              {!scene3AutoAnimate && (
+                <>
+                  <p className="scene3__control-item scene3__control-item--green">
+                    <span className="scene3__key">Q</span> / <span className="scene3__key">E</span> - Butterfly Kick (Green)
+                  </p>
+                  <p className="scene3__control-item scene3__control-item--red">
+                    <span className="scene3__key">←</span> / <span className="scene3__key">→</span> - Kururunfa (Red)
+                  </p>
+                  <p className="scene3__control-item scene3__control-item--blue">
+                    <span className="scene3__key">Z</span> / <span className="scene3__key">C</span> - Muay Thai (Blue)
+                  </p>
+                </>
+              )}
+              
+              <p className="scene3__control-item">Mouse - Orbit camera</p>
+            </div>
+          )}
         </div>
       </div>
     );
   }
 
+  // Scene 1 - Walking Cats (default)
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#1a1a2e' }}>
-      <Canvas camera={{ position: [0, 8, 20], fov: 45 }}>
+    <div className="battle-arena__container">
+      <Canvas camera={{ position: [0, 3, 28], fov: 45 }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         
-        {/* Ground */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
           <planeGeometry args={[50, 50]} />
           <meshStandardMaterial color="#3d5a80" />
         </mesh>
         
-        {/* Grid overlay */}
         <Grid 
           args={[50, 50]} 
           cellSize={1} 
@@ -218,7 +336,6 @@ export default function BattleArena() {
           position={[0, -0.99, 0]}
         />
         
-        {/* Characters */}
         <Suspense fallback={<Loader />}>
           <Character 
             url="./models/blue_robot.fbx"
@@ -227,7 +344,7 @@ export default function BattleArena() {
             isWalking={walking || retreating || movingUp || movingDown}
             walkDirection={walking ? 1 : retreating ? -1 : 0}
             zDirection={movingUp ? -1 : movingDown ? 1 : 0}
-            scale={0.00124}
+            scale={0.00231}
             rotationY={Math.PI / 2}
           />
           <Character 
@@ -237,118 +354,40 @@ export default function BattleArena() {
             isWalking={walking || retreating || movingUp || movingDown}
             walkDirection={walking ? -1 : retreating ? 1 : 0}
             zDirection={movingUp ? -1 : movingDown ? 1 : 0}
-            scale={0.00124}
+            scale={0.00231}
             rotationY={-Math.PI / 2}
           />
         </Suspense>
         
-        <OrbitControls />
+        <OrbitControls target={[0, 0, 0]} />
       </Canvas>
       
-      {/* UI Overlay - Title (Left) */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        color: '#00ff88',
-        fontFamily: 'monospace',
-        fontSize: '16px',
-        textShadow: '0 0 10px #00ff88'
-      }}>
-        <h1 style={{ margin: 0, fontSize: '28px' }}>🎮 EXODUS</h1>
-        <p style={{ opacity: 0.7 }}>React Three Fiber Battle Test</p>
+      <div className="battle-arena__header">
+        <h1 className="battle-arena__title">🎮 EXODUS</h1>
+        <p className="battle-arena__subtitle">React Three Fiber Battle Test</p>
       </div>
       
-      {/* Controls Panel - Top Center, Collapsible */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        color: '#00ff88',
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        textShadow: '0 0 10px #00ff88'
-      }}>
+      <div className="battle-arena__controls-wrapper">
         <button
+          className={`battle-arena__controls-toggle ${controlsOpen ? 'battle-arena__controls-toggle--open' : 'battle-arena__controls-toggle--closed'}`}
           onClick={() => setControlsOpen(!controlsOpen)}
-          style={{
-            background: 'rgba(0,0,0,0.6)',
-            color: '#00ff88',
-            border: '1px solid #00ff88',
-            borderRadius: controlsOpen ? '8px 8px 0 0' : '8px',
-            padding: '8px 20px',
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 8
-          }}
         >
           <span>Controls</span>
-          <span style={{ fontSize: '10px' }}>{controlsOpen ? '▲' : '▼'}</span>
+          <span className="battle-arena__toggle-icon">{controlsOpen ? '▲' : '▼'}</span>
         </button>
         
         {controlsOpen && (
-          <div style={{ 
-            padding: 15, 
-            background: 'rgba(0,0,0,0.6)', 
-            borderRadius: '0 0 8px 8px',
-            border: '1px solid #00ff88',
-            borderTop: 'none'
-          }}>
-            <p style={{ margin: '4px 0' }}>SPACE - Walk toward each other</p>
-            <p style={{ margin: '4px 0' }}>⌘ CMD - Walk away from each other</p>
-            <p style={{ margin: '4px 0' }}>D - Walk up (into screen)</p>
-            <p style={{ margin: '4px 0' }}>⌥ OPT - Walk down (toward camera)</p>
-            <p style={{ margin: '4px 0' }}>Mouse - Orbit camera</p>
+          <div className="battle-arena__controls-content">
+            <p className="battle-arena__control-item">SPACE - Walk toward each other</p>
+            <p className="battle-arena__control-item">⌘ CMD - Walk away from each other</p>
+            <p className="battle-arena__control-item">D - Walk up (into screen)</p>
+            <p className="battle-arena__control-item">⌥ OPT - Walk down (toward camera)</p>
+            <p className="battle-arena__control-item">Mouse - Orbit camera</p>
           </div>
         )}
       </div>
       
-      {/* Scene Selector - Top Right */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        display: 'flex',
-        gap: 10
-      }}>
-        <button 
-          onClick={() => setCurrentScene(1)}
-          style={{
-            padding: '10px 20px',
-            background: '#00ff88',
-            color: '#1a1a2e',
-            border: 'none',
-            borderRadius: 8,
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 0 15px #00ff88'
-          }}
-        >
-          Scene 1
-        </button>
-        <button 
-          onClick={() => setCurrentScene(2)}
-          style={{
-            padding: '10px 20px',
-            background: 'rgba(0,0,0,0.6)',
-            color: '#00ff88',
-            border: '1px solid #00ff88',
-            borderRadius: 8,
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          Scene 2
-        </button>
-      </div>
+      <SceneSelector />
     </div>
   );
 }
