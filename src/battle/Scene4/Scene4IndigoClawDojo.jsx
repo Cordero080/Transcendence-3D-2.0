@@ -6,8 +6,8 @@ import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
 import * as THREE from 'three';
 import './Scene4.scss';
 
-// Floating particles - ominous dark blue/cyan specks
-export function OminousParticlesCanvas() {
+// Floating particles - indigo blue/cyan specks
+export function IndigoClawParticlesCanvas() {
   const canvasRef = useRef(null);
   
   useEffect(() => {
@@ -118,8 +118,8 @@ export function OminousParticlesCanvas() {
   );
 }
 
-// Ominous pulsing gradient ring - blue/cyan theme
-function OminousGradientRing() {
+// Indigo pulsing gradient ring - blue/cyan theme
+function IndigoClawGradientRing() {
   const materialRef = useRef();
   
   useFrame((state) => {
@@ -176,7 +176,7 @@ function OminousGradientRing() {
 }
 
 // Dark panoramic background
-function OminousBackground() {
+function IndigoClawBackground() {
   return (
     <mesh scale={[-1, 1, 1]}>
       <sphereGeometry args={[400, 64, 64]} />
@@ -236,7 +236,7 @@ function WhiteCat({
   );
 }
 
-function OminousDojoMat() {
+function IndigoClawDojoMat() {
   return (
     <>
       {/* Deep dark floor */}
@@ -258,12 +258,12 @@ function OminousDojoMat() {
         />
       </mesh>
       {/* Glowing animated gradient border ring */}
-      <OminousGradientRing />
+      <IndigoClawGradientRing />
     </>
   );
 }
 
-function OminousCenterMarker() {
+function IndigoClawCenterMarker() {
   const ringRef = useRef();
   
   useFrame((state) => {
@@ -291,8 +291,8 @@ function OminousCenterMarker() {
   );
 }
 
-// Ominous blue lantern component
-function OminousLantern({ position }) {
+// Indigo blue lantern component
+function IndigoClawLantern({ position }) {
   const lightRef = useRef();
   const bodyRef = useRef();
   const flameRef = useRef();
@@ -391,7 +391,7 @@ function OminousLantern({ position }) {
 }
 
 // Dark training pole with blue accents
-function OminousTrainingPole({ position }) {
+function IndigoClawTrainingPole({ position }) {
   return (
     <group position={position}>
       {/* Main pole - dark wood */}
@@ -421,8 +421,8 @@ function OminousTrainingPole({ position }) {
           metalness={0.25}
         />
       </mesh>
-      {/* Ominous lantern hanging from top */}
-      <OminousLantern position={[0, 4.9, 0]} />
+      {/* Indigo lantern hanging from top */}
+      <IndigoClawLantern position={[0, 4.9, 0]} />
       {/* Base */}
       <mesh position={[0, 0.05, 0]}>
         <cylinderGeometry args={[0.25, 0.3, 0.1, 16]} />
@@ -436,26 +436,55 @@ function OminousTrainingPole({ position }) {
   );
 }
 
-export default function Scene4OminousDojo() {
+export default function Scene4IndigoClawDojo() {
   return (
     <>
-      <OminousBackground />
+      <IndigoClawBackground />
       
       {/* Dim, cold lighting */}
       <ambientLight intensity={0.15} color="#0a1525" />
       <directionalLight position={[5, 10, 5]} intensity={0.5} color="#0066aa" castShadow />
       <directionalLight position={[-5, 10, -5]} intensity={0.3} color="#003366" />
       
-      {/* Subtle rim light on the cat */}
-      <pointLight position={[0, 3, -3]} intensity={2} color="#00ccff" distance={10} />
+      {/* Main blue spotlight from above */}
+      <spotLight 
+        position={[0, 12, 0]} 
+        intensity={100} 
+        angle={0.4} 
+        penumbra={0.8} 
+        color="#00aaff" 
+        castShadow
+        target-position={[0, 0, 0]}
+      />
       
-      <OminousDojoMat />
-      <OminousCenterMarker />
+      {/* Blue light - front left */}
+      <spotLight 
+        position={[-5, 6, 4]} 
+        intensity={40} 
+        angle={0.5} 
+        penumbra={0.7} 
+        color="#0088dd" 
+      />
+      
+      {/* Blue light - front right */}
+      <spotLight 
+        position={[5, 5, 3]} 
+        intensity={30} 
+        angle={0.5} 
+        penumbra={0.7} 
+        color="#00ccff" 
+      />
+      
+      {/* Rim light from behind - blue */}
+      <pointLight position={[0, 3, -4]} intensity={5} color="#0066ff" distance={12} />
+      
+      <IndigoClawDojoMat />
+      <IndigoClawCenterMarker />
       
       {/* Training poles in equilateral triangle formation */}
-      <OminousTrainingPole position={[0, 0, -7.5]} />
-      <OminousTrainingPole position={[-6.5, 0, 3.75]} />
-      <OminousTrainingPole position={[6.5, 0, 3.75]} />
+      <IndigoClawTrainingPole position={[0, 0, -7.5]} />
+      <IndigoClawTrainingPole position={[-6.5, 0, 3.75]} />
+      <IndigoClawTrainingPole position={[6.5, 0, 3.75]} />
       
       {/* Dark grid with blue/cyan colors */}
       <Grid 
@@ -473,7 +502,7 @@ export default function Scene4OminousDojo() {
       <WhiteCat
         position={[0, 0, 0]}
         rotation={[0, 0, 0]}
-        scale={0.00135}
+        scale={0.00186}
       />
       
       <OrbitControls 

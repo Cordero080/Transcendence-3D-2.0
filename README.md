@@ -12,35 +12,6 @@ A Tamagotchi-inspired evolution sim where your digital pet moves through the spe
 
 **This is a major upgrade of my earlier project [transcendence-pet-sim](https://github.com/Cordero080/transcendence-pet-sim).** New UI, my own character designs, a device-style **power button**, a real **training** system, incremental **size growth** as the pet evolves, a **DNA sinewave** backdrop, a full **Blender → FBX → Three.js** animation pipeline, and a full **audio** pass (SFX + theme music switch).
 
-## 🥚 Easter Egg: The Upside
-
-Look closely at the bottom-left corner of the screen. There's a barely-visible button that says **"upside!"** — it's meant to blend into the background as a secret for curious players.
-
-Click it to enter the **Battle Arena** — a hidden React Three Fiber experience with 3 unique scenes:
-
-### Scene 1: Dance Battle
-
-- Panoramic neopunk backdrop
-- Pulsing cerulean ring grid
-- Two metallic chrome cats facing off
-- Colorful spotlights (pink, red, blue, purple)
-- WASD/Arrow controls to move characters
-
-### Scene 2: Fighting Arena
-
-- Neon neopunk cityscape
-- Arena platform with glowing edges
-- Battle-ready environment
-
-### Scene 3: Training Dojo
-
-- Japanese-inspired aesthetic
-- Animated cherry blossom petals (2D canvas overlay)
-- Bamboo poles with flickering paper lanterns
-- Glowing gradient ring with GLSL shader animation
-- Three cats training on the mat
-- Toggle between auto-animate and manual control modes
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -107,7 +78,7 @@ You hatch a glitched egg. An intergalactic pet emerges and evolves by **color**,
 
 ## 🌈 Evolution Order (current path)
 
-1. 🐣 **Hatch / Blue** — first form
+1. 🐣🔵 **Hatch / Blue** — first form
 2. 🟡 **Yellow** — power / confidence
 3. 🟢 **Green** — growth / energy
 4. 🔴 **Red** — peak / fury
@@ -268,6 +239,50 @@ Once all actions are performed, your pet **evolves** to the next color stage!
 ### Victory Condition
 
 Reach **Translucent White** stage and maintain your pet through continuous training. You've achieved transcendence! 🌟
+
+## 🥚 Easter Egg: The Upside
+
+Look closely at the bottom-left corner of the screen. There's a barely-visible button that says **"upside!"** — it's meant to blend into the background as a secret for curious players.
+
+Click it to enter the **Battle Arena** — a hidden React Three Fiber experience with 4 unique scenes:
+
+### Scene 1: Dance Battle
+
+- Panoramic neopunk backdrop
+- Pulsing cerulean ring grid
+- Two metallic chrome cats facing off
+- Colorful spotlights (pink, red, blue, purple)
+- WASD/Arrow controls to move characters
+
+### Scene 2: Fighting Arena
+
+- Neon neopunk cityscape
+- Arena platform with glowing edges
+- Battle-ready environment
+
+### Scene 3: Training Dojo
+
+- Japanese-inspired aesthetic
+- Animated cherry blossom petals (2D canvas overlay)
+- Bamboo poles with flickering paper lanterns
+- Glowing gradient ring with GLSL shader animation
+- Three cats training on the mat
+- Toggle between auto-animate and manual control modes
+
+### Scene 4: Indigo Claw Dojo
+
+- Dark, ominous atmosphere with deep blue/black tones
+- Single white cat bathed in blue light
+- Blue-glowing lanterns on training poles
+- Moody vignette effect
+- Mysterious, meditative vibe
+
+### Battle Arena Screenshots
+
+![Dance Battle](public/screenshots/upside/dance-battle.png)
+![Cat Fight Arena](public/screenshots/upside/cat-fight.png)
+![Training Dojo](public/screenshots/upside/cat-dojo.png)
+![Indigo Claw Dojo](public/screenshots/upside/indigo-claw.png)
 
 ## 📄 License
 
