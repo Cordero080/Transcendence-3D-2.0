@@ -10,6 +10,14 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   plugins: [react()],
   publicDir: "public",
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        battle: path.resolve(__dirname, "battle.html"),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
