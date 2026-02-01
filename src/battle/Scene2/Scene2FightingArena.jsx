@@ -4,6 +4,7 @@ import { OrbitControls, Grid, Html } from '@react-three/drei';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
+import '../shared/shared.scss';
 import './Scene2.scss';
 
 // Shockwave particle burst effect
@@ -427,6 +428,7 @@ export default function Scene2FightingArena() {
   const [shockwaveTrigger, setShockwaveTrigger] = useState(0);
   const [greenStutter, setGreenStutter] = useState(0);
   const [autoAnimate, setAutoAnimate] = useState(false);
+  const [controlsOpen, setControlsOpen] = useState(false);
   const greenGroupRef = useRef(null);
   
   const handleGreenRef = useCallback((ref) => {
@@ -565,32 +567,41 @@ export default function Scene2FightingArena() {
       </Canvas>
       
       <div className="scene2__header">
-        <h1 className="scene2__title">⚔️ SCENE 2: FIGHT!</h1>
-        <p className="scene2__subtitle">Fighting Animation Test</p>
+        <h1 className="scene2__title">SCENE 2: FIGHT!</h1>
       </div>
       
-      <div className="scene2__overlay">
-        <div className="scene2__controls">
-          <label className="scene2__toggle-label">
-            <input
-              type="checkbox"
-              checked={autoAnimate}
-              onChange={(e) => setAutoAnimate(e.target.checked)}
-            />
-            <span>Auto-Animate</span>
-          </label>
-          {!autoAnimate && (
-            <>
-              <p className="scene2__green-label">Green Controls:</p>
-              <p className="scene2__control-item">A - Move away</p>
-              <p className="scene2__control-item">D - Move toward red</p>
-              <p className="scene2__red-label">Red Controls:</p>
-              <p className="scene2__control-item">← Arrow - Move toward green</p>
-              <p className="scene2__control-item">→ Arrow - Move away</p>
-            </>
-          )}
-          <p className="scene2__control-footer">Mouse - Orbit camera</p>
-        </div>
+      <div className="scene2__controls-wrapper">
+        <button
+          className={`scene-selector__toggle ${controlsOpen ? 'scene-selector__toggle--open' : ''}`}
+          onClick={() => setControlsOpen(!controlsOpen)}
+        >
+          <span>Controls</span>
+          <span className="scene-selector__icon">{controlsOpen ? '▲' : '▼'}</span>
+        </button>
+        
+        {controlsOpen && (
+          <div className="scene-selector__dropdown">
+            <label className="scene2__toggle-label">
+              <input
+                type="checkbox"
+                checked={autoAnimate}
+                onChange={(e) => setAutoAnimate(e.target.checked)}
+              />
+              <span>Auto-Animate</span>
+            </label>
+            {!autoAnimate && (
+              <>
+                <p className="scene2__green-label">Green Controls:</p>
+                <p className="scene2__control-item">A - Move away</p>
+                <p className="scene2__control-item">D - Move toward red</p>
+                <p className="scene2__red-label">Red Controls:</p>
+                <p className="scene2__control-item">← Arrow - Move toward green</p>
+                <p className="scene2__control-item">→ Arrow - Move away</p>
+              </>
+            )}
+            <p className="scene2__control-footer">Mouse - Orbit camera</p>
+          </div>
+        )}
       </div>
     </div>
   );

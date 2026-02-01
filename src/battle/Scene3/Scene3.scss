@@ -12,17 +12,22 @@ $scene3-background: #080825e8;
   &__header {
     position: absolute;
     top: 20px;
-    left: 20px;
-    right: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
     z-index: 1000;
+    background: rgba(71, 54, 2, 0.512);
+    border: 1px solid $color-gold;
+    border-radius: 6px;
+    padding: 10px 30px;
   }
-  
+
   &__title {
-    @extend .title;
-    @extend .title--gold;
+    font-size: 32px;
+    letter-spacing: 0.3em;
+    color: $color-gold;
+    margin: 0;
+    font-family: $font-primary;
   }
   
   &__scene-buttons {
@@ -32,56 +37,37 @@ $scene3-background: #080825e8;
   
   &__controls-wrapper {
     position: absolute;
-    bottom: 20px;
+    top: 20px;
     left: 20px;
     z-index: 1000;
     font-family: $font-primary;
-  }
-  
-  &__controls-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: $font-primary;
-    font-size: 14px;
-    transition: all 0.3s ease;
     
-    &--open {
-      background: rgba(255, 215, 0, 0.3);
+    .scene-selector__toggle {
+      background: rgba(20, 15, 0, 0.8);
       color: $color-gold;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      border: 1px solid $color-gold;
+      
+      &--open {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background: rgba(255, 215, 0, 0.2);
+      }
     }
     
-    &--closed {
-      background: rgba(0, 0, 0, 0.5);
+    .scene-selector__dropdown {
+      background: rgba(20, 15, 0, 0.9);
+      border: 1px solid $color-gold;
+      border-top: none;
       color: white;
+      padding: 10px 15px;
     }
-    
-    &:hover {
-      background: rgba(255, 215, 0, 0.5);
-      color: $color-gold;
-    }
-  }
-  
-  &__toggle-icon {
-    font-size: 10px;
-  }
-  
-  &__controls-content {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px;
-    border-radius: 0 8px 8px 8px;
-    min-width: 280px;
   }
   
   &__mode-toggle {
-    margin-bottom: 12px;
-    padding-bottom: 12px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
   
@@ -103,11 +89,11 @@ $scene3-background: #080825e8;
   
   &__control-item {
     color: white;
-    font-size: 13px;
-    margin: 8px 0;
+    font-size: 11px;
+    margin: 4px 0;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     
     &--green {
       color: $color-green;
@@ -124,12 +110,13 @@ $scene3-background: #080825e8;
   
   &__key {
     background: rgba(255, 255, 255, 0.2);
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: 1px 6px;
+    border-radius: 3px;
     font-weight: bold;
-    min-width: 24px;
+    min-width: 18px;
     text-align: center;
     display: inline-block;
+    font-size: 10px;
   }
 }
 

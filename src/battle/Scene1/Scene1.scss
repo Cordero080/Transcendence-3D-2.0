@@ -1,12 +1,36 @@
-@import '../shared/shared.scss';
-
-// Scene 1 specific background
-$scene1-background: #1a1a2e;
+// Scene 1 specific styles - no shared imports
+$font-primary: 'Doto', sans-serif;
+$color-green: #00ff88;
+$color-dark-overlay: rgba(0, 0, 0, 0.6);
 
 .scene1 {
   &__container {
-    @extend .scene-container;
-    background: $scene1-background;
+    width: 100vw;
+    height: 100vh;
+    background: #1a1a2e;
+  }
+  
+  &__title {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: $font-primary;
+    font-size: 48px;
+    color: $color-green;
+    text-shadow: 0 0 10px $color-green;
+    margin: 0;
+  }
+  
+  &__subtitle {
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: $font-primary;
+    color: $color-green;
+    opacity: 0.7;
+    margin: 0;
   }
   
   &__overlay {
@@ -16,20 +40,10 @@ $scene1-background: #1a1a2e;
     color: $color-green;
     font-family: $font-primary;
     font-size: 16px;
-    @include glow($color-green);
-  }
-  
-  &__title {
-    @extend .title;
-    @extend .title--green;
-  }
-  
-  &__subtitle {
-    @extend .subtitle;
+    text-shadow: 0 0 10px $color-green;
   }
   
   &__controls {
-    margin-top: 20px;
     padding: 15px;
     background: $color-dark-overlay;
     border-radius: 8px;

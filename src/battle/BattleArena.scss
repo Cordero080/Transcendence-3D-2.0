@@ -12,16 +12,24 @@ $battle-arena-background: #1a1a2e;
   &__header {
     position: absolute;
     top: 20px;
-    left: 20px;
-    
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
     font-family: $font-primary;
     font-size: 16px;
-    @include glow($color-green);
+    background: rgba(0, 20, 10, 0.8);
+    border: 1px solid $color-green;
+    border-radius: 8px;
+    padding: 10px 30px;
   }
   
   &__title {
-    @extend .title;
-    @extend .title--green;
+    font-family: $font-primary;
+    margin: 0;
+    font-size: 32px;
+    color: $color-green;
+    @include glow($color-green);
+    letter-spacing: 0.3em;
   }
   
   &__subtitle {
@@ -31,8 +39,7 @@ $battle-arena-background: #1a1a2e;
   &__controls-wrapper {
     position: absolute;
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 20px;
     color: $color-green;
     font-family: $font-primary;
     font-size: 14px;

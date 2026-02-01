@@ -27,48 +27,84 @@ $color-dark-overlay: rgba(0, 0, 0, 0.6);
   font-family: $font-primary;
 }
 
-// Scene selector buttons
+// Scene selector dropdown
 .scene-selector {
   position: absolute;
   top: 20px;
   right: 20px;
-  display: flex;
-  gap: 10px;
   z-index: 1000;
+  
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 20px;
+    border-radius: 8px;
+    font-family: $font-primary;
+    font-weight: bold;
+    cursor: pointer;
+    background: $color-dark-overlay;
+    color: $color-green;
+    border: 1px solid $color-green;
+    
+    &--open {
+      border-radius: 8px 8px 0 0;
+    }
+  }
+  
+  &__icon {
+    font-size: 10px;
+  }
+  
+  &__dropdown {
+    display: flex;
+    flex-direction: column;
+    background: $color-dark-overlay;
+    border: 1px solid $color-green;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
 }
 
 .scene-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 4px 20px;
+  border-radius: 0;
   font-family: $font-primary;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: none;
+  border-bottom: 1px solid rgba($color-green, 0.3);
+  
+  &:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+  }
   
   &--inactive {
-    background: $color-dark-overlay;
+    background: transparent;
     color: $color-green;
-    border: 1px solid $color-green;
+    
+    &:hover {
+      background: rgba($color-green, 0.1);
+    }
   }
   
   &--green {
     background: $color-green;
     color: $color-dark;
-    border: none;
     @include box-glow($color-green);
   }
   
   &--red {
     background: $color-red;
     color: $color-dark;
-    border: none;
     @include box-glow($color-red);
   }
   
   &--gold {
     background: $color-gold;
     color: $color-dark;
-    border: none;
     @include box-glow($color-gold);
   }
 }

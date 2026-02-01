@@ -144,7 +144,7 @@ export default function Scene1WalkingCats() {
           cellSize={1} 
           cellColor="#004400" 
           sectionColor="#00ff00"
-          position={[0, -0.99, 0]}
+          position={[0, -1.01, 0]}
         />
         
         <Suspense fallback={<Loader />}>
@@ -173,10 +173,10 @@ export default function Scene1WalkingCats() {
         <OrbitControls />
       </Canvas>
       
+      <h1 className="scene1__title">EXODUS</h1>
+      <p className="scene1__subtitle">React Three Fiber Battle Test</p>
+      
       <div className="scene1__overlay">
-        <h1 className="scene1__title">🎮 EXODUS</h1>
-        <p className="scene1__subtitle">React Three Fiber Battle Test</p>
-        
         <div className="scene1__controls">
           <p className="scene1__controls-title">Controls:</p>
           <p className="scene1__controls-item">SPACE - Walk toward each other</p>

@@ -5,7 +5,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
 import Scene2FightingArena from './Scene2/Scene2FightingArena';
-import Scene3TrainingDojo from './Scene3/Scene3TrainingDojo';
+import Scene3TrainingDojo, { CherryBlossomCanvas } from './Scene3/Scene3TrainingDojo';
 import './BattleArena.scss';
 
 // Animated character component
@@ -88,16 +88,26 @@ export default function BattleArena() {
   const [movingDown, setMovingDown] = useState(false);
   const [charAPos] = useState([-3, -1, 0]);
   const [charBPos] = useState([3, -1, 0]);
-  const [controlsOpen, setControlsOpen] = useState(true);
+  const [controlsOpen, setControlsOpen] = useState(false);
+  const [sceneSelectorOpen, setSceneSelectorOpen] = useState(false);
   
   // Scene 3 controls
   const [scene3AutoAnimate, setScene3AutoAnimate] = useState(true);
+  const [scene3ResetKey, setScene3ResetKey] = useState(0);
   const [greenMoving, setGreenMoving] = useState(false);
   const [greenDirection, setGreenDirection] = useState(0);
   const [redMoving, setRedMoving] = useState(false);
   const [redDirection, setRedDirection] = useState(0);
   const [blueMoving, setBlueMoving] = useState(false);
   const [blueDirection, setBlueDirection] = useState(0);
+  
+  // Reset positions when switching back to auto-animate
+  const handleAutoAnimateChange = (enabled) => {
+    setScene3AutoAnimate(enabled);
+    if (enabled) {
+      setScene3ResetKey(prev => prev + 1);
+    }
+  };
   
   useEffect(() => {
     function handleKeyDown(e) {
@@ -201,23 +211,34 @@ export default function BattleArena() {
   const SceneSelector = () => (
     <div className="scene-selector">
       <button 
-        className={getButtonClass(1, 'green')}
-        onClick={() => setCurrentScene(1)}
+        className={`scene-selector__toggle ${sceneSelectorOpen ? 'scene-selector__toggle--open' : ''}`}
+        onClick={() => setSceneSelectorOpen(!sceneSelectorOpen)}
       >
-        Scene 1
+        <span>Scene {currentScene}</span>
+        <span className="scene-selector__icon">{sceneSelectorOpen ? '▲' : '▼'}</span>
       </button>
-      <button 
-        className={getButtonClass(2, 'red')}
-        onClick={() => setCurrentScene(2)}
-      >
-        Scene 2
-      </button>
-      <button 
-        className={getButtonClass(3, 'gold')}
-        onClick={() => setCurrentScene(3)}
-      >
-        Scene 3
-      </button>
+      {sceneSelectorOpen && (
+        <div className="scene-selector__dropdown">
+          <button 
+            className={getButtonClass(1, 'green')}
+            onClick={() => { setCurrentScene(1); setSceneSelectorOpen(false); }}
+          >
+            Scene 1
+          </button>
+          <button 
+            className={getButtonClass(2, 'red')}
+            onClick={() => { setCurrentScene(2); setSceneSelectorOpen(false); }}
+          >
+            Scene 2
+          </button>
+          <button 
+            className={getButtonClass(3, 'gold')}
+            onClick={() => { setCurrentScene(3); setSceneSelectorOpen(false); }}
+          >
+            Scene 3
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -235,6 +256,8 @@ export default function BattleArena() {
   if (currentScene === 3) {
     return (
       <div className="scene3__container">
+        <CherryBlossomCanvas />
+        
         <Canvas camera={{ position: [0, 8, 15], fov: 50 }}>
           <Suspense fallback={<Loader />}>
             <Scene3TrainingDojo 
@@ -245,50 +268,32 @@ export default function BattleArena() {
               redDirection={redDirection}
               blueMoving={blueMoving}
               blueDirection={blueDirection}
+              resetKey={scene3ResetKey}
             />
           </Suspense>
         </Canvas>
+        
         <div className="scene3__header">
-          <h1 className="scene3__title">🏯 Training Dojo</h1>
-          <div className="scene3__scene-buttons">
-            <button 
-              className={getButtonClass(1, 'green')}
-              onClick={() => setCurrentScene(1)}
-            >
-              Scene 1
-            </button>
-            <button 
-              className={getButtonClass(2, 'red')}
-              onClick={() => setCurrentScene(2)}
-            >
-              Scene 2
-            </button>
-            <button 
-              className={getButtonClass(3, 'gold')}
-              onClick={() => setCurrentScene(3)}
-            >
-              Scene 3
-            </button>
-          </div>
+          <h1 className="scene3__title">TRAINING DOJO</h1>
         </div>
         
         <div className="scene3__controls-wrapper">
           <button
-            className={`scene3__controls-toggle ${controlsOpen ? 'scene3__controls-toggle--open' : 'scene3__controls-toggle--closed'}`}
+            className={`scene-selector__toggle ${controlsOpen ? 'scene-selector__toggle--open' : ''}`}
             onClick={() => setControlsOpen(!controlsOpen)}
           >
             <span>Controls</span>
-            <span className="scene3__toggle-icon">{controlsOpen ? '▲' : '▼'}</span>
+            <span className="scene-selector__icon">{controlsOpen ? '▲' : '▼'}</span>
           </button>
           
           {controlsOpen && (
-            <div className="scene3__controls-content">
+            <div className="scene-selector__dropdown">
               <div className="scene3__mode-toggle">
                 <label className="scene3__toggle-label">
                   <input
                     type="checkbox"
                     checked={scene3AutoAnimate}
-                    onChange={(e) => setScene3AutoAnimate(e.target.checked)}
+                    onChange={(e) => handleAutoAnimateChange(e.target.checked)}
                   />
                   <span>Auto-Animate</span>
                 </label>
@@ -312,6 +317,8 @@ export default function BattleArena() {
             </div>
           )}
         </div>
+        
+        <SceneSelector />
       </div>
     );
   }
@@ -363,8 +370,7 @@ export default function BattleArena() {
       </Canvas>
       
       <div className="battle-arena__header">
-        <h1 className="battle-arena__title">🎮 EXODUS</h1>
-        <p className="battle-arena__subtitle">React Three Fiber Battle Test</p>
+        <h1 className="battle-arena__title">DANCE BATTLE</h1>
       </div>
       
       <div className="battle-arena__controls-wrapper">
