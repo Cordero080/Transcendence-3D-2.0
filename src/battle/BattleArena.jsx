@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
 import Scene2FightingArena from './Scene2/Scene2FightingArena';
 import Scene3TrainingDojo, { CherryBlossomCanvas } from './Scene3/Scene3TrainingDojo';
+import Scene4OminousDojo, { OminousParticlesCanvas } from './Scene4/Scene4OminousDojo';
 import './BattleArena.scss';
 
 // Panoramic background for Scene 1
@@ -335,6 +336,12 @@ export default function BattleArena() {
             Scene 3
           </button>
           <button 
+            className={getButtonClass(4, 'cyan')}
+            onClick={() => { setCurrentScene(4); setSceneSelectorOpen(false); }}
+          >
+            Scene 4
+          </button>
+          <button 
             className="scene-btn scene-btn--back"
             onClick={() => { window.location.href = 'index.html'; }}
           >
@@ -344,6 +351,30 @@ export default function BattleArena() {
       )}
     </div>
   );
+
+  // Scene 4 - Ominous Dojo (White Cat Solo)
+  if (currentScene === 4) {
+    return (
+      <div className="scene4__container">
+        <OminousParticlesCanvas />
+        
+        <Canvas camera={{ position: [0, 8, 15], fov: 50 }}>
+          <Suspense fallback={<Loader />}>
+            <Scene4OminousDojo />
+          </Suspense>
+        </Canvas>
+        
+        <div className="scene4__header">
+          <h1 className="scene4__title">OMINOUS DOJO</h1>
+          <p className="scene4__subtitle">The White Cat Awaits</p>
+        </div>
+        
+        <div className="scene4__vignette"></div>
+        
+        <SceneSelector />
+      </div>
+    );
+  }
 
   // Scene 2 - Fighting Arena
   if (currentScene === 2) {

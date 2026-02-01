@@ -1,0 +1,50 @@
+@import '../shared/shared.scss';
+
+.scene4-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #000510 0%, #051020 50%, #000815 100%);
+}
+
+.scene4-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #00ccff;
+  text-shadow: 
+    0 0 10px #0088ff,
+    0 0 20px #0066aa,
+    0 0 30px #004488;
+  letter-spacing: 4px;
+  z-index: 10;
+}
+
+.scene4-subtitle {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  color: #4488aa;
+  text-shadow: 0 0 10px #003366;
+  letter-spacing: 2px;
+  z-index: 10;
+}
+
+/* Vignette effect */
+.scene4-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(0, 5, 15, 0.5) 70%,
+    rgba(0, 3, 10, 0.8) 100%
+  );
+  z-index: 5;
+}

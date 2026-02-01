@@ -120,3 +120,95 @@ $scene1-accent: #ff69b4;       // Pink accent
     }
   }
 }
+
+// Scene 4 - Ominous Dojo
+$scene4-primary: #00ccff;
+$scene4-secondary: #0066aa;
+$scene4-bg: #050510;
+
+.scene4__container {
+  @extend .scene-container;
+  background: linear-gradient(135deg, #000510 0%, #051020 50%, #000815 100%);
+}
+
+.scene4__header {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.scene4__title {
+  font-family: $font-primary;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+  color: $scene4-primary;
+  text-shadow: 
+    0 0 10px $scene4-secondary,
+    0 0 20px $scene4-secondary,
+    0 0 30px darken($scene4-secondary, 20%);
+  letter-spacing: 4px;
+}
+
+.scene4__subtitle {
+  font-family: $font-primary;
+  font-size: 1rem;
+  color: #4488aa;
+  text-shadow: 0 0 10px #003366;
+  letter-spacing: 2px;
+  margin-top: 5px;
+}
+
+.scene4__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(0, 5, 15, 0.5) 70%,
+    rgba(0, 3, 10, 0.8) 100%
+  );
+  z-index: 5;
+}
+
+// Scene 4 scene selector styling
+.scene4__container {
+  .scene-selector {
+    &__toggle {
+      color: $scene4-primary;
+      border-color: $scene4-primary;
+      background: rgba(5, 10, 20, 0.9);
+      
+      &:hover {
+        background: rgba($scene4-primary, 0.15);
+      }
+    }
+    
+    &__dropdown {
+      border-color: $scene4-primary;
+      background: rgba(5, 10, 20, 0.9);
+    }
+  }
+  
+  .scene-btn {
+    border-bottom-color: rgba($scene4-primary, 0.3);
+    
+    &--inactive {
+      color: $scene4-primary;
+      
+      &:hover {
+        background: rgba($scene4-primary, 0.15);
+      }
+    }
+    
+    &--cyan {
+      background: $scene4-primary;
+      color: #050510;
+      @include box-glow($scene4-primary);
+    }
+  }
+}
