@@ -529,7 +529,7 @@ li::marker {
 #pet-container {
   position: relative; /* Enable absolute positioning for overlays */
   width: 100%;
-  height: 600px;
+  /* Height controlled by responsive.css via aspect-ratio */
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -2741,11 +2741,12 @@ html::before {
 #colorfulGlitchDiv.hatching {
   animation: eggHatching 1.5s ease-out forwards !important;
 }
-/* Keep the egg centered (no inset:0 here) */
+/* Keep the egg centered - BASE styles (responsive.css overrides sizing) */
 #colorfulGlitchDiv {
-  position: absolute;        /* stays absolute */
-  width: 210px; height: 280px;
-  inset: auto; left: 41.3%; top: 42%;
+  position: absolute;
+  /* Sizing moved to responsive.css for fluid scaling */
+  left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 40;
