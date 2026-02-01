@@ -1,6 +1,7 @@
 # Tamagotchi Transcendence — v2
 
 ![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Blender](https://img.shields.io/badge/Blender-F5792A?style=for-the-badge&logo=blender&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
@@ -8,6 +9,35 @@
 A Tamagotchi-inspired evolution sim where your digital pet moves through the spectrum of light and emotion… and ultimately transcends.
 
 **This is a major upgrade of my earlier project [transcendence-pet-sim](https://github.com/Cordero080/transcendence-pet-sim).** New UI, my own character designs, a device-style **power button**, a real **training** system, incremental **size growth** as the pet evolves, a **DNA sinewave** backdrop, a full **Blender → FBX → Three.js** animation pipeline, and a full **audio** pass (SFX + theme music switch).
+
+## 🥚 Easter Egg: The Upside
+
+Look closely at the bottom-left corner of the screen. There's a barely-visible button that says **"upside!"** — it's meant to blend into the background as a secret for curious players.
+
+Click it to enter the **Battle Arena** — a hidden React Three Fiber experience with 3 unique scenes:
+
+### Scene 1: Dance Battle
+
+- Panoramic neopunk backdrop
+- Pulsing cerulean ring grid
+- Two metallic chrome cats facing off
+- Colorful spotlights (pink, red, blue, purple)
+- WASD/Arrow controls to move characters
+
+### Scene 2: Fighting Arena
+
+- Neon neopunk cityscape
+- Arena platform with glowing edges
+- Battle-ready environment
+
+### Scene 3: Training Dojo
+
+- Japanese-inspired aesthetic
+- Animated cherry blossom petals (2D canvas overlay)
+- Bamboo poles with flickering paper lanterns
+- Glowing gradient ring with GLSL shader animation
+- Three cats training on the mat
+- Toggle between auto-animate and manual control modes
 
 ## 🚀 Getting Started
 
@@ -186,18 +216,16 @@ POWER OFF → save state → shutdown animation
 - [ ] Alternate evolution branch (Pink/Purple variants)
 - [ ] Device "battery" meta stat tied to Power
 - [ ] Soft achievements (e.g., Perfect Discipline chain)
-- [ ] Easter egg: alternate game after user wins the game
+- [x] ~~Easter egg: alternate game after user wins the game~~ ✅ **"upside!" button → Battle Arena**
 - [ ] Mobile touch controls
 - [ ] Save/load game state to localStorage
 
 ### 🚀 Stretch Goals
 
-- [ ] **Level 2: Battle Mode** — Two creatures face off in turn-based combat/dance-off
-  - New creature designs + new background environment
-  - Rock-paper-scissors style move system (Attack > Taunt > Counter > Attack)
-  - Three.js particle burst effects on impact
-  - Animation breakpoint detection for synced hit effects
-  - Move options: Attack, Counter, Power Up, Dance (heal via style points)
+- [x] ~~**Level 2: Battle Mode**~~ ✅ **Battle Arena with 3 scenes (React Three Fiber)**
+  - Dance Battle scene with metallic chrome cats
+  - Cyberpunk Fighting Arena scene
+  - Japanese Training Dojo with cherry blossoms & lanterns
 
 ## 🎯 Game Rules Deep Dive
 
