@@ -1,15 +1,15 @@
 // Script to generate placeholder PWA icons
 // Run with: node scripts/generate-icons.js
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import sharp from 'sharp';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import sharp from "sharp";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const iconsDir = path.join(__dirname, '../public/icons');
+const iconsDir = path.join(__dirname, "../public/icons");
 
 // Ensure icons directory exists
 if (!fs.existsSync(iconsDir)) {
@@ -38,16 +38,13 @@ async function generateIcons() {
   for (const size of sizes) {
     const svg = generateSVG(size);
     const pngPath = path.join(iconsDir, `icon-${size}x${size}.png`);
-    
-    await sharp(Buffer.from(svg))
-      .resize(size, size)
-      .png()
-      .toFile(pngPath);
-    
+
+    await sharp(Buffer.from(svg)).resize(size, size).png().toFile(pngPath);
+
     console.log(`Created ${pngPath}`);
   }
-  
-  console.log('\n✅ PNG icons created!');
+
+  console.log("\n✅ PNG icons created!");
 }
 
 generateIcons().catch(console.error);

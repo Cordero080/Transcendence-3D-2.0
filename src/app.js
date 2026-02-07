@@ -2,7 +2,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Set initial background music volume
   const bgMusic = document.getElementById("bg-music");
   if (bgMusic) {
-    bgMusic.volume = 0.3;
+    bgMusic.volume = 0.15;
   }
   // Initialize effect system DOM references
   initEffectElements();
@@ -911,8 +911,8 @@ function startGame() {
     myPet = new Pet(petName);
 
     // Start at blue stage
-    currentStage = "blue";
-    myPet.stage = "blue";
+    currentStage = "red";
+    myPet.stage = "red";
     myPet.evolutionLevel = 0;
     evolutionInProgress = false; // Initialize evolution flag
 
