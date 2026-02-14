@@ -46,19 +46,53 @@
     overflow-y: auto !important;
   }
 
-  /* Reduce pet container size */
+  /* Pet container - narrower width, more height for the 3D scene */
   #pet-container {
-    width: 50vw !important;
-    max-width: 50vw !important;
+    width: 45vw !important;
+    max-width: 45vw !important;
     height: auto !important;
-    max-height: 45vh !important;
+    min-height: 55vh !important;
+    max-height: 65vh !important;
   }
 
   /* Smaller egg for landscape mobile */
   #colorfulGlitchDiv {
-    width: 120px !important;
-    height: 160px !important;
-    transform: translate(-50%, -50%) scale(0.6) !important;
+    width: 80px !important;
+    height: 110px !important;
+    transform: translate(-50%, -50%) scale(0.45) !important;
+  }
+
+  /* Reduce infoBox height significantly */
+  .infoBox {
+    min-height: auto !important;
+    max-height: 25vh !important;
+    padding: 3px !important;
+  }
+
+  .infoBox-controls {
+    padding: 3px !important;
+    gap: 3px !important;
+  }
+
+  .button-container {
+    height: 40px !important;
+  }
+
+  .Buttons, button.Buttons {
+    height: 25px !important;
+    font-size: 0.35em !important;
+  }
+
+  .stat-bar-container {
+    display: none !important;
+  }
+
+  .infoBox_petChat {
+    min-height: 25px !important;
+    max-height: 40px !important;
+    padding: 3px 8px !important;
+    font-size: 0.7rem !important;
+    overflow: hidden !important;
   }
 
   /* Ensure start/reset buttons visible */
