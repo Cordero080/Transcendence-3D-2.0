@@ -101,6 +101,20 @@ body::before {
   .scaling-root {
     transform: none;
   }
+  
+  /* Allow scrolling on mobile so Start/Reset buttons are accessible */
+  html, body {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+/* Ensure start/reset buttons are visible on mobile */
+@media (max-width: 768px) {
+  .startButtonContainer {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    margin-bottom: 20px;
+  }
 }
 
 #main-wrapper {
