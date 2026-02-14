@@ -97,54 +97,7 @@ body::before {
   }
 }
 
-@media (max-width: 768px) {
-  .scaling-root {
-    transform: none;
-  }
-  
-  /* Allow scrolling on mobile so Start/Reset buttons are accessible */
-  html, body {
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-}
-
-/* Landscape mode - enable scrolling */
-@media (orientation: landscape) and (max-height: 600px) {
-  html, body {
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-  
-  .scaling-root {
-    transform: none;
-    padding-top: 10px;
-    padding-bottom: 20px;
-  }
-  
-  header h1 {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    margin: 5px 0;
-  }
-  
-  #transcendence {
-    font-size: clamp(0.6rem, 1.5vw, 1rem);
-  }
-}
-
-/* Ensure start/reset buttons are visible on mobile */
-@media (max-width: 768px), (orientation: landscape) and (max-height: 600px) {
-  .startButtonContainer {
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    margin-bottom: 20px;
-  }
-}
+/* Mobile styles now handled by utils/mobile.css */
 
 #main-wrapper {
   position: relative;
@@ -161,13 +114,4 @@ body::before {
   background: linear-gradient(oklch(69.17% 0.154 260.76 / 0.275));
   overflow: visible;
   border: 2px solid #f0f;
-}
-
-/* Mobile adjustments */
-@media (max-width: 767px) {
-  #main-wrapper {
-    transform: scale(0.88);
-    transform-origin: top center;
-    margin: 0 auto;
-  }
 }

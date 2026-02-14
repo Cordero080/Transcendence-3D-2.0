@@ -1,0 +1,261 @@
+/* ============================================================================
+   MOBILE RESPONSIVE STYLES
+   Consolidated mobile-first responsive design
+   This file should be imported LAST to override desktop styles
+   ============================================================================ */
+
+/* ========== iOS/MOBILE BACKGROUND FIXES ========== */
+@media (max-width: 767px) {
+  html::before { 
+    background-attachment: scroll !important; 
+  }
+  body { 
+    background-attachment: scroll !important; 
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  body { 
+    background-attachment: scroll !important; 
+  }
+}
+
+/* ========== MOBILE BASE (all mobile devices) ========== */
+@media (max-width: 768px) {
+  /* Reset all transforms that break mobile layout */
+  html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    transform: none !important;
+  }
+
+  body {
+    padding-bottom: 100px !important;
+  }
+
+  .scaling-root {
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 10px !important;
+    box-sizing: border-box;
+  }
+
+  #main-wrapper {
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 5px !important;
+    box-sizing: border-box;
+  }
+
+  /* Header compact on mobile */
+  header h1 {
+    font-size: clamp(1.8rem, 6vw, 2.5rem) !important;
+    margin: 10px 0 5px 0 !important;
+    letter-spacing: 5px !important;
+  }
+
+  #transcendence {
+    font-size: clamp(0.6rem, 2vw, 0.9rem) !important;
+    margin-bottom: 5px !important;
+  }
+
+  /* Start/Reset buttons always visible */
+  .startButtonContainer {
+    margin-top: 15px !important;
+    margin-bottom: 30px !important;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+
+  .StartButton,
+  .ResetButton {
+    padding: 10px 25px !important;
+    font-size: 0.7em !important;
+  }
+
+  /* Info box stacks vertically */
+  .infoBox {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .infoBox-controls {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  .button-container {
+    width: calc(50% - 10px) !important;
+    min-width: 100px !important;
+    max-width: 120px !important;
+  }
+}
+
+/* ========== MOBILE PORTRAIT ========== */
+@media (max-width: 768px) and (orientation: portrait) {
+  #pet-container {
+    width: 100% !important;
+    max-width: 94vw !important;
+    aspect-ratio: 4 / 5 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 10px auto !important;
+  }
+}
+
+/* ========== MOBILE LANDSCAPE ========== */
+@media (max-width: 900px) and (orientation: landscape),
+       (orientation: landscape) and (max-height: 600px) {
+  html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    transform: none !important;
+  }
+
+  body {
+    padding-top: 5px !important;
+    padding-bottom: 80px !important;
+  }
+
+  .scaling-root {
+    transform: none !important;
+    padding: 5px !important;
+  }
+
+  #main-wrapper {
+    transform: none !important;
+  }
+
+  /* Compact header in landscape */
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 2rem) !important;
+    margin: 5px 0 !important;
+    letter-spacing: 3px !important;
+  }
+
+  #transcendence {
+    font-size: clamp(0.5rem, 1.5vw, 0.8rem) !important;
+    margin: 0 0 5px 0 !important;
+  }
+
+  /* Pet container sized for landscape */
+  #pet-container {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 5px auto !important;
+  }
+
+  /* Compact info box in landscape */
+  .infoBox {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    padding: 5px !important;
+    min-height: auto !important;
+  }
+
+  .infoBox-controls {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+    padding: 5px !important;
+  }
+
+  .button-container {
+    min-width: 80px !important;
+    max-width: 100px !important;
+    height: 55px !important;
+  }
+
+  .Buttons,
+  button.Buttons {
+    width: 80px !important;
+    height: 30px !important;
+    font-size: 0.4em !important;
+    padding: 0 !important;
+    letter-spacing: 2px !important;
+  }
+
+  .stat-bar-container {
+    display: none !important; /* Hide stat bars in landscape to save space */
+  }
+
+  .infoBox_petChat {
+    font-size: clamp(0.8rem, 2vw, 1rem) !important;
+    padding: 8px !important;
+    min-height: 40px !important;
+  }
+
+  /* Compact buttons */
+  .startButtonContainer {
+    margin-top: 10px !important;
+    gap: 8px !important;
+  }
+
+  .StartButton,
+  .ResetButton {
+    padding: 8px 20px !important;
+    font-size: 0.6em !important;
+    margin-top: 5px !important;
+  }
+}
+
+/* ========== SMALL PHONES (very narrow screens) ========== */
+@media (max-width: 420px) {
+  header h1 {
+    font-size: clamp(1.4rem, 8vw, 1.8rem) !important;
+    letter-spacing: 3px !important;
+  }
+
+  .button-container {
+    width: calc(50% - 5px) !important;
+    min-width: 90px !important;
+  }
+
+  .Buttons,
+  button.Buttons {
+    width: 90px !important;
+    font-size: 0.4em !important;
+    letter-spacing: 2px !important;
+  }
+
+  .startButtonContainer {
+    flex-direction: row !important;
+    gap: 8px !important;
+  }
+
+  .StartButton,
+  .ResetButton {
+    padding: 8px 18px !important;
+    font-size: 0.6em !important;
+  }
+}
+
+/* ========== SAFE AREA INSETS (notched devices) ========== */
+@supports (padding: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    body {
+      padding-left: env(safe-area-inset-left) !important;
+      padding-right: env(safe-area-inset-right) !important;
+    }
+
+    .startButtonContainer {
+      padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    }
+  }
+}
