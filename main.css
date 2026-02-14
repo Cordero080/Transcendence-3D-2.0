@@ -236,11 +236,40 @@ html, body {
   html, body {
     overflow-y: auto;
     overflow-x: hidden;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* Landscape mode - enable scrolling */
+@media (orientation: landscape) and (max-height: 600px) {
+  html, body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  
+  .scaling-root {
+    transform: none;
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+  
+  header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin: 5px 0;
+  }
+  
+  #transcendence {
+    font-size: clamp(0.6rem, 1.5vw, 1rem);
   }
 }
 
 /* Ensure start/reset buttons are visible on mobile */
-@media (max-width: 768px) {
+@media (max-width: 768px), (orientation: landscape) and (max-height: 600px) {
   .startButtonContainer {
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
     margin-bottom: 20px;
@@ -2734,7 +2763,7 @@ html::before {
     width: 94vw;                 /* fit nicely with small padding */
     aspect-ratio: 4 / 5.4;       /* slightly less tall than 4/5 */
     height: auto;                /* override any fixed height */
-    max-height: 70svh;           /* avoid overflow under UI */
+    max-height: none;            /* allow scroll instead of cutoff */
     margin: 0 auto;
   }
 
@@ -2748,9 +2777,10 @@ html::before {
 /* === Mobile LANDSCAPE (tilted phones) ======================= */
 @media (max-width: 900px) and (orientation: landscape) {
   #pet-container {
-    width: 96vw;                 /* almost full width */
-    aspect-ratio: 16 / 8.4;      /* match desktop vibe */
-    max-height: 82svh;           /* reduced to avoid scroll */
+    width: 90vw;                 /* slightly reduced for padding */
+    aspect-ratio: 16 / 9;        /* standard landscape ratio */
+    max-height: none;            /* allow natural height, enable scroll */
+    height: auto;
     margin: 0 auto;
   }
 
