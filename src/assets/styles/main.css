@@ -1027,7 +1027,6 @@ canvas {
   box-shadow: 0 8px 32px oklch(0% 0 0 / 0.5);
   border: solid 2px oklch(84.2% 0.16 176.83 / 0.673);
   width: min(calc(100vw - 40px), 680px);
-  overflow: hidden;
 }
 
 .overlay-content h2 {
