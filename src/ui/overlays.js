@@ -4,12 +4,13 @@ export function showTranscendenceOverlay() {
   const winOverlay = document.getElementById("transcendenceOverlay");
   if (!winOverlay) return;
 
+  document.body.classList.add("game-over-active");
+
   winOverlay.style.display = "flex";
   winOverlay.classList.add("show");
   winOverlay.style.pointerEvents = "auto";
   winOverlay.style.opacity = "1";
   winOverlay.style.visibility = "visible";
-  // Optional: move focus to the button for keyboard users
   const btn = document.getElementById("playAgainBtn");
   if (btn) btn.focus();
 }
