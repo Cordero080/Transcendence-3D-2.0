@@ -119,11 +119,18 @@ export function triggerMysticalTranscendence(duration = 16500) {
       // hardcoded 50% that was wrong + had a broken calc (missing + operator).
       // Size is the larger of bounding-box projection or 60% of container so
       // it always covers feet-to-head even if rest-pose bbox is small.
-      const bboxSize = Math.max(catData.width, catData.height) * 2.0;
-      const minSize = Math.min(layoutW, layoutH) * 0.65;
+      // ── TRANSCENDENCE ORB SIZE ───────────────────────────────────────────
+      // bboxSize: bounding-box * multiplier. Increase multiplier to grow orb.
+      const bboxSize = Math.max(catData.width, catData.height) * 2.0; // ← multiplier
+      // minSize: floor as % of container so orb never looks tiny.
+      const minSize = Math.min(layoutW, layoutH) * 0.65; // ← 0.65 = 65% of container
       const size = Math.max(bboxSize, minSize);
+
+      // ── TRANSCENDENCE ORB POSITION ───────────────────────────────────────
+      // xPct/yPct = projected model center (0–100%). Adjust the offset to
+      // shift the orb up (-) or down (+) relative to the figure's center.
       transcendenceEffect.style.left = `${catData.xPct}%`;
-      transcendenceEffect.style.top = `${catData.yPct}%`;
+      transcendenceEffect.style.top = `${catData.yPct - 8}%`; // ← vertical offset (negative = up)
       transcendenceEffect.style.width = `${size}px`;
       transcendenceEffect.style.height = `${size}px`;
       transcendenceEffect.style.transform = "translate(-50%, -50%)";
@@ -243,11 +250,15 @@ export function triggerGlitchTransitionFlash(duration = 120) {
       const layoutW = container.offsetWidth || 990;
       const layoutH = container.offsetHeight || 600;
 
-      const width = Math.max(catData.width * 2.5, layoutW * 0.38);
-      const height = Math.max(catData.height * 2.5, layoutH * 0.55);
+      // ── STUTTER ORB SIZE ─────────────────────────────────────────────────
+      // bbox * multiplier vs % floor — whichever is larger wins.
+      const width = Math.max(catData.width * 2.5, layoutW * 0.38); // ← 2.5× bbox or 38% container width
+      const height = Math.max(catData.height * 2.5, layoutH * 0.55); // ← 2.5× bbox or 55% container height
 
-      glitchOverlay.style.left = `${catData.xPct}%`;
-      glitchOverlay.style.top = `${catData.yPct}%`;
+      // ── STUTTER ORB POSITION ─────────────────────────────────────────────
+      // Centered on projected model position. Add/subtract % to shift.
+      glitchOverlay.style.left = `${catData.xPct}%`; // ← horizontal center
+      glitchOverlay.style.top = `${catData.yPct}%`; // ← vertical center (add offset e.g. catData.yPct - 5 to move up)
       glitchOverlay.style.width = `${width}px`;
       glitchOverlay.style.height = `${height}px`;
       glitchOverlay.style.transform = "translate(-50%, -50%)";
