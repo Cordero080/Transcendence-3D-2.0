@@ -30,13 +30,15 @@
   background: transparent;
   border: none;
   box-shadow: none;
+  overflow: visible;
   width: min(90vw, 900px);
   padding: clamp(24px, 4vw, 48px);
 }
 
 .transcendence-title {
-  font-size: clamp(2.8rem, 5.5vw, 4rem) !important;
+  font-size: clamp(1.8rem, 7vw, 4rem) !important;
   font-weight: 900 !important;
+  white-space: nowrap;
 }
 
 .transcendence-message {
