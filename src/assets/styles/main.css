@@ -35,13 +35,13 @@
 }
 
 .transcendence-title {
-  font-size: clamp(3.5rem, 8vw, 6rem) !important;
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem) !important;
   font-weight: 900 !important;
 }
 
 .transcendence-message {
-  font-size: clamp(1.2rem, 2.5vw, 1.7rem);
-  line-height: 1.6;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.7;
   /* Override gradient-text animation — body copy needs to be readable */
   -webkit-text-fill-color: rgba(210, 240, 255, 0.95) !important;
   color: rgba(210, 240, 255, 0.95) !important;
