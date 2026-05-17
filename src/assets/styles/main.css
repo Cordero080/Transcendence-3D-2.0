@@ -1031,8 +1031,7 @@ canvas {
 
 .overlay-content h2 {
   margin-bottom: 8px;
-  font-size: clamp(0.85rem, 5.2vw, 1.8em);
-  white-space: nowrap;
+  font-size: clamp(1rem, 5.2vw, 1.8em);
   color: oklch(73.033% 0.19383 352.633);
   text-shadow: 0 0 10px oklch(73.033% 0.19383 352.633 / 0.5);
   animation: wordDropDown 1.5s ease-out forwards;
