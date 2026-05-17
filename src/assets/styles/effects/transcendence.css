@@ -14,7 +14,7 @@
   pointer-events: none;
   opacity: 0;
   z-index: 15;
-  overflow: hidden;
+  overflow: visible;
   background: transparent;
   transition:
     opacity 0.2s ease-out,
