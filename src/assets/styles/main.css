@@ -345,18 +345,6 @@ header {
   /* Animate the gradient for extra visual appeal */
   animation: gradientShift 2.5s ease infinite;
 }
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 /* Center pet container in the middle of main */
 #main-wrapper {
   position: relative;
@@ -1324,18 +1312,6 @@ canvas {
   }
   50% {
     transform: translateY(-8px);
-  }
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }
 
@@ -2597,95 +2573,6 @@ canvas {
   }
 }
 
-@keyframes stutterFlicker {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  20% {
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  40% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 0;
-  }
-  70% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 0;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes stutterScan {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-@keyframes stutterStatic {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  20% {
-    transform: translate(-2px, 1px) scale(1.01);
-  }
-  40% {
-    transform: translate(1px, -1px) scale(0.99);
-  }
-  60% {
-    transform: translate(-1px, 0px) scale(1.02);
-  }
-  80% {
-    transform: translate(2px, -2px) scale(0.98);
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-}
-
-@keyframes stutterFlash {
-  0% {
-    opacity: 0;
-    transform: scale(1) skew(0deg, 0deg);
-  }
-  25% {
-    opacity: 0.8;
-    transform: scale(1.05) skew(2deg, 1deg);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(0.95) skew(-1deg, 2deg);
-  }
-  75% {
-    opacity: 0.4;
-    transform: scale(1.02) skew(1deg, -1deg);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1) skew(0deg, 0deg);
-  }
-}
-
 @keyframes teleportPulse {
   0% {
     transform: scale(0.95);
@@ -3570,59 +3457,6 @@ html::before {
   z-index: 2;
 }
 /* Generic overlay class for inner parts */
-
-/* ========COLORFUL GLITCH KEYFRAME ANIMATIONS======== */
-@keyframes colorfulGlitchContainer {
-  0%,
-  90% {
-    transform: translate(0) scale(1);
-  }
-  91% {
-    transform: translate(-3px, 2px) scale(1.02);
-  }
-  92% {
-    transform: translate(3px, -2px) scale(0.98);
-  }
-  93% {
-    transform: translate(-2px, 3px) scale(1.01);
-  }
-  94% {
-    transform: translate(2px, -3px) scale(0.99);
-  }
-  95% {
-    transform: translate(-3px, -2px) scale(1.03);
-  }
-  96% {
-    transform: translate(3px, 2px) scale(0.97);
-  }
-  97% {
-    transform: translate(-2px, -3px) scale(1.02);
-  }
-  98% {
-    transform: translate(2px, 3px) scale(0.98);
-  }
-  99% {
-    transform: translate(0) scale(1);
-  }
-}
-
-@keyframes rainbowShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  25% {
-    background-position: 100% 50%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  75% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
 @keyframes colorfulGlitchText {
   0%,
