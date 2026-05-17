@@ -1,7 +1,19 @@
-// ============================================================================
-// EVOLUTION VISUAL EFFECTS MODULE
-// Pure visual effects - safe to modularize, no game state dependencies
-// ============================================================================
+// ████████████████████████████████████████████████████████████████████████████
+// ⚡  EVOLUTION VISUAL EFFECTS MODULE
+// All visual-only effects triggered during pet evolution and transcendence.
+// No game state here — pure visual triggers called from app.js
+//
+// SECTIONS IN THIS FILE:
+//   1. triggerCyberpunkEvolutionEffect()  → cyberpunk flash on stage evolution
+//   2. triggerMysticalTranscendence()     → white stage mandala orb + fade
+//   3. triggerGlitchTransitionFlash()     → stutter orb between animations
+//   4. triggerGlitchStutter()             → alias for #3
+//
+// CSS COUNTERPARTS:
+//   effects/evolution.css       → evolution flash styles
+//   effects/transcendence.css   → transcendence orb + ring styles
+//   main.css → search "GLITCH STUTTER OVERLAY" → stutter orb styles
+// ████████████████████████████████████████████████████████████████████████████
 
 import { getCatMaskData } from "@/main-test.js";
 
@@ -15,7 +27,9 @@ export function initEffectElements() {
   transcendenceEffect = document.getElementById("transcendenceEffect");
 }
 
-// ============ ⚡ CYBERPUNK EVOLUTION EFFECT ============ \\
+// ── 1. CYBERPUNK EVOLUTION FLASH ─────────────────────────────────────────────
+// Called when pet evolves to next stage. Flashes #glitchOverlay with .evolution
+// CSS in: src/assets/styles/effects/evolution.css
 export function triggerCyberpunkEvolutionEffect(duration = 6000) {
   console.log(
     "⚡ triggerCyberpunkEvolutionEffect called with duration:",
@@ -103,7 +117,10 @@ export function triggerCyberpunkEvolutionEffect(duration = 6000) {
   }
 }
 
-// ============ ✨ MYSTICAL TRANSCENDENCE EFFECT ============ \\
+// ── 2. MYSTICAL TRANSCENDENCE ORB ────────────────────────────────────────────
+// White stage final ascension. Spins the mandala orb + expanding rings.
+// CSS in: src/assets/styles/effects/transcendence.css
+// Tune position/size with the ← arrow comments inside this function
 export function triggerMysticalTranscendence(duration = 16500) {
   if (transcendenceEffect) {
     console.log(
@@ -228,6 +245,10 @@ export function triggerMysticalTranscendence(duration = 16500) {
 }
 
 // ============ ⚡ GLITCH TRANSITION FLASH ============ \\
+// ── 3. GLITCH STUTTER TRANSITION FLASH ───────────────────────────────────────
+// Spectral orb that masks model-swap between animations (teleport illusion).
+// CSS in: main.css → search "GLITCH STUTTER OVERLAY"
+// Tune position/size with the ← arrow comments inside this function
 export function triggerGlitchTransitionFlash(duration = 120) {
   const glitchStutterAudio = document.getElementById("stutterMask");
   if (glitchStutterAudio) {
@@ -389,7 +410,7 @@ export function triggerQuickMandalaFlash(duration = 200) {
   }
 }
 
-// ============ LEGACY WRAPPER ============ \\
+// ── 4. ALIAS (app.js calls this name) ────────────────────────────────────────
 export function triggerGlitchStutter(duration = 120) {
   triggerGlitchTransitionFlash(duration);
 }

@@ -1,6 +1,17 @@
-/* ============================================================================
-   TRANSCENDENCE EFFECTS - Mystical White Stage Transcendence
-   ============================================================================ */
+/* ████████████████████████████████████████████████████████████████████████████
+   🌟  TRANSCENDENCE EFFECTS  —  white stage final ascension orb + rings
+   Triggered by triggerMysticalTranscendence() in evolutionEffects.js
+   Element: #transcendenceEffect (.transcendence-effect) in index.html
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │  .transcendence-effect          → the main mandala orb container        │
+   │  .transcendence-effect.active   → orb becomes visible + animates        │
+   │  .transcendence-effect::before  → spectral scan layer 1 (diagonal)      │
+   │  .transcendence-effect::after   → spectral scan layer 2 (opposite)      │
+   │  .radial-burst-ring             → expanding shockwave rings              │
+   │  @keyframes below               → mandalaRotation, cosmicPulse etc.     │
+   └─────────────────────────────────────────────────────────────────────────┘
+   SIZE/POSITION tuned in evolutionEffects.js — search for "TRANSCENDENCE ORB"
+   ████████████████████████████████████████████████████████████████████████████ */
 
 /* Mystical Transcendence Overlay with Mandala-like Glow */
 .transcendence-effect {

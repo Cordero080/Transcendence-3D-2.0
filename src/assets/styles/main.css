@@ -1815,8 +1815,12 @@ canvas {
     transform: translateX(0);
   }
 }
-/* the area that controls the white stage glitch effects is      */
-/* ============ ⚡ GLITCH STUTTER OVERLAY FOR TRANSITIONS ============ */
+/* ████████████████████████████████████████████████████████████████████████████
+   ⚡  GLITCH STUTTER OVERLAY  —  transition mask between animations
+   Triggered by triggerGlitchStutter() in src/effects/evolutionEffects.js
+   Controls: size/position set in JS · colors/animations here
+   Elements: #glitchOverlay + #glitchOverlay2 (inverted layer)
+   ████████████████████████████████████████████████████████████████████████████ */
 .glitch-stutter-overlay {
   position: absolute;
   mix-blend-mode: screen;
@@ -1907,7 +1911,6 @@ canvas {
     stutterFlicker 0.15s linear,
     dynamicCatGlitch 0.3s ease-in-out;
 }
-
 
 .stutter-scanlines {
   position: absolute;
@@ -2067,7 +2070,7 @@ canvas {
   mix-blend-mode: exclusion;
 }
 
-/* Inverted animations */
+/* ── STUTTER KEYFRAMES (inverted layer) ──────────────────────────────────── */
 @keyframes stutterFlickerInverted {
   0% {
     opacity: 1;
@@ -2161,6 +2164,7 @@ canvas {
   }
 }
 
+/* ── STUTTER KEYFRAMES (primary layer — these run the glitch orb) ────────── */
 @keyframes teleportPulse {
   0% {
     transform: scale(0.95);
@@ -2238,9 +2242,10 @@ canvas {
   }
 }
 
-/* ============================================================================
-   WHITE STAGE TRANSCENDENCE FADE EFFECT
-   ============================================================================ */
+/* ████████████████████████████████████████████████████████████████████████████
+   🌟  WHITE STAGE TRANSCENDENCE FADE  —  pet fades out as it ascends
+   Triggered at end of transcendence sequence in src/effects/evolutionEffects.js
+   ████████████████████████████████████████████████████████████████████████████ */
 
 /* Fade away effect for white stage transcendence */
 .white-transcendence-fade {
@@ -2322,6 +2327,7 @@ canvas {
   }
 }
 
+/* ── TRANSCENDENCE ORB KEYFRAMES (mandala spin, pulse, shimmer) ──────────── */
 @keyframes mandalaRotation {
   0% {
     background-position:
@@ -2756,7 +2762,11 @@ html::before {
   display: block;
 }
 
-/*=================GLITCH EGG EFFECTS=====================*/
+/* ████████████████████████████████████████████████████████████████████████████
+   🥚  GLITCH EGG  —  the animated egg shown before the pet hatches
+   Element: #colorfulGlitchDiv · toggled via egg.classList.add("hatching")
+   Lives in index.html inside #pet-container
+   ████████████████████████████████████████████████████████████████████████████ */
 #colorfulGlitchDiv {
   display: none;
 }
