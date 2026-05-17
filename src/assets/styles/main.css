@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Honk&family=Monoton&family=Poiret+One&family=Splash&family=Tektur:wght@400..900&display=swap");
 
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
 
 /* Sine wave canvas effect */
 @import url("./effects/sine-wave.css");
@@ -59,7 +60,7 @@
 
 .btn-play-again {
   margin-top: 28px;
-  font-family: Future Z;
+  font-family: "Audiowide", sans-serif;
   border: 3px solid #ff2bd3;
   background: #111218;
   color: #ff2bd3;
@@ -119,7 +120,7 @@
     padding: 20px;
   }
   .overlay-content {
-    padding: 16px;
+    padding: 12px 8px;
   }
   .btn-play-again {
     padding: 12px 28px;
@@ -737,7 +738,7 @@ li::marker {
 }
 
 .Buttons {
-  font-family: "Future Z";
+  font-family: "Audiowide", sans-serif;
   color: #ffffff;
   background-color: blue;
   display: inline-flex;
@@ -806,7 +807,7 @@ button.Buttons.disabled:hover button.Buttons.disabled:active {
   font-size: 1.4em;
   margin-top: 40px;
   letter-spacing: 3px;
-  font-family: "Future Z", sans-serif;
+  font-family: "Audiowide", sans-serif;
   background: oklch(44.614% 0.27993 267.235);
   color: oklch(100% 0.00011 271.152);
   border: none;
@@ -863,7 +864,7 @@ button.Buttons.disabled:hover button.Buttons.disabled:active {
   padding: 14px 45px;
   font-size: 1.4em;
   letter-spacing: 3px;
-  font-family: "Future Z", sans-serif;
+  font-family: "Audiowide", sans-serif;
   background: oklch(55.657% 0.27058 306.568);
   color: oklch(97.02% 0.01632 221.376);
   border: none;
@@ -1026,12 +1027,13 @@ canvas {
   font-size: 1.2em;
   box-shadow: 0 8px 32px oklch(0% 0 0 / 0.5);
   border: solid 2px oklch(84.2% 0.16 176.83 / 0.673);
-  width: min(calc(100vw - 40px), 680px);
+  width: min(calc(100vw - 8px), 680px);
 }
 
 .overlay-content h2 {
   margin-bottom: 8px;
   font-size: clamp(1rem, 5.2vw, 1.8em);
+  white-space: nowrap;
   color: oklch(73.033% 0.19383 352.633);
   text-shadow: 0 0 10px oklch(73.033% 0.19383 352.633 / 0.5);
   animation: wordDropDown 1.5s ease-out forwards;
@@ -1066,7 +1068,7 @@ canvas {
   );
   background-size: 200% 200%;
   color: oklch(81.132% 0.05752 258.392);
-  font-family: "Future Z", sans-serif;
+  font-family: "Audiowide", sans-serif;
   font-size: 1em;
   padding: 10px 25px;
   border: none;
@@ -1736,7 +1738,7 @@ canvas {
   padding: 15px 30px;
   font-size: 0.6em;
   letter-spacing: 3px;
-  font-family: "Orbitron", sans-serif;
+  font-family: "Audiowide", sans-serif;
   background: linear-gradient(45deg, #000000, #333333, #000000);
   color: #ff00d9;
   border: 2px solid #c800ff;
