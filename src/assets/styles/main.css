@@ -1073,12 +1073,20 @@ canvas {
   opacity: 1;
 }
 
+/* Pet name input row */
+.name-input-row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 28px;
+  width: 100%;
+}
+
 /* Pet name input styling */
 .pet-name-input {
-  width: 100%;
-  max-width: 300px;
-  padding: 8px 20px;
-  margin: 40px 0 0 0;
+  flex: 1;
+  min-width: 0;
+  padding: 0 20px;
   font-family: "Doto", sans-serif;
   font-size: 0.9em;
   text-align: left;
@@ -1089,7 +1097,7 @@ canvas {
   outline: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
-  height: 60px;
+  height: 52px;
 }
 
 .pet-name-input::placeholder {
@@ -1106,10 +1114,12 @@ canvas {
 }
 
 #nameOverlay .OverlayStartButton {
-  padding: 9px 20px;
-  font-size: 0.6em;
-  height: 54px;
+  padding: 0 28px;
+  font-size: 0.9em;
+  height: 52px;
   margin-top: 0;
+  flex-shrink: 0;
+  letter-spacing: 0.1em;
 }
 
 /* Crystal icon animations */
