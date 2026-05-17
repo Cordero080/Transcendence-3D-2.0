@@ -40,8 +40,10 @@
 }
 
 .transcendence-message {
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
   line-height: 1.7;
+  display: inline-block;
+  max-width: 560px;
   /* Override gradient-text animation — body copy needs to be readable */
   -webkit-text-fill-color: rgba(210, 240, 255, 0.95) !important;
   color: rgba(210, 240, 255, 0.95) !important;
