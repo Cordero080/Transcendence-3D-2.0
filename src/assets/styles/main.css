@@ -1122,17 +1122,6 @@ canvas {
   letter-spacing: 0.1em;
 }
 
-/* Crystal icon animations */
-.crystal-icon-left {
-  display: inline-block;
-  animation: floatCrystal 3s ease-in-out infinite;
-}
-
-.crystal-icon-right {
-  display: inline-block;
-  animation: floatCrystal 3s ease-in-out infinite 1.5s;
-}
-
 @keyframes floatCrystal {
   0%,
   100% {
