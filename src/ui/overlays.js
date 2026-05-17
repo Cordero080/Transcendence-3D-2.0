@@ -51,6 +51,9 @@ export function showGameOverOverlay(reason = "") {
     reasonEl.textContent = reason;
   }
 
+  // Fade out the game UI, keep only the wallpaper visible behind the overlay
+  document.body.classList.add("game-over-active");
+
   // Show the overlay
   overlay.style.display = "flex";
   requestAnimationFrame(() => {

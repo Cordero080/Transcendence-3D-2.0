@@ -227,11 +227,18 @@ export function triggerGlitchTransitionFlash(duration = 120) {
     const catData = getCatMaskData();
 
     if (catData) {
-      const width = catData.width * 1.2;
-      const height = catData.height * 1;
+      // Container layout dims for percentage-based minimum sizes.
+      // Skinned mesh rest-pose bounding box is often much smaller than the
+      // animated visual extent, so we clamp to a floor that always covers the cat.
+      const container = document.getElementById("pet-container");
+      const layoutW = container.offsetWidth || 990;
+      const layoutH = container.offsetHeight || 600;
 
-      glitchOverlay.style.left = "50%";
-      glitchOverlay.style.top = "60%";
+      const width = Math.max(catData.width * 2.5, layoutW * 0.38);
+      const height = Math.max(catData.height * 2.5, layoutH * 0.55);
+
+      glitchOverlay.style.left = `${catData.xPct}%`;
+      glitchOverlay.style.top = `${catData.yPct}%`;
       glitchOverlay.style.width = `${width}px`;
       glitchOverlay.style.height = `${height}px`;
       glitchOverlay.style.transform = "translate(-50%, -50%)";
@@ -249,7 +256,8 @@ export function triggerGlitchTransitionFlash(duration = 120) {
         scanlines.style.transform = "scale(1.0) rotate(-3deg)";
         scanlines.style.opacity = "1";
         scanlines.style.transition = "opacity 0.6s ease-out";
-        scanlines.style.animation = "teleportPulse 0.12s ease-in-out";
+        scanlines.style.animation =
+          "teleportPulse 0.12s ease-in-out, stutterScan 0.08s linear infinite, scanlinesWarp 1.2s linear infinite";
       }
 
       if (staticEl) {
@@ -257,7 +265,8 @@ export function triggerGlitchTransitionFlash(duration = 120) {
         staticEl.style.transform = "scale(0.7) translateY(-3px)";
         staticEl.style.opacity = "0.9";
         staticEl.style.transition = "opacity 0.6s ease-out";
-        staticEl.style.animation = "teleportPulse 0.12s ease-in-out 0.04s";
+        staticEl.style.animation =
+          "teleportPulse 0.12s ease-in-out 0.04s, stutterStatic 0.07s linear infinite, staticWarp 2.2s linear infinite";
       }
 
       if (flash) {
@@ -265,7 +274,8 @@ export function triggerGlitchTransitionFlash(duration = 120) {
         flash.style.transform = "scale(0.4) rotate(3deg) translateY(3px)";
         flash.style.opacity = "1";
         flash.style.transition = "opacity 0.6s ease-out";
-        flash.style.animation = "teleportPulse 0.12s ease-in-out 0.08s";
+        flash.style.animation =
+          "teleportPulse 0.12s ease-in-out 0.08s, stutterFlash 0.1s ease-out, flashWarp 1.7s linear infinite";
       }
     }
 

@@ -99,44 +99,55 @@ const clock = new THREE.Clock();
 function getCatMaskData() {
   if (!activeModel) return null;
 
-  // Get the model's bounding box
   const box = new THREE.Box3().setFromObject(activeModel);
-  const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
 
-  // Project 3D position to screen coordinates
-  const vector = center.clone();
-  vector.project(camera);
+  // Use offsetWidth/offsetHeight (layout/pre-transform dimensions) because:
+  // - The Three.js renderer is sized from offsetWidth/offsetHeight
+  // - CSS left/top on absolutely-positioned children are in layout space
+  // - getBoundingClientRect() returns post-transform viewport coords (wrong for CSS)
+  const container = document.getElementById("pet-container");
+  const layoutW = container.offsetWidth || 990;
+  const layoutH = container.offsetHeight || 600;
 
-  // Convert to screen space (0 to 1, then to pixel coordinates)
-  const containerRect = document
-    .getElementById("pet-container")
-    .getBoundingClientRect();
-  const x = (vector.x * 0.5 + 0.5) * containerRect.width;
-  const y = (-vector.y * 0.5 + 0.5) * containerRect.height;
+  // Project a 3D point to layout-pixel coords matching the Three.js canvas
+  const project = (vec) => {
+    const v = vec.clone().project(camera);
+    return {
+      x: (v.x * 0.5 + 0.5) * layoutW,
+      y: (-v.y * 0.5 + 0.5) * layoutH,
+    };
+  };
 
-  // Estimate cat dimensions based on the model size and current animation
-  let width = Math.abs(size.x) * 100; // Convert to reasonable pixel size
-  let height = Math.abs(size.y) * 100;
+  const screenCenter = project(center);
+  const screenTop = project(new THREE.Vector3(center.x, box.max.y, center.z));
+  const screenBottom = project(
+    new THREE.Vector3(center.x, box.min.y, center.z),
+  );
+  const screenLeft = project(new THREE.Vector3(box.min.x, center.y, center.z));
+  const screenRight = project(new THREE.Vector3(box.max.x, center.y, center.z));
 
-  // Adjust for different animations
+  let width = Math.abs(screenRight.x - screenLeft.x);
+  let height = Math.abs(screenBottom.y - screenTop.y);
+
   if (currentPose.includes("dance") || currentPose.includes("salsa")) {
-    width *= 1.2; // Dancing cats spread out more
+    width *= 1.2;
   }
   if (currentPose.includes("sleep")) {
-    height *= 0.7; // Sleeping cats are shorter
-    width *= 1.3; // But wider
+    height *= 0.7;
+    width *= 1.3;
   }
 
-  // Ensure minimum/maximum sizes
-  width = Math.max(80, Math.min(300, width));
-  height = Math.max(100, Math.min(400, height));
+  width = Math.max(80, width);
+  height = Math.max(100, height);
 
+  // xPct/yPct: NDC-derived percentages — coordinate-safe for CSS left/top
+  // regardless of any parent CSS transform (scale, translate, etc.)
   return {
-    x: x,
-    y: y,
-    width: width,
-    height: height,
+    xPct: (screenCenter.x / layoutW) * 100,
+    yPct: (screenCenter.y / layoutH) * 100,
+    width,
+    height,
     pose: currentPose,
     scale: activeModel.scale.x,
   };

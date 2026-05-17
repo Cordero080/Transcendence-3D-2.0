@@ -966,6 +966,8 @@ function resetGame() {
   console.log("resetGame() called");
 
   // ── A) Overlays: hide safely ────────────────────────────────────────────────
+  document.body.classList.remove("game-over-active");
+
   const gameOverOverlay = document.getElementById("gameOverOverlay");
   const transcendenceOverlay = document.getElementById("transcendenceOverlay");
   const winOverlay = document.getElementById("winOverlay");

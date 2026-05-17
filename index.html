@@ -237,7 +237,7 @@
           </div>
 
           <!-- Glitch overlay for death and evolution effects -->
-          <div id="glitchOverlay" class="glitch-effect">
+          <div id="glitchOverlay" class="glitch-stutter-overlay">
             <div class="stutter-scanlines"></div>
             <div class="stutter-static"></div>
             <div class="stutter-flash"></div>
@@ -246,7 +246,7 @@
           <!-- Second glitch overlay layer with inverted colors -->
           <div
             id="glitchOverlay2"
-            class="glitch-effect glitch-inverted"
+            class="glitch-stutter-overlay glitch-inverted"
           >
             <div class="stutter-scanlines"></div>
             <div class="stutter-static"></div>
@@ -302,32 +302,20 @@
         </div>
       </main>
 
-      <!-- scaling root end -->
-      <!-- Game Over Overlay -->
-
-      <div id="gameOverOverlay" class="game-over-overlay" style="display: none">
-        <div class="game-over-content">
-          <h2 class="glitch-text">GAME OVER</h2>
-          <p id="gameOverReason">Your pet has transcended...</p>
-          <div class="game-over-buttons">
-            <button class="game-over-button" id="tryAgainBtn">TRY AGAIN</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Win / Transcendence Overlay -->
-      <!-- <div id="winOverlay" class="game-over-overlay" style="display: none">
-        <div class="game-over-content">
-          <h2 id="transcendence">TRANSCENDENCE</h2>
-          <p id="winReason">Your pet has transcended...</p>
-          <div class="game-over-buttons"></div>
-        </div>
-      </div> -->
-
       <div class="startButtonContainer">
         <button class="StartButton">START</button>
         <button class="ResetButton">RESET</button>
-        <!-- scaling root end -->
+      </div>
+    </div>
+
+    <!-- Game Over Overlay (outside scaling-root so fading scaling-root doesn't affect it) -->
+    <div id="gameOverOverlay" class="game-over-overlay" style="display: none">
+      <div class="game-over-content">
+        <h2 class="glitch-text">GAME OVER</h2>
+        <p id="gameOverReason">Your pet has transcended...</p>
+        <div class="game-over-buttons">
+          <button class="game-over-button" id="tryAgainBtn">TRY AGAIN</button>
+        </div>
       </div>
     </div>
     <!-- Full-screen Cyberpunk Transition Overlay -->
