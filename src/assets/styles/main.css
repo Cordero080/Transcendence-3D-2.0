@@ -35,16 +35,16 @@
 }
 
 .transcendence-title {
-  font-size: clamp(2.2rem, 4.5vw, 3.2rem) !important;
+  font-size: clamp(2.8rem, 5.5vw, 4rem) !important;
   font-weight: 900 !important;
 }
 
 .transcendence-message {
-  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   line-height: 1.7;
   display: inline-block;
   max-width: 560px;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
   /* Override gradient-text animation — body copy needs to be readable */
   -webkit-text-fill-color: rgba(210, 240, 255, 0.95) !important;
   color: rgba(210, 240, 255, 0.95) !important;
@@ -65,7 +65,7 @@
   padding: 16px 48px;
   font-weight: 800;
   letter-spacing: 0.1em;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: background 200ms ease;
 }
