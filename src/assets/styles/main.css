@@ -25,30 +25,37 @@
   font-weight: normal;
   font-style: normal;
 }
+/* === Transcendence overlay — no box, no blur, text floats over the scene === */
+#transcendenceOverlay .transcendence-overlay-content {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  width: min(90vw, 900px);
+  padding: clamp(24px, 4vw, 48px);
+}
+
 .transcendence-title {
-  font-size: 1.3em !important;
+  font-size: clamp(2.5rem, 6vw, 4.5rem) !important;
   font-weight: 900 !important;
 }
-/* === Win/Transcendence Overlay FINAL UPDATES === */
-.transcendence-overlay-content {
-  width: min(90vw, 1500px);
-  padding: clamp(23px, 3.9vw, 42px);
-  border-radius: 22px;
+
+.transcendence-message {
+  font-size: clamp(0.95rem, 2vw, 1.3rem);
+  line-height: 1.6;
 }
 
 .btn-play-again {
-  /* Subtle blur only for Try Again/Play Again button */
-  backdrop-filter: blur(4px);
-  margin-top: 32px;
+  margin-top: 28px;
   font-family: Future Z;
-  border: 2px solid #ff2bd3;
+  border: 3px solid #ff2bd3;
   background: #111218;
   color: #ff2bd3;
-  border-radius: 10px;
-  padding: 16px 28.6px;
+  border-radius: 14px;
+  padding: 16px 48px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  font-size: clamp(18.2px, 2.86vw, 23.4px);
+  letter-spacing: 0.1em;
+  font-size: 0.95rem;
+  cursor: pointer;
   transition: background 200ms ease;
 }
 .btn-play-again:hover,
@@ -114,7 +121,7 @@
   align-items: center;
   justify-content: center;
   z-index: 2147483647;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: transparent;
   backdrop-filter: none;
   pointer-events: none;
   transform: none;
