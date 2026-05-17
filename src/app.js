@@ -24,7 +24,6 @@ import { initUI } from "@ui/ui.js";
 import {
   loadAndDisplayFBX,
   clearActiveModel,
-  hasActiveModel,
   setWhiteStageLighting,
   getCatMaskData,
 } from "@/main-test.js";
@@ -35,36 +34,20 @@ import {
   gameSettings,
   stageMap,
   stageEmojis,
-  timerMap,
-  STAT_TYPES,
-  danceMap,
-  trainMap,
   danceIndices,
   trainIndices,
 } from "@core/config.js";
-import {
-  fadeOutBgMusic,
-  playEvolutionSound,
-  playSound,
-} from "@effects/audio.js";
+import { fadeOutBgMusic, playEvolutionSound } from "@effects/audio.js";
 import {
   triggerCyberpunkEvolutionEffect,
   triggerMysticalTranscendence,
   triggerGlitchStutter,
   initEffectElements,
 } from "@effects/evolutionEffects.js";
-import {
-  showTranscendenceOverlay,
-  showGameOverOverlayLoss,
-  showGameOverOverlay,
-  hidePageOverlay,
-  showNameOverlay,
-  hideNameOverlay,
-} from "@ui/overlays.js";
+import { showTranscendenceOverlay, showGameOverOverlay } from "@ui/overlays.js";
 import { setupDropdownMenu } from "@ui/dropdown.js";
 import { setupNameOverlay } from "@ui/nameOverlay.js";
 import { updatePetChat } from "@ui/petChat.js";
-import { hideGlitchEgg } from "@ui/eggAnimation.js";
 import { restorePetContainer } from "@ui/petContainer.js";
 
 const {
@@ -911,8 +894,8 @@ function startGame() {
     myPet = new Pet(petName);
 
     // Start at blue stage
-    currentStage = "blue";
-    myPet.stage = "blue";
+    currentStage = "white";
+    myPet.stage = "white";
     myPet.evolutionLevel = 0;
     evolutionInProgress = false; // Initialize evolution flag
 
