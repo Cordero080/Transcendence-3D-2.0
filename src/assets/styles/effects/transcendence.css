@@ -273,6 +273,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   background: linear-gradient(
     30deg,
     oklch(49.909% 0.25958 304.824) 0%,
@@ -328,6 +329,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   background: linear-gradient(
     -30deg,
     oklch(49.909% 0.25958 304.824) 0%,
