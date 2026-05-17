@@ -395,27 +395,12 @@ header {
 /* ============================================================================
    DROPDOWN MENU SYSTEM
    ============================================================================ */
-.info-question-mark {
-  position: absolute;
-  top: 120px; /* Just above the CornerRoundButton */
-  left: 0.9rem;
-  transform: none;
-  color: #00ffff;
-  font-size: 2em;
-  font-weight: bold;
-  font-family: "Doto", sans-serif;
-  text-shadow:
-    0 0 15px #00ffff,
-    0 0 25px #00ffff,
-    0 0 35px oklch(56.347% 0.24089 260.834);
-  pointer-events: none;
-  z-index: 100;
-}
 
 .CornerRoundButton {
-  position: absolute;
-  top: 0rem;
-  left: 0.2rem;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  left: auto;
   width: 42px;
   height: 42px;
   background: linear-gradient(
@@ -491,19 +476,20 @@ header {
 }
 
 .dropdown-container {
-  position: absolute;
-  top: 4px;
-  left: 0;
-  z-index: 5;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
 }
 
 .dropdown-menu {
   box-shadow: 0 4px 16px oklch(0% 0 0 / 0.18);
   animation: fadeIn 0.9s;
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 5;
+  top: 52px;
+  right: 0;
+  left: auto;
+  z-index: 9999;
   background: oklch(32.5% 0.11963 270.728 / 0.905);
   color: #ffffff;
   border-radius: 8px;
