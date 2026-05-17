@@ -36,7 +36,7 @@
 }
 
 .transcendence-title {
-  font-size: clamp(1.8rem, 7vw, 4rem) !important;
+  font-size: clamp(2.2rem, 7vw, 4rem) !important;
   font-weight: 900 !important;
   white-space: nowrap;
 }
@@ -113,10 +113,14 @@
     background-position: 0% 50%;
   }
 }
-@media (max-width: 420px) {
+@media (max-width: 480px) {
   .transcendence-overlay-content {
     gap: 16px;
-    padding: 20.8px;
+    padding: 20px;
+  }
+  .btn-play-again {
+    padding: 12px 28px;
+    font-size: 0.95rem;
   }
 }
 /* === RESTORED OLD WIN/TRANSCENDENCE OVERLAY STYLING === */
