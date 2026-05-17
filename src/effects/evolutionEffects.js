@@ -112,9 +112,18 @@ export function triggerMysticalTranscendence(duration = 16500) {
 
     const catData = getCatMaskData();
     if (catData) {
-      const size = Math.max(catData.width, catData.height) * 1.55;
-      transcendenceEffect.style.left = "50%";
-      transcendenceEffect.style.top = "calc(50% 40px)";
+      const container = document.getElementById("pet-container");
+      const layoutH = container.offsetHeight || 600;
+      const layoutW = container.offsetWidth || 990;
+      // Use actual model center (NDC %) so the orb tracks the figure, not a
+      // hardcoded 50% that was wrong + had a broken calc (missing + operator).
+      // Size is the larger of bounding-box projection or 60% of container so
+      // it always covers feet-to-head even if rest-pose bbox is small.
+      const bboxSize = Math.max(catData.width, catData.height) * 2.0;
+      const minSize = Math.min(layoutW, layoutH) * 0.65;
+      const size = Math.max(bboxSize, minSize);
+      transcendenceEffect.style.left = `${catData.xPct}%`;
+      transcendenceEffect.style.top = `${catData.yPct}%`;
       transcendenceEffect.style.width = `${size}px`;
       transcendenceEffect.style.height = `${size}px`;
       transcendenceEffect.style.transform = "translate(-50%, -50%)";
