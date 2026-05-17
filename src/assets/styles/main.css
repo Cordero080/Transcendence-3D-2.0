@@ -115,7 +115,7 @@
   justify-content: center;
   z-index: 2147483647;
   background-color: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(15px);
+  backdrop-filter: none;
   pointer-events: none;
   transform: none;
 }
@@ -180,7 +180,7 @@
 .btn-play-again {
   border: 3px solid #ff2bd3;
   background: rgba(0, 0, 0, 0.35);
-  padding: 12px 22px;
+  padding: 16px 48px;
   border-radius: 14px;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -1639,7 +1639,7 @@ canvas {
   border-radius: 20px;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   opacity: 0;
   animation: gameOverFadeIn 2s ease-out forwards;
   mask: radial-gradient(ellipse 90% 85% at 50% 50%, black 40%, transparent 90%);
@@ -1657,19 +1657,19 @@ canvas {
 
 .game-over-content {
   background: linear-gradient(45deg, #000000, #1a1a1a, #333333, #000000);
-  padding: 20px 30px;
+  padding: 32px 40px;
   border-radius: 40px;
   text-align: center;
   width: 90vw;
-  height: 30vh;
+  height: auto;
   display: flex;
   max-width: 900px;
-  min-height: 560px;
+  min-height: auto;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: #0800ff;
-  gap: 5px;
+  gap: 20px;
   font-size: 1.5em;
   box-shadow:
     0 0 50px rgba(255, 0, 200, 0.923),
@@ -1681,7 +1681,7 @@ canvas {
 }
 
 .game-over-content h2 {
-  margin-bottom: 30px;
+  margin-bottom: 0;
   font-size: clamp(2rem, 8vw, 4rem);
   color: #ff0099;
   text-shadow:
@@ -1696,7 +1696,6 @@ canvas {
   width: 100%;
 }
 #gameOverReason {
-  transform: translateY(-4.5vh); /* ← Move this specific element up by 4vh */
   position: relative;
   margin: 0;
   text-align: center;
