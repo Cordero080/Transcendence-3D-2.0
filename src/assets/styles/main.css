@@ -150,6 +150,7 @@
 #transcendenceOverlay.show {
   display: flex;
   pointer-events: auto;
+  animation: gameOverFadeIn 0.6s ease-out forwards;
 }
 .game-over-content,
 .transcendence-overlay-content {
@@ -338,7 +339,7 @@ header h1 {
   font-size: clamp(2.5rem, 5vw, 5rem);
   white-space: normal;
   text-overflow: unset;
-  animation: floatUpDown 3s ease-in-out infinite;
+  animation: floatUpDown 5s ease-in-out infinite;
 }
 header {
   border: solid 2px oklch(61.05% 0.315 318.55);
@@ -1179,19 +1180,19 @@ canvas {
 
 .overlay-content {
   background: oklch(0% 0 0 / 0.8);
-  padding: 30px;
+  padding: 48px 56px;
   border-radius: 15px;
   text-align: center;
   color: oklch(83.815% 0.11668 314.288);
   font-size: 1.2em;
   box-shadow: 0 8px 32px oklch(0% 0 0 / 0.5);
   border: solid 2px oklch(84.2% 0.16 176.83 / 0.673);
-  width: min(calc(100vw - 8px), 680px);
+  width: min(calc(100vw - 8px), 900px);
 }
 
 .overlay-content h2 {
-  margin-bottom: 8px;
-  font-size: clamp(1rem, 5.2vw, 1.8em);
+  margin-bottom: 16px;
+  font-size: clamp(1.6rem, 4vw, 3rem);
   white-space: nowrap;
   color: oklch(73.033% 0.19383 352.633);
   text-shadow: 0 0 10px oklch(73.033% 0.19383 352.633 / 0.5);
@@ -1201,8 +1202,8 @@ canvas {
 
 .overlay-content p {
   margin-bottom: 20px;
-  line-height: 1.5;
-  font-size: 1.1em;
+  line-height: 1.6;
+  font-size: 1.2em;
   color: oklch(90% 0.15 260);
   text-shadow: 0 0 12px oklch(85% 0.2 260 / 0.6);
 }
@@ -1500,7 +1501,7 @@ canvas {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-4px);
   }
 }
 
@@ -1784,21 +1785,10 @@ canvas {
    GAME OVER OVERLAY
    ============================================================================ */
 .game-over-overlay {
-  position: fixed;
   top: 21%;
-  left: 0;
-  width: 100%;
   height: 72%;
-  background-color: transparent;
-  z-index: 10000;
-  display: flex;
   padding: 20px;
   border-radius: 20px;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: none;
-  opacity: 0;
-  animation: gameOverFadeIn 2s ease-out forwards;
   mask: radial-gradient(ellipse 90% 85% at 50% 50%, black 40%, transparent 90%);
   -webkit-mask: radial-gradient(
     ellipse 90% 85% at 50% 50%,

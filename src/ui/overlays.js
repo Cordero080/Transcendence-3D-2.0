@@ -52,14 +52,13 @@ export function showGameOverOverlay(reason = "") {
     reasonEl.textContent = reason;
   }
 
-  // Fade out the game UI, keep only the wallpaper visible behind the overlay
   document.body.classList.add("game-over-active");
 
-  // Show the overlay
+  // Force animation restart on iOS Safari (animation won't replay without reflow)
+  overlay.classList.remove("show");
   overlay.style.display = "flex";
-  requestAnimationFrame(() => {
-    overlay.classList.add("show");
-  });
+  void overlay.offsetHeight; // reflow — triggers animation restart
+  overlay.classList.add("show");
 }
 
 export function hidePageOverlay() {

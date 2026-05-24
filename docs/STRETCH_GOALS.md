@@ -1,5 +1,20 @@
 # Stretch Goals & Future Enhancements
 
+## Next Up — Mobile Polish
+
+### "Upside" Battle Section on Mobile (1-2 hours)
+
+- **Goal:** Make the hidden easter egg battle game (`battle.html`) playable on phones
+- **Current state:** The battle section is a separate React/SCSS app. Layout breaks on small screens — buttons overflow, canvas mis-sizes, touch controls unresponsive.
+- **Implementation:**
+  - Audit `src/battle/` styles for viewport-relative sizing
+  - Add touch event handling (tap = click equivalent)
+  - Portrait layout for battle arena (stack vertically)
+  - Landscape: side-by-side is fine, just needs responsive widths
+- **Why now:** Main game is mobile-solid. Battle is the next biggest gap for phone users who find the easter egg.
+
+---
+
 ## High Priority - Playability Improvements
 
 ### Save/Load System (2-3 hours)
