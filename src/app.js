@@ -1971,6 +1971,15 @@ window.addEventListener("DOMContentLoaded", () => {
         setTimeout(hide, 1600);
       }
 
+      // Disable hover on reset during the slide transition so it doesn't misfire
+      const resetBtn = document.querySelector(".ResetButton");
+      if (resetBtn) {
+        resetBtn.style.pointerEvents = "none";
+        setTimeout(() => {
+          resetBtn.style.pointerEvents = "";
+        }, 900);
+      }
+
       await startGame();
     });
   }

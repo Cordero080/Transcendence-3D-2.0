@@ -27,7 +27,7 @@
 
   .scaling-root {
     transform: none;
-    margin-top: 10vh;
+    margin-top: 3vh;
     margin-left: auto;
     margin-right: auto;
   }
@@ -46,12 +46,13 @@
 
   #main-wrapper {
     transform: none;
+    margin-top: 6vh;
   }
 
   /* === INFO BUTTON === */
   /* position: fixed in main.css — nudged down to align with title on mobile */
   .CornerRoundButton {
-    top: calc(10vh + 30px);
+    top: 10px;
   }
 
   /* === HEADER / TITLE === */
@@ -72,9 +73,21 @@
   /* === PET CONTAINER === */
   /* index.html > #main-wrapper > #pet-container */
   #pet-container {
-    height: 55vw;
-    min-height: 240px;
-    max-height: 380px;
+    height: 62vw;
+    min-height: 260px;
+    max-height: 420px;
+  }
+
+  /* === CARE ACTION BUTTONS === */
+  .Buttons,
+  button.Buttons {
+    width: 100%;
+    font-size: 0.42em;
+    letter-spacing: 2px;
+  }
+
+  .button-container {
+    height: 55px;
   }
 
   /* === GLITCH EGG === */
@@ -88,6 +101,55 @@
   }
 
   /* === START / RESET BUTTONS === */
+  .startButtonContainer {
+    margin-bottom: 30px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ========== TABLET / NARROW DESKTOP (769px–1024px portrait) ========== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .scaling-root {
+    transform: none;
+    margin-top: 3vh;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #main-wrapper {
+    transform: none;
+    margin-top: 4vh;
+  }
+
+  .CornerRoundButton {
+    top: 10px;
+  }
+
+  header {
+    width: fit-content;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    height: auto;
+    padding: 8px 20px;
+  }
+
+  header h1 {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    letter-spacing: 8px;
+  }
+
+  #pet-container {
+    height: 45vw;
+    min-height: 300px;
+    max-height: 460px;
+  }
+
   .startButtonContainer {
     margin-bottom: 30px;
     padding-bottom: calc(20px + env(safe-area-inset-bottom));

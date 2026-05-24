@@ -161,9 +161,6 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
     // bump token for this load to prevent overlap/race duplicates
     const myToken = ++currentLoadToken;
 
-    // always clear anything previously in the pet slot
-    clearActiveModel();
-
     loader.load(
       path,
       (fbx) => {
@@ -184,6 +181,9 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
           resolve(0);
           return;
         }
+
+        // Clear old model right before adding the new one so canvas is never blank
+        clearActiveModel();
 
         // ----- apply pose -----
         const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
@@ -327,6 +327,7 @@ const PET_WIDTH = petContainer.offsetWidth || 990;
 const PET_HEIGHT = petContainer.offsetHeight || 600;
 const renderer = new THREE.WebGLRenderer({ antialias: true }); // applies to canvas and DOM elements. This line was added to ensure the renderer is created correctly. No need for a canvas element in html because we are appending the renderer's DOM element directly to the petContainer.
 renderer.setSize(PET_WIDTH, PET_HEIGHT);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true; // ✅ Add this line
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // (optional but softer shadows)
 petContainer.appendChild(renderer.domElement);
@@ -433,4 +434,12 @@ window.addEventListener("orientationchange", () => {
     fitModelForViewport(activeModel, lastBaseScale);
   }, 150); // let CSS media queries settle
 });
+
+// Force resize after full page load — CSS media queries may not have applied
+// when the renderer was first sized, causing a blurry/distorted canvas on mobile.
+window.addEventListener("load", () => {
+  resizeRendererToContainer(renderer, camera);
+  fitModelForViewport(activeModel, lastBaseScale);
+});
+
 animate();
