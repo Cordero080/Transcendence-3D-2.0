@@ -13,7 +13,6 @@
 @import url("./components/stat-bars.css");
 
 /* Mobile responsive styles - MUST be last to override desktop */
-@import url("./utils/mobile.css");
 
 :root {
   /* Global scaling factor removed - was causing overlay positioning issues */
@@ -2825,7 +2824,7 @@ html::before {
   width: 210px;
   height: 280px;
   inset: auto;
-  left: 41.3%;
+  left: 50%;
   top: 42%;
   transform: translate(-50%, -50%);
   pointer-events: none;

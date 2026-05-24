@@ -1,103 +1,144 @@
 /* ============================================================================
    MOBILE RESPONSIVE STYLES
-   Minimal fixes - only reduce pet container & egg size, enable scrolling
+   Single source of truth for all mobile overrides.
+   Loaded after main.css via <link> in index.html — wins cascade without !important.
+   Organized by component; landscape overrides at the bottom.
    ============================================================================ */
 
 /* ========== iOS BACKGROUND FIXES ========== */
 @media (max-width: 767px) {
-  html::before { 
-    background-attachment: scroll !important; 
+  html::before {
+    background-attachment: scroll;
   }
-  body { 
-    background-attachment: scroll !important; 
+  body {
+    background-attachment: scroll;
   }
 }
 
-/* ========== MOBILE BASE ========== */
+/* ========== PORTRAIT MOBILE BASE (≤768px) ========== */
 @media (max-width: 768px) {
-  /* Enable scrolling and remove transforms */
-  html, body {
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    transform: none !important;
+  /* === SCALING ROOT / TRANSFORMS === */
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    transform: none;
   }
 
   .scaling-root {
-    transform: none !important;
+    transform: none;
+    margin: 0 auto;
   }
 
   #main-wrapper {
-    transform: none !important;
+    transform: none;
   }
 
-  /* Ensure start/reset buttons visible */
+  /* === HEADER / TITLE === */
+  /* index.html > .scaling-root > header */
+  header {
+    width: 100%;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    height: auto;
+    padding: 8px 12px;
+  }
+
+  header h1 {
+    font-size: clamp(1rem, 7vw, 1.6rem);
+    letter-spacing: 6px;
+  }
+
+  /* === PET CONTAINER === */
+  /* index.html > #main-wrapper > #pet-container */
+  #pet-container {
+    height: 55vw;
+    min-height: 240px;
+    max-height: 380px;
+  }
+
+  /* === GLITCH EGG === */
+  /* index.html > #pet-container > #colorfulGlitchDiv */
+  #colorfulGlitchDiv {
+    left: 40%;
+    top: 43%;
+    width: 100px;
+    height: 135px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* === START / RESET BUTTONS === */
   .startButtonContainer {
-    margin-bottom: 30px !important;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    margin-bottom: 30px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
   }
 }
 
-/* ========== MOBILE LANDSCAPE - MINIMAL FIXES ========== */
+/* ========== LANDSCAPE MOBILE ========== */
 @media (max-width: 900px) and (orientation: landscape),
-       (orientation: landscape) and (max-height: 600px) {
-  /* Enable scrolling */
-  html, body {
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+  (orientation: landscape) and (max-height: 600px) {
+  /* === SCALING ROOT / TRANSFORMS === */
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
-  /* Pet container - narrower width, more height for the 3D scene */
+  /* === PET CONTAINER === */
   #pet-container {
-    width: 45vw !important;
-    max-width: 45vw !important;
-    height: auto !important;
-    min-height: 55vh !important;
-    max-height: 65vh !important;
+    width: 45vw;
+    max-width: 45vw;
+    height: auto;
+    min-height: 55vh;
+    max-height: 65vh;
   }
 
-  /* Smaller egg for landscape mobile */
+  /* === GLITCH EGG === */
   #colorfulGlitchDiv {
-    width: 80px !important;
-    height: 110px !important;
-    transform: translate(-50%, -50%) scale(0.45) !important;
+    left: 50%;
+    width: 80px;
+    height: 110px;
+    transform: translate(-50%, -50%) scale(0.45);
   }
 
-  /* Reduce infoBox height significantly */
+  /* === INFO BOX + CONTROLS === */
   .infoBox {
-    min-height: auto !important;
-    max-height: 25vh !important;
-    padding: 3px !important;
+    min-height: auto;
+    max-height: 25vh;
+    padding: 3px;
   }
 
   .infoBox-controls {
-    padding: 3px !important;
-    gap: 3px !important;
-  }
-
-  .button-container {
-    height: 40px !important;
-  }
-
-  .Buttons, button.Buttons {
-    height: 25px !important;
-    font-size: 0.35em !important;
-  }
-
-  .stat-bar-container {
-    display: none !important;
+    padding: 3px;
+    gap: 3px;
   }
 
   .infoBox_petChat {
-    min-height: 25px !important;
-    max-height: 40px !important;
-    padding: 3px 8px !important;
-    font-size: 0.7rem !important;
-    overflow: hidden !important;
+    min-height: 25px;
+    max-height: 40px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    overflow: hidden;
   }
 
-  /* Ensure start/reset buttons visible */
+  /* === BUTTONS === */
+  .button-container {
+    height: 40px;
+  }
+
+  .Buttons,
+  button.Buttons {
+    height: 25px;
+    font-size: 0.35em;
+  }
+
+  .stat-bar-container {
+    display: none;
+  }
+
+  /* === START / RESET BUTTONS === */
   .startButtonContainer {
-    margin-bottom: 30px !important;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    margin-bottom: 30px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
   }
 }
