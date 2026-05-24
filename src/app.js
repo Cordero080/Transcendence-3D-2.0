@@ -910,6 +910,7 @@ function startGame() {
       // (white_gong.mp3 is now only played after train in white stage)
       resetButtonTracker();
       gameStarted = true;
+      document.body.classList.add("game-started");
 
       // Initialize button states for evolution level
       updateButtonStatesForEvolution();
@@ -951,6 +952,7 @@ function resetGame() {
 
   // ── A) Overlays: hide safely ────────────────────────────────────────────────
   document.body.classList.remove("game-over-active");
+  document.body.classList.remove("game-started");
 
   const gameOverOverlay = document.getElementById("gameOverOverlay");
   const transcendenceOverlay = document.getElementById("transcendenceOverlay");

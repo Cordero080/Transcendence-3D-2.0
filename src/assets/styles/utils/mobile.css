@@ -27,9 +27,21 @@
 
   .scaling-root {
     transform: none;
-    margin-top: 3vh;
+    margin-top: 10vh;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  /* === GAME OVER OVERLAY === */
+  .game-over-overlay {
+    top: 10%;
+    height: 80%;
+  }
+
+  .game-over-content {
+    justify-content: space-evenly;
+    gap: 12px;
+    padding: 24px 20px;
   }
 
   #main-wrapper {
@@ -39,7 +51,7 @@
   /* === INFO BUTTON === */
   /* position: fixed in main.css — nudged down to align with title on mobile */
   .CornerRoundButton {
-    top: calc(3vh + 30px);
+    top: calc(10vh + 30px);
   }
 
   /* === HEADER / TITLE === */
