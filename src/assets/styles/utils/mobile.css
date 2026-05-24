@@ -27,7 +27,7 @@
 
   .scaling-root {
     transform: none;
-    margin-top: 3vh;
+    margin-top: max(env(safe-area-inset-top), 60px);
     margin-left: auto;
     margin-right: auto;
   }
@@ -50,9 +50,9 @@
   }
 
   /* === INFO BUTTON === */
-  /* position: fixed in main.css — nudged down to align with title on mobile */
+  /* push below iOS status bar / Dynamic Island — max() guards against env() returning 0 */
   .CornerRoundButton {
-    top: 10px;
+    top: max(env(safe-area-inset-top), 52px);
   }
 
   /* === HEADER / TITLE === */
@@ -164,20 +164,74 @@
 /* ========== LANDSCAPE MOBILE ========== */
 @media (max-width: 900px) and (orientation: landscape),
   (orientation: landscape) and (max-height: 600px) {
-  /* === SCALING ROOT / TRANSFORMS === */
   html,
   body {
     overflow-x: hidden;
     overflow-y: auto;
   }
 
-  /* === PET CONTAINER === */
+  /* === COMPACT HEADER === */
+  .scaling-root {
+    margin-top: calc(env(safe-area-inset-top) + 4px);
+  }
+
+  header {
+    padding: 4px 12px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+
+  header h1 {
+    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+    letter-spacing: 4px;
+  }
+
+  /* === SIDE-BY-SIDE LAYOUT === */
+  #main-wrapper {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+    padding: 6px;
+    margin-top: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* === PET CONTAINER (left) === */
   #pet-container {
-    width: 45vw;
-    max-width: 45vw;
-    height: auto;
-    min-height: 55vh;
-    max-height: 65vh;
+    flex: 0 0 52vw;
+    width: 52vw;
+    max-width: 52vw;
+    height: 75vh;
+    min-height: unset;
+    max-height: 75vh;
+  }
+
+  /* === INFO BOX (right) === */
+  .infoBox {
+    flex: 1;
+    width: auto;
+    min-height: unset;
+    max-height: 75vh;
+    height: 75vh;
+    padding: 4px;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .infoBox-controls {
+    flex-direction: column;
+    padding: 3px;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .infoBox_petChat {
+    min-height: 28px;
+    max-height: 44px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    overflow: hidden;
   }
 
   /* === GLITCH EGG === */
@@ -188,44 +242,31 @@
     transform: translate(-50%, -50%) scale(0.45);
   }
 
-  /* === INFO BOX + CONTROLS === */
-  .infoBox {
-    min-height: auto;
-    max-height: 25vh;
-    padding: 3px;
-  }
-
-  .infoBox-controls {
-    padding: 3px;
-    gap: 3px;
-  }
-
-  .infoBox_petChat {
-    min-height: 25px;
-    max-height: 40px;
-    padding: 3px 8px;
-    font-size: 0.7rem;
-    overflow: hidden;
-  }
-
   /* === BUTTONS === */
   .button-container {
-    height: 40px;
+    height: 36px;
+    flex: 1;
   }
 
   .Buttons,
   button.Buttons {
-    height: 25px;
-    font-size: 0.35em;
+    height: 100%;
+    font-size: 0.38em;
+    width: 100%;
   }
 
   .stat-bar-container {
     display: none;
   }
 
+  /* === INFO BUTTON === */
+  .CornerRoundButton {
+    top: calc(env(safe-area-inset-top) + 6px);
+  }
+
   /* === START / RESET BUTTONS === */
   .startButtonContainer {
-    margin-bottom: 30px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    margin-bottom: 16px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
   }
 }
