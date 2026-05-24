@@ -1,11 +1,22 @@
-/**
- * Pet Chat Module
- * Handles updating the pet's chat/message display
- */
+let _typewriterTimer = null;
 
 export function updatePetChat(message) {
   const petChat = document.getElementById("petChat");
-  if (petChat) {
-    petChat.textContent = message;
+  if (!petChat) return;
+
+  if (_typewriterTimer) {
+    clearInterval(_typewriterTimer);
+    _typewriterTimer = null;
   }
+
+  petChat.textContent = "";
+  let i = 0;
+  _typewriterTimer = setInterval(() => {
+    petChat.textContent += message[i];
+    i++;
+    if (i >= message.length) {
+      clearInterval(_typewriterTimer);
+      _typewriterTimer = null;
+    }
+  }, 40);
 }

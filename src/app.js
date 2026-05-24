@@ -160,13 +160,13 @@ function handleCareAction(actionName) {
 
       // Restore stage message after 3 seconds
       setTimeout(() => {
-        const petChat = document.getElementById("petChat");
-        if (petChat && myPet && stageMap[myPet.evolutionLevel]) {
-          petChat.textContent =
+        if (myPet && stageMap[myPet.evolutionLevel]) {
+          updatePetChat(
             stageMap[myPet.evolutionLevel].chatMessage ||
-            `${stageEmojis[myPet.stage]} ${myPet.name}${
-              stageMap[myPet.evolutionLevel].message
-            }`;
+              `${stageEmojis[myPet.stage]} ${myPet.name}${
+                stageMap[myPet.evolutionLevel].message
+              }`,
+          );
         }
       }, 3000);
 
@@ -729,12 +729,13 @@ class Pet {
       this.age += 5;
       console.log(`🐱 ${this.name} has aged to ${this.age} years old`);
       // Show chatMessage in petChat for the new stage evolution
-      if (petChat && stageMap[this.evolutionLevel]) {
-        petChat.textContent =
+      if (stageMap[this.evolutionLevel]) {
+        updatePetChat(
           stageMap[this.evolutionLevel].chatMessage ||
-          `${stageEmojis[this.stage]} ${this.name}${
-            stageMap[this.evolutionLevel].message
-          }`;
+            `${stageEmojis[this.stage]} ${this.name}${
+              stageMap[this.evolutionLevel].message
+            }`,
+        );
       }
       this.render();
     } else {
@@ -916,13 +917,13 @@ function startGame() {
       document.querySelector(".infoBox").style.display = "flex";
 
       // Show blue stage chatMessage after pet appears
-      const petChat = document.getElementById("petChat");
-      if (petChat && stageMap[myPet.evolutionLevel]) {
-        petChat.textContent =
+      if (stageMap[myPet.evolutionLevel]) {
+        updatePetChat(
           stageMap[myPet.evolutionLevel].chatMessage ||
-          `${stageEmojis[myPet.stage]} ${myPet.name}${
-            stageMap[myPet.evolutionLevel].message
-          }`;
+            `${stageEmojis[myPet.stage]} ${myPet.name}${
+              stageMap[myPet.evolutionLevel].message
+            }`,
+        );
       }
 
       myPet.render();
@@ -1941,11 +1942,8 @@ window.addEventListener("DOMContentLoaded", () => {
   if (startBtn) {
     startBtn.addEventListener("click", async () => {
       // Show hatching message immediately
-      const petChat = document.getElementById("petChat");
       const petName = window.petName || "Coco";
-      if (petChat) {
-        petChat.textContent = `${petName} is just hatching!`;
-      }
+      updatePetChat(`${petName} is just hatching!`);
 
       // Play egg hatch sound
       const eggHatchAudio = document.getElementById("egg-hatch");

@@ -267,12 +267,18 @@ body {
   -moz-transform-origin: 0 0;
 } */
 
+/* ============================================================================
+   SCALING ROOT — uniform resize of the entire UI
+   Adjust scale() to make everything larger or smaller at once.
+   max-width caps the layout width; scale shrinks/grows it proportionally.
+   On screens ≤1200px the scale is calculated dynamically (see media query below).
+   ============================================================================ */
 .scaling-root {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1400px;
+  margin: -15px auto 0;
   transform-origin: top center;
-  transform: scale(0.67);
+  transform: scale(0.82);
   transition: opacity 0.8s ease-out;
 }
 
@@ -283,6 +289,16 @@ body.game-over-active .scaling-root {
 @media (max-width: 1200px) {
   .scaling-root {
     transform: scale(calc(100vw / 1200));
+  }
+}
+@media (min-width: 1440px) {
+  .scaling-root {
+    transform: scale(0.92);
+  }
+}
+@media (min-width: 1920px) {
+  .scaling-root {
+    transform: scale(1);
   }
 }
 
@@ -333,11 +349,13 @@ header {
   align-items: center;
   border-radius: 10px;
   justify-content: center;
-  padding-top: 0 3vw;
-  margin-top: 6vh;
+  padding: 0 3vw;
+  margin-top: 2vh;
   margin-bottom: 2vh;
   position: relative;
-  width: 100%;
+  width: fit-content;
+  min-width: 50%;
+  max-width: 100%;
   height: 11vh;
   max-width: 610px;
   box-sizing: border-box;
@@ -588,7 +606,7 @@ li::marker {
 
 .infoBox {
   width: 100%;
-  min-height: 200px;
+  min-height: 120px;
   height: auto;
 
   flex-direction: column;
@@ -602,8 +620,8 @@ li::marker {
   overflow: hidden;
   border-radius: 5px;
   box-shadow:
-    0 0 15px oklch(70.1% 0.322 328.36 / 0.4),
-    0 4px 20px oklch(0% 0 0 / 0.5);
+    0 4px 16px oklch(0% 0 0 / 0.4),
+    0 8px 28px oklch(0% 0 0 / 0.25);
 }
 .infoBox-controls,
 .infoBox_petChat {
@@ -614,7 +632,7 @@ li::marker {
 @media (min-width: 768px) {
   .infoBox {
     flex-direction: row;
-    min-height: 180px;
+    min-height: 120px;
   }
 
   .infoBox-controls {
@@ -643,7 +661,7 @@ li::marker {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: flex-start;
-  padding: 20px;
+  padding: 10px 20px;
   gap: 10px;
   margin: 0;
   flex-wrap: nowrap; /* Prevent wrapping on desktop */
@@ -653,7 +671,7 @@ li::marker {
 }
 
 .infoBox_petChat {
-  padding: 20px;
+  padding: 10px 20px;
   position: relative;
   color: #00ffff;
   font-family: "Doto", sans-serif;
@@ -692,12 +710,9 @@ li::marker {
   -webkit-text-fill-color: transparent;
   font-weight: bold;
   /* Subtle glow effect behind the gradient */
-  text-shadow:
-    0 0 10px oklch(75.63% 0.141 347.29 / 0.3),
-    /* Pink glow */ 0 0 15px oklch(73.85% 0.114 254.85 / 0.3),
-    /* Blue glow */ 0 0 20px oklch(69.73% 0.146 290.75 / 0.3); /* Purple glow */
+  text-shadow: 0 2px 6px oklch(0% 0 0 / 0.25);
   /* Animate the gradient for extra visual appeal */
-  animation: gradientShift 2.5s ease infinite;
+  animation: gradientShift 8s ease infinite;
 }
 
 .Buttons:hover {
