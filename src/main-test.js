@@ -45,9 +45,10 @@ function fitModelForViewport(model, baseScale = [0.001, 0.001, 0.001]) {
   const container = document.getElementById("pet-container");
   const w = container ? container.clientWidth : window.innerWidth;
 
-  // Scale factor 0.6..1.0 across 360–900px widths
+  // Mobile pet size — adjust k range to make pets larger/smaller on narrow screens.
+  // k=1.21 at 360px (narrowest), eases to k=1.0 at 900px. Raise the 1.21 to go bigger.
   const t = Math.max(360, Math.min(900, w));
-  const k = 0.6 + ((t - 360) / (900 - 360)) * 0.4;
+  const k = 1.21 - ((t - 360) / (900 - 360)) * 0.21;
 
   // Multiply original pose scale, don't overwrite
   model.scale.set(baseScale[0] * k, baseScale[1] * k, baseScale[2] * k);

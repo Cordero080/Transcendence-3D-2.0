@@ -483,11 +483,11 @@ header {
   content: "";
   position: absolute;
   width: 30px;
-  height: 8px;
-  background: oklch(64.532% 0.26038 2.454 / 0.944);
+  height: 3px;
+  background: oklch(78% 0.1 290 / 0.75);
   box-shadow:
-    0 -4px 0 oklch(89.994% 0.15767 186.289),
-    0 4px 0 oklch(82% 0.25 350);
+    0 -7px 0 oklch(78% 0.1 290 / 0.75),
+    0 7px 0 oklch(78% 0.1 290 / 0.75);
   border-radius: 1px;
 }
 
@@ -2784,6 +2784,7 @@ html::before {
   background: url("/grid-b.jpg") center/cover no-repeat;
   image-rendering: auto; /* let browser optimize for device */
   background-attachment: fixed; /* keeps scale uniform */
+  filter: brightness(0.8) contrast(1.1);
 }
 
 /* === Base (desktop) aspect for uniform scaling ================= */
@@ -2824,7 +2825,7 @@ html::before {
   width: 210px;
   height: 280px;
   inset: auto;
-  left: 50%;
+  left: 41.3%;
   top: 42%;
   transform: translate(-50%, -50%);
   pointer-events: none;

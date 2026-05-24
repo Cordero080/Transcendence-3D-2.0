@@ -27,21 +27,29 @@
 
   .scaling-root {
     transform: none;
-    margin: 0 auto;
+    margin-top: 3vh;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   #main-wrapper {
     transform: none;
   }
 
+  /* === INFO BUTTON === */
+  /* position: fixed in main.css — nudged down to align with title on mobile */
+  .CornerRoundButton {
+    top: calc(3vh + 30px);
+  }
+
   /* === HEADER / TITLE === */
   /* index.html > .scaling-root > header */
   header {
-    width: 100%;
+    width: fit-content;
     margin-top: 1vh;
     margin-bottom: 1vh;
     height: auto;
-    padding: 8px 12px;
+    padding: 8px 16px;
   }
 
   header h1 {
