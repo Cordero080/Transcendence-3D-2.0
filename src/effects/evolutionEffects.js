@@ -369,47 +369,6 @@ export function triggerGlitchTransitionFlash(duration = 120) {
   }
 }
 
-// ============ ⚡ QUICK MANDALA FLASH ============ \\
-export function triggerQuickMandalaFlash(duration = 200) {
-  const glitchStutterAudio = document.getElementById("stutterMask");
-  if (glitchStutterAudio) {
-    glitchStutterAudio.currentTime = 0;
-    glitchStutterAudio.volume = 0.3;
-    glitchStutterAudio.play().catch((err) => {
-      console.log("🔇 stutterMask.wav audio play() blocked:", err);
-    });
-  }
-
-  if (transcendenceEffect) {
-    const catData = getCatMaskData();
-
-    if (catData) {
-      const size = Math.max(catData.width, catData.height) * 1.3;
-      transcendenceEffect.style.left = "50%";
-      transcendenceEffect.style.top = "calc(50% + 20px)";
-      transcendenceEffect.style.width = `${size}px`;
-      transcendenceEffect.style.height = `${size}px`;
-      transcendenceEffect.style.transform = "translate(-50%, -50%)";
-    }
-
-    transcendenceEffect.classList.add("active");
-
-    transcendenceEffect.style.filter = `
-      blur(1px) 
-      brightness(550%) 
-      saturate(900%) 
-      drop-shadow(0 0 60px rgba(255, 105, 180, 0.93))
-      drop-shadow(0 0 100px rgba(137, 43, 226, 0.9))
-      drop-shadow(0 0 140px rgba(0, 191, 255, 0.84))
-    `;
-
-    setTimeout(() => {
-      transcendenceEffect.classList.remove("active");
-      transcendenceEffect.style.filter = "";
-    }, duration);
-  }
-}
-
 // ── 4. ALIAS (app.js calls this name) ────────────────────────────────────────
 export function triggerGlitchStutter(duration = 120) {
   triggerGlitchTransitionFlash(duration);

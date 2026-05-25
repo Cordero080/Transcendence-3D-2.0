@@ -69,10 +69,6 @@ const {
   btn,
   menu,
   container,
-  feedIndicator,
-  danceIndicator,
-  sleepIndicator,
-  powerIndicator,
   glitchOverlay,
   glitchOverlay2,
   transcendenceEffect,
@@ -86,7 +82,6 @@ const {
   danceButton,
   sleepButton,
   trainButton,
-  weakButton,
 } = initUI();
 
 const state = createState();
@@ -617,7 +612,7 @@ function checkForEvolution() {
           triggerIntergalacticBeam();
           // Show overlay after both effects complete (9 seconds)
           setTimeout(() => {
-            showWhiteTranscendenceOverlay();
+            showTranscendenceOverlay();
           }, 9000);
         }, 5000);
 
@@ -1188,41 +1183,6 @@ function triggerTranscendence() {
   // showTranscendenceOverlay();
 }
 
-// Fade out background music volume smoothly
-// ============ ⚪ WHITE STAGE TRANSCENDENCE WITH EVOLUTION EFFECTS ============ \\
-function triggerWhiteStageTranscendence() {
-  console.log(
-    "⚪✨ WHITE STAGE TRANSCENDENCE - Using evolution glitch effects!",
-  );
-
-  // Stop all game systems
-  gameStarted = false;
-  actionInProgress = true; // Block all further actions
-  stopWhiteEmissionTimer();
-
-  // Stop all stat timers
-  if (myPet) {
-    myPet.stopAllTimers();
-  }
-  clearInterval(statTimers.hunger);
-  clearInterval(statTimers.fun);
-  clearInterval(statTimers.sleep);
-  clearInterval(statTimers.power);
-
-  // 🔊 Play evolution sound synchronized with effect
-  playEvolutionSound();
-
-  // Trigger mystical transcendence effect with DOUBLE DURATION (100% longer)
-  triggerMysticalTranscendence(80000); // Extended from 16500 to 33000ms (100% longer)
-
-  // Add intergalactic beam effect specifically for white pet transcendence
-  setTimeout(() => {
-    triggerIntergalacticBeam();
-  }, 8000); // Start beam effect during peak transcendence
-
-  // Transcendence overlay will be shown at the end of triggerIntergalacticBeam (9s duration)
-}
-
 // New function for the dramatic intergalactic beam effect
 function triggerIntergalacticBeam() {
   console.log("🌌⚡ Triggering dramatic intergalactic beam of light!");
@@ -1290,26 +1250,8 @@ function triggerIntergalacticBeam() {
       beamElement.parentNode.removeChild(beamElement);
     }
     console.log("🌌⚡ Intergalactic beam effect completed and removed");
-    showWhiteTranscendenceOverlay();
+    showTranscendenceOverlay();
   }, 9000); // Match beam animation duration
-}
-
-function showWhiteTranscendenceOverlay() {
-  showTranscendenceOverlay();
-}
-
-// Enhanced animation transition with cat-shaped glitch stutter masking
-async function playAnimationWithStutterMask(actionType, stage) {
-  // Trigger glitch stutter effect ONCE at the start of each action
-  triggerGlitchStutter(320);
-
-  // Small delay to let stutter effect start
-  await new Promise((resolve) => setTimeout(resolve, 20));
-
-  // Play the actual animation and wait for the entire sequence to complete
-  const result = await playActionThenShareIdle(actionType, stage);
-
-  return result;
 }
 
 setupDropdownMenu(btn, menu, container);

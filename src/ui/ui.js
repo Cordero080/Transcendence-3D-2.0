@@ -18,10 +18,6 @@ export function initUI() {
   const btn = document.getElementById("infoDropdownBtn");
   const menu = document.getElementById("infoDropdownMenu");
   const container = document.querySelector(".dropdown-container");
-  const feedIndicator = document.querySelector("#hungerTimer");
-  const danceIndicator = document.querySelector("#funTimer");
-  const sleepIndicator = document.querySelector("#sleepTimer");
-  const powerIndicator = document.querySelector("#powerTimer");
   const glitchOverlay = document.getElementById("glitchOverlay");
   const glitchOverlay2 = document.getElementById("glitchOverlay2");
   const transcendenceEffect = document.getElementById("transcendenceEffect");
@@ -64,13 +60,9 @@ export function initUI() {
     // winOverlay,
     bgMusic,
     spaceEngineAudio,
-
-    // NEW: return the individual buttons
     feedButton,
     danceButton,
     sleepButton,
     trainButton,
-    // optional alias if your code references weakButton:
-    weakButton: trainButton,
   };
 }

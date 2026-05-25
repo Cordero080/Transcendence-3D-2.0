@@ -237,9 +237,6 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
   });
 }
 
-function hasActiveModel() {
-  return !!activeModel;
-}
 // DIGITS set(X, Y, Z)
 // X: Negative ----> left Positive = right
 // Y: Up / Down ----> Positive = up
@@ -284,7 +281,7 @@ export function setWhiteStageLighting(enabled) {
   whiteStageInnerLight.intensity = 12;
 }
 
-export { loadAndDisplayFBX, getCatMaskData, hasActiveModel };
+export { loadAndDisplayFBX, getCatMaskData };
 
 const scene = new THREE.Scene();
 const petRoot = new THREE.Group();

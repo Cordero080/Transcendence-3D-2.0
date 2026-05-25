@@ -53,14 +53,3 @@ export function playEvolutionSound() {
     }, 700);
   }
 }
-
-export function playSound(soundId, volume = 0.3) {
-  const audio = document.getElementById(soundId);
-  if (audio) {
-    audio.currentTime = 0;
-    audio.volume = volume;
-    audio.play().catch((err) => {
-      console.error(`❌ Sound ${soundId} failed:`, err);
-    });
-  }
-}

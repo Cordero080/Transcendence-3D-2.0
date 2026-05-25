@@ -15,27 +15,6 @@ export function showTranscendenceOverlay() {
   if (btn) btn.focus();
 }
 
-export function showGameOverOverlayLoss(reason) {
-  const overlay = document.getElementById("gameOverOverlay");
-  const titleEl = overlay?.querySelector("h2");
-  const reasonEl = document.getElementById("gameOverReason");
-  const btn = overlay?.querySelector(".game-over-button");
-  if (!overlay || !titleEl || !reasonEl || !btn) return;
-
-  overlay.classList.remove("win");
-
-  titleEl.textContent = "GAME OVER";
-  titleEl.classList.add("glitch-text");
-  titleEl.classList.remove("gradient-text");
-
-  reasonEl.textContent = reason || "Your pet has perished...";
-  reasonEl.classList.remove("gradient-text");
-
-  btn.textContent = "TRY AGAIN";
-  btn.classList.remove("gradient-text");
-
-  overlay.style.display = "flex";
-}
 
 export function showGameOverOverlay(reason = "") {
   console.log("Game Over triggered:", reason);
@@ -71,16 +50,3 @@ export function hidePageOverlay() {
   }
 }
 
-export function showNameOverlay() {
-  const nameOverlay = document.getElementById("nameOverlay");
-  if (nameOverlay) {
-    nameOverlay.style.display = "flex";
-  }
-}
-
-export function hideNameOverlay() {
-  const nameOverlay = document.getElementById("nameOverlay");
-  if (nameOverlay) {
-    nameOverlay.style.display = "none";
-  }
-}
