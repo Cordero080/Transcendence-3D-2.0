@@ -50,9 +50,8 @@
   }
 
   /* === INFO BUTTON === */
-  /* push below iOS status bar / Dynamic Island — max() guards against env() returning 0 */
   .CornerRoundButton {
-    top: max(env(safe-area-inset-top), 52px);
+    top: max(env(safe-area-inset-top), 40px);
   }
 
   /* === HEADER / TITLE === */
@@ -275,5 +274,19 @@
   .startButtonContainer {
     margin-bottom: 16px;
     padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ========== PWA STANDALONE (installed to home screen) ========== */
+/* Browser chrome is gone — page is truly edge-to-edge.
+   env(safe-area-inset-top) is the only barrier between content
+   and the Dynamic Island / status bar. Push down more aggressively. */
+@media (display-mode: standalone) and (max-width: 768px) {
+  .scaling-root {
+    margin-top: calc(env(safe-area-inset-top) + 48px);
+  }
+
+  .CornerRoundButton {
+    top: calc(env(safe-area-inset-top) + 8px);
   }
 }
