@@ -1,7 +1,7 @@
 /**
  * Tests for State Management Module
  */
-import { createState } from "../modules/state.js";
+import { createState } from "../src/core/state.js";
 
 describe("State Module", () => {
   test("should export createState function", () => {

@@ -1,7 +1,7 @@
 /**
  * Tests for Spectral Sine Wave Module
  */
-import { drawSpectralSineWave } from "../modules/spectralSineWave.js";
+import { drawSpectralSineWave } from "../src/effects/spectralSineWave.js";
 import { jest } from "@jest/globals";
 
 describe("Spectral Sine Wave", () => {
