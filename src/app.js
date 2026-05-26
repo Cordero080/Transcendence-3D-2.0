@@ -43,6 +43,12 @@ import {
   initEffectElements,
 } from "@effects/evolutionEffects.js";
 import { showTranscendenceOverlay, showGameOverOverlay } from "@ui/overlays.js";
+
+function showTranscendenceWithName() {
+  const nameEl = document.getElementById("transcendencePetName");
+  if (nameEl) nameEl.textContent = myPet?.name ?? "";
+  showTranscendenceOverlay();
+}
 import { setupDropdownMenu } from "@ui/dropdown.js";
 import { setupNameOverlay } from "@ui/nameOverlay.js";
 import { updatePetChat } from "@ui/petChat.js";
@@ -609,7 +615,7 @@ function checkForEvolution() {
           triggerIntergalacticBeam();
           // Show overlay after both effects complete (9 seconds)
           setTimeout(() => {
-            showTranscendenceOverlay();
+            showTranscendenceWithName();
           }, 9000);
         }, 5000);
 
@@ -659,6 +665,9 @@ function makePetCallbacks() {
         clearTimeout(gameOverTimeout);
         gameOverTimeout = null;
       }
+
+      const nameEl = document.getElementById("gameOverPetName");
+      if (nameEl) nameEl.textContent = myPet.name;
 
       const deathAnim = animationConfig[stage]?.death;
       if (deathAnim) {
@@ -856,6 +865,10 @@ function resetGame() {
     reasonElement.style.fontSize = "";
     reasonElement.style.lineHeight = "";
   }
+  const gameOverNameEl = document.getElementById("gameOverPetName");
+  if (gameOverNameEl) gameOverNameEl.textContent = "";
+  const transcendenceNameEl = document.getElementById("transcendencePetName");
+  if (transcendenceNameEl) transcendenceNameEl.textContent = "";
   if (gameOverOverlay) {
     gameOverOverlay.style.background = "";
     gameOverOverlay.style.border = "";
@@ -1041,7 +1054,7 @@ function triggerIntergalacticBeam() {
       beamElement.parentNode.removeChild(beamElement);
     }
     console.log("🌌⚡ Intergalactic beam effect completed and removed");
-    showTranscendenceOverlay();
+    showTranscendenceWithName();
   }, 9000); // Match beam animation duration
 }
 

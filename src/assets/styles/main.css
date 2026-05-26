@@ -41,6 +41,14 @@
   white-space: nowrap;
 }
 
+.transcendence-pet-name {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
 .transcendence-message {
   font-size: 1.35rem !important;
   line-height: 1.7;
@@ -1841,6 +1849,13 @@ canvas {
   text-align: center;
   width: 100%;
 }
+.game-over-pet-name {
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+  margin-bottom: 4px !important;
+}
+
 #gameOverReason {
   position: relative;
   margin: 0;
