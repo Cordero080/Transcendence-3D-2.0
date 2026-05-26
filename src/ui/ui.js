@@ -4,7 +4,6 @@ export function initUI() {
   const evolveEffectAudio = document.getElementById("evolve_effect_2");
   const highTechAudio = document.getElementById("high-tech");
   // const gameOverOverlay = document.getElementById("gameOverOverlay");
-  const startBtn = document.querySelector(".StartButton");
   const reasonElement = document.getElementById("gameOverReason");
   const petChat = document.querySelector(".infoBox_petChat");
   const hungerTimer = document.getElementById("hungerTimer");
@@ -13,7 +12,6 @@ export function initUI() {
   const powerTimer = document.getElementById("powerTimer");
   const overlay = document.getElementById("pageOverlay");
   const overlayStartBtn = document.getElementById("overlayStartButton");
-  const resetBtn = document.querySelector(".ResetButton");
   const buttons = document.querySelectorAll(".Buttons");
   const btn = document.getElementById("infoDropdownBtn");
   const menu = document.getElementById("infoDropdownMenu");
@@ -44,15 +42,10 @@ export function initUI() {
     powerTimer,
     overlay,
     overlayStartBtn,
-    resetBtn,
     buttons,
     btn,
     menu,
     container,
-    feedIndicator,
-    danceIndicator,
-    sleepIndicator,
-    powerIndicator,
     glitchOverlay,
     glitchOverlay2,
     transcendenceEffect,

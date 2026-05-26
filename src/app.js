@@ -59,12 +59,10 @@ const {
   petChat,
   hungerTimer,
   funTimer,
-  startBtn,
   sleepTimer,
   powerTimer,
   overlay,
   overlayStartBtn,
-  resetBtn,
   buttons,
   btn,
   menu,
@@ -88,7 +86,7 @@ const state = createState();
 window._state = state;
 // optional: lets you inspect it in DevTools
 
-console.log(feedButton, danceButton, sleepButton, trainButton, weakButton);
+console.log(feedButton, danceButton, sleepButton, trainButton);
 
 // --- Modular Care Action Handler ---
 const actionConfigs = {
@@ -1809,28 +1807,6 @@ async function playActionThenShareIdle(actionType, stage) {
 // *================EVENT LISTENERS ===================* \\
 // Note: overlayStartBtn is now handled by setupNameOverlay() module
 
-if (startBtn) {
-  startBtn.addEventListener("click", async () => {
-    const egg = document.getElementById("colorfulGlitchDiv");
-    if (egg) {
-      // restart hatch animation
-      egg.style.display = "flex";
-      egg.classList.remove("hatching");
-      void egg.offsetWidth; // reflow
-      egg.classList.add("hatching");
-
-      // hide after hatch
-      const hide = () => {
-        egg.style.display = "none";
-        egg.classList.remove("hatching");
-      };
-      egg.addEventListener("animationend", hide, { once: true });
-      setTimeout(hide, 1600);
-    }
-
-    await startGame(); // start game AFTER triggering hatch
-  });
-}
 // Event delegation for overlay buttons
 document.addEventListener("DOMContentLoaded", () => {
   // TRY AGAIN button
@@ -1861,16 +1837,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   } else {
     console.warn("PLAY AGAIN button NOT found");
-  }
-});
-
-document.addEventListener("click", (e) => {
-  const id = e.target?.id;
-  if (id === "tryAgainBtn" || id === "playAgainBtn") {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log(`[buttons] ${id} clicked`);
-    resetGame();
   }
 });
 
