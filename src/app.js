@@ -30,11 +30,7 @@ import {
 import animationConfig from "@/animationConfig.js";
 
 // Import extracted modules
-import {
-  gameSettings,
-  stageMap,
-  stageEmojis,
-} from "@core/config.js";
+import { gameSettings, stageMap, stageEmojis } from "@core/config.js";
 import { fadeOutBgMusic, playEvolutionSound } from "@effects/audio.js";
 import {
   triggerCyberpunkEvolutionEffect,
@@ -85,7 +81,6 @@ const {
   sleepButton,
   trainButton,
 } = initUI();
-
 
 console.log(feedButton, danceButton, sleepButton, trainButton);
 
@@ -672,11 +667,18 @@ function makePetCallbacks() {
       const deathAnim = animationConfig[stage]?.death;
       if (deathAnim) {
         console.log(`🎬 Playing death animation for ${stage} stage...`);
-        const deathDuration = await loadAndDisplayFBX(deathAnim.file, deathAnim.pose, { loop: false });
-        gameOverTimeout = setTimeout(() => {
-          showGameOverOverlay(reason);
-          gameOverTimeout = null;
-        }, (deathDuration || 0) + 500);
+        const deathDuration = await loadAndDisplayFBX(
+          deathAnim.file,
+          deathAnim.pose,
+          { loop: false },
+        );
+        gameOverTimeout = setTimeout(
+          () => {
+            showGameOverOverlay(reason);
+            gameOverTimeout = null;
+          },
+          (deathDuration || 0) + 500,
+        );
       } else {
         showGameOverOverlay(reason);
       }
@@ -1180,6 +1182,97 @@ async function playDanceAction(stage) {
     }, totalDurationMs);
   });
 }
+
+function playSound(id, src, delayMs, { volume = 1, playbackRate = 1 } = {}) {
+  setTimeout(() => {
+    let audio = document.getElementById(id);
+    if (!audio) {
+      audio = document.createElement("audio");
+      audio.id = id;
+      audio.src = src;
+      audio.preload = "auto";
+      document.body.appendChild(audio);
+    }
+    audio.pause();
+    audio.currentTime = 0;
+    audio.volume = volume;
+    audio.playbackRate = playbackRate;
+    audio.play().catch(() => {});
+  }, delayMs);
+}
+
+const trainSoundCues = {
+  "yellow:train": [
+    {
+      id: "yellow-kick",
+      src: "music/yellow_kick.wav",
+      delay: 200,
+      volume: 1.0,
+    },
+  ],
+  "yellow:train2": [
+    {
+      id: "yellow-kick",
+      src: "music/yellow_kick.wav",
+      delay: 1800,
+      volume: 1.0,
+    },
+    {
+      id: "yellow-grunt",
+      src: "music/yellow_grunt.mp3",
+      delay: 670,
+      volume: 1.0,
+    },
+  ],
+  "green:train": [
+    {
+      id: "green-grunt",
+      src: "music/green_grunt2.wav",
+      delay: 700,
+      volume: 0.8,
+    },
+  ],
+  "green:train2": [
+    {
+      id: "green-grunt",
+      src: "music/green_grunt.wav",
+      delay: 990,
+      volume: 1.0,
+    },
+  ],
+  "red:train": [
+    { id: "red-jump", src: "music/red_jump.wav", delay: 900, volume: 1.0 },
+    { id: "red-hit", src: "music/red_jump.wav", delay: 1600, volume: 1.0 },
+    { id: "red-hit-2", src: "music/red_jump.wav", delay: 1800, volume: 1.0 },
+    { id: "red-hit-3", src: "music/red_grunt2.wav", delay: 2100, volume: 0.9 },
+  ],
+  "red:train2": [
+    { id: "red-jump", src: "music/red_jump.wav", delay: 800, volume: 1.0 },
+    { id: "red-hit", src: "music/red_jump.wav", delay: 1600, volume: 1.0 },
+    { id: "red-hit", src: "music/red_jump.wav", delay: 1700, volume: 1.0 },
+    { id: "red-hit-2", src: "music/red_jump.wav", delay: 1800, volume: 1.0 },
+    { id: "red-hit-3", src: "music/red_grunt2.wav", delay: 2100, volume: 0.9 },
+    { id: "red-hit-4", src: "music/red_grunt3.wav", delay: 2400, volume: 0.9 },
+  ],
+  "blue:train": [
+    {
+      id: "fighting-voice",
+      src: "music/fighting_voice.wav",
+      delay: 2700,
+      volume: 1.0,
+      playbackRate: 3.7,
+    },
+  ],
+  "blue:train2": [
+    {
+      id: "fighting-voice",
+      src: "music/fighting_voice.wav",
+      delay: 3200,
+      volume: 1.0,
+      playbackRate: 1.5,
+    },
+  ],
+};
 
 async function playActionThenShareIdle(actionType, stage) {
   return new Promise(async (resolve) => {
