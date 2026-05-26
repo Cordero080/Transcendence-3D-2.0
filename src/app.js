@@ -19,7 +19,6 @@ window.addEventListener("unhandledrejection", (e) => {
 
 // --- imports and code ---
 
-import { createState } from "@core/state.js";
 import { Pet } from "@core/Pet.js";
 import { initUI } from "@ui/ui.js";
 import {
@@ -35,8 +34,6 @@ import {
   gameSettings,
   stageMap,
   stageEmojis,
-  danceIndices,
-  trainIndices,
 } from "@core/config.js";
 import { fadeOutBgMusic, playEvolutionSound } from "@effects/audio.js";
 import {
@@ -83,9 +80,6 @@ const {
   trainButton,
 } = initUI();
 
-const state = createState();
-window._state = state;
-// optional: lets you inspect it in DevTools
 
 console.log(feedButton, danceButton, sleepButton, trainButton);
 
@@ -320,6 +314,10 @@ let whiteStageTranscendenceTimeout = null;
 
 // Dance sequence tracking
 let danceSequenceIndex = 0; // 0 = dance, 1 = dance2
+
+// Per-stage animation rotation counters (which variant plays next)
+const danceIndices = { blue: 0, yellow: 0, green: 0, red: 0, white: 0 };
+const trainIndices = { blue: 0, yellow: 0, green: 0, red: 0, white: 0 };
 
 function allCareActionsCompleted() {
   // White stage transcendence - evolve after 2 care animations

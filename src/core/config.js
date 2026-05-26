@@ -62,18 +62,3 @@ export const trainMap = {
   white: ["train", "train2"],
 };
 
-export const danceIndices = {
-  blue: 0,
-  yellow: 0,
-  green: 0,
-  red: 0,
-  white: 0,
-};
-
-export const trainIndices = {
-  blue: 0,
-  yellow: 0,
-  green: 0,
-  red: 0,
-  white: 0,
-};
