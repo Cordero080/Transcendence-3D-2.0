@@ -20,6 +20,7 @@ window.addEventListener("unhandledrejection", (e) => {
 // --- imports and code ---
 
 import { createState } from "@core/state.js";
+import { Pet } from "@core/Pet.js";
 import { initUI } from "@ui/ui.js";
 import {
   loadAndDisplayFBX,
@@ -646,246 +647,40 @@ let slowedTimers = {
   power: false,
 };
 
-/*----- Cached Element References  -----*/
+function makePetCallbacks() {
+  return {
+    onStageChange: (newStage) => {
+      currentStage = newStage;
+    },
+    onGameOver: async (reason, stage) => {
+      gameOverTriggered = true;
+      petIsDead = true;
+      gameStarted = false;
 
-// *---------------CACHED ELEMENTS ---------------------* \\
-
-// 🧬 Transcendence Pet Class
-class Pet {
-  constructor(petName = "Coco") {
-    this.name = petName;
-    this.age = 0;
-    this.hunger = 0;
-    this.fun = 10;
-    this.sleep = 0;
-    this.power = 10;
-    this.stage = "blue"; // starts as blue after hatching
-    this.evolutionLevel = 0; // 0=blue, 1=yellow, 2=green, 3=red, 4=white
-
-    // Flags for visual messaging
-    this.showingEvolutionMessage = false;
-    this.showingActionMessage = false;
-
-    // Internal timers
-    this.ageInterval = null;
-  }
-
-  // 🥚 Feed Action
-  feed() {
-    this.hunger = Math.max(0, this.hunger - 2);
-    console.log(`${this.name} is eating. Hunger: ${this.hunger}`);
-    this.render();
-  }
-
-  // 🎶 Dance Action
-  dance() {
-    this.fun = Math.min(10, this.fun + 2);
-    console.log(`${this.name} is dancing. Fun: ${this.fun}`);
-    this.render();
-  }
-
-  // 💤 Sleep Action
-  sleepRest() {
-    this.sleep = Math.max(0, this.sleep - 2);
-    console.log(`${this.name} is sleeping. Sleep: ${this.sleep}`);
-    this.render();
-  }
-  train() {
-    this.power = Math.min(10, this.power + 2);
-    console.log(`${this.name} is training. Power: ${this.power}`);
-    this.render();
-  }
-
-  // 🌱 Trigger Evolution
-  evolveToNextStage() {
-    console.log(
-      `🔄 Evolution attempt: Current level ${this.evolutionLevel} (${this.stage})`,
-    );
-
-    if (this.evolutionLevel < 4) {
-      // Can evolve up to level 4 (white)
-      const oldStage = this.stage;
-      const oldLevel = this.evolutionLevel;
-
-      this.evolutionLevel++;
-      const stages = ["blue", "yellow", "green", "red", "white"];
-      this.stage = stages[this.evolutionLevel];
-      currentStage = this.stage; // SYNC GLOBAL currentStage
-
-      console.log(
-        `🌟 ${this.name} evolved from ${oldStage} (Level ${oldLevel}) to ${this.stage} (Level ${this.evolutionLevel})!`,
-      );
-      console.log(
-        `📊 Evolution progression: blue(0) → yellow(1) → green(2) → red(3) → white(4)`,
-      );
-
-      this.age += 5;
-      console.log(`🐱 ${this.name} has aged to ${this.age} years old`);
-      // Show chatMessage in petChat for the new stage evolution
-      if (stageMap[this.evolutionLevel]) {
-        updatePetChat(
-          stageMap[this.evolutionLevel].chatMessage ||
-            `${stageEmojis[this.stage]} ${this.name}${
-              stageMap[this.evolutionLevel].message
-            }`,
-        );
-      }
-      this.render();
-    } else {
-      console.log(
-        `✨ ${this.name} has reached the final form: ${this.stage} (Level ${this.evolutionLevel})! No further evolution possible.`,
-      );
-    }
-  }
-
-  // PET AGES
-  startAging() {
-    this.ageInterval = setInterval(() => {
-      this.age++;
-      console.log(`🐱 ${this.name} aged to ${this.age} year sold`);
-      this.render();
-    }, gameSettings.ageInterval);
-  }
-  // ⚰️ Game Over
-  // inside class Pet { ... }
-  async triggerGameOver(reason) {
-    if (gameOverTriggered) {
-      console.log("💀 GAME OVER already triggered, ignoring duplicate.");
-      return;
-    }
-    gameOverTriggered = true;
-    petIsDead = true; // Prevent any further model loading
-
-    console.log(`💀 GAME OVER: ${reason}`);
-
-    // Stop stat decay timers first
-    this.stopAllTimers();
-    gameStarted = false;
-
-    // clear any previous scheduled show (belt-and-suspenders)
-    if (gameOverTimeout) {
-      clearTimeout(gameOverTimeout);
-      gameOverTimeout = null;
-    }
-
-    // LOAD DEATH ANIMATION AND WAIT FOR IT TO COMPLETE
-    const deathAnim = animationConfig[currentStage]?.death;
-    if (deathAnim) {
-      console.log(`🎬 Playing death animation for ${currentStage} stage...`);
-
-      // For death animations, load with loop = false to prevent infinite looping
-      const deathDuration = await loadAndDisplayFBX(
-        deathAnim.file,
-        deathAnim.pose,
-        { loop: false },
-      );
-
-      // 1 loop + 0.5s pad, then show overlay
-      const totalDeathDuration = (deathDuration || 0) + 500;
-
-      gameOverTimeout = setTimeout(() => {
-        showGameOverOverlay(reason); // << use the helper every time
+      if (gameOverTimeout) {
+        clearTimeout(gameOverTimeout);
         gameOverTimeout = null;
-      }, totalDeathDuration);
-    } else {
-      // No death animation available, show overlay immediately
-      showGameOverOverlay(reason); // << helper again
-    }
-
-    this.render(); // update final stat display
-  }
-  // ⏳ Stat decay //
-
-  createStatTimer(type, interval = 7000) {
-    console.log(
-      `⏰ Creating stat timer for ${type} with interval ${interval}ms`,
-    );
-    const timer = setInterval(() => {
-      console.log(
-        `⏰ Stat timer tick: ${type} - hunger:${this.hunger} fun:${this.fun} sleep:${this.sleep} power:${this.power}`,
-      );
-      if (type === "hunger") this.hunger++;
-      if (type === "fun") this.fun--;
-      if (type === "sleep") this.sleep++;
-      if (type === "power") this.power--;
-      this.render();
-
-      // Game over conditions - check if any stat triggers death
-      if (this.hunger >= 10) {
-        console.log(`💀 DEATH TRIGGER: hunger >= 10 (${this.hunger})`);
-        this.triggerGameOver("Starved to death! Why are you like this?...lmao");
       }
-      if (this.fun <= 0) {
-        console.log(`💀 DEATH TRIGGER: fun <= 0 (${this.fun})`);
-        this.triggerGameOver("Life was meaningless without fun :(");
+
+      const deathAnim = animationConfig[stage]?.death;
+      if (deathAnim) {
+        console.log(`🎬 Playing death animation for ${stage} stage...`);
+        const deathDuration = await loadAndDisplayFBX(deathAnim.file, deathAnim.pose, { loop: false });
+        gameOverTimeout = setTimeout(() => {
+          showGameOverOverlay(reason);
+          gameOverTimeout = null;
+        }, (deathDuration || 0) + 500);
+      } else {
+        showGameOverOverlay(reason);
       }
-      if (this.sleep >= 10) {
-        console.log(`💀 DEATH TRIGGER: sleep >= 10 (${this.sleep})`);
-        this.triggerGameOver("Burned my life-force out!");
-      }
-      if (this.power <= 0) {
-        console.log(`💀 DEATH TRIGGER: power <= 0 (${this.power})`);
-        this.triggerGameOver("I slacked on my training!");
-      }
-    }, interval);
-
-    // Store the timer in the pet instance
-    this[`${type}Timer`] = timer;
-    return timer;
-  }
-
-  // 🛑 Stop all stat timers
-  stopAllTimers() {
-    clearInterval(this.hungerTimer);
-    clearInterval(this.funTimer);
-    clearInterval(this.sleepTimer);
-    clearInterval(this.powerTimer);
-    clearInterval(this.ageInterval);
-  }
-
-  // 🖥️ Update UI or log state (placeholder)
-  render() {
-    console.log(
-      `🧾 ${this.name} | Age: ${this.age} | Hunger: ${this.hunger} | Fun: ${this.fun} | Sleep: ${this.sleep} |Power: ${this.power} |  Stage: ${this.stage}`,
-    );
-
-    // Update energy bars and values
-    const hungerBar = document.getElementById("hungerBar");
-    const hungerValue = document.getElementById("hungerValue");
-    const funBar = document.getElementById("funBar");
-    const funValue = document.getElementById("funValue");
-    const sleepBar = document.getElementById("sleepBar");
-    const sleepValue = document.getElementById("sleepValue");
-    const powerBar = document.getElementById("powerBar");
-    const powerValue = document.getElementById("powerValue");
-
-    // Only update hunger and sleep if not in white stage and timers are running
-    if (this.stage !== "white" && this.hungerTimer) {
-      if (hungerBar) hungerBar.style.width = `${(this.hunger / 10) * 100}%`;
-      if (hungerValue) hungerValue.textContent = this.hunger;
-    }
-    if (this.stage !== "white" && this.sleepTimer) {
-      if (sleepBar) sleepBar.style.width = `${(this.sleep / 10) * 100}%`;
-      if (sleepValue) sleepValue.textContent = this.sleep;
-    }
-
-    // Always update fun and power
-    if (funBar) funBar.style.width = `${(this.fun / 10) * 100}%`;
-    if (funValue) funValue.textContent = this.fun;
-    if (powerBar) powerBar.style.width = `${(this.power / 10) * 100}%`;
-    if (powerValue) powerValue.textContent = this.power;
-
-    // Note: petChat message is set during evolution/game start, not in render()
-    // to avoid overwriting special messages
-  }
+    },
+  };
 }
-
-// END OF PET CLASS
 
 function startGame() {
   return new Promise((resolve) => {
     const petName = window.petName || "Coco";
-    myPet = new Pet(petName);
+    myPet = new Pet(petName, makePetCallbacks());
 
     // Start at blue stage
     currentStage = "blue";
@@ -1040,7 +835,7 @@ function resetGame() {
 
   // ── E) Reset core state ─────────────────────────────────────────────────────
   const petName = window.petName || "Coco";
-  myPet = new Pet(petName);
+  myPet = new Pet(petName, makePetCallbacks());
   currentStage = "blue";
   myPet.stage = "blue";
   myPet.evolutionLevel = 0; // ← Ensure evolution level is reset to 0
