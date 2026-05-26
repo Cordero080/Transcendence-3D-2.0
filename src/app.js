@@ -25,7 +25,6 @@ import {
   loadAndDisplayFBX,
   clearActiveModel,
   setWhiteStageLighting,
-  getCatMaskData,
 } from "@/animRender.js";
 import animationConfig from "@/animationConfig.js";
 
@@ -51,38 +50,18 @@ import { updatePetChat } from "@ui/petChat.js";
 import { restorePetContainer } from "@ui/petContainer.js";
 
 const {
-  evolutionAudio,
-  evolveEffectAudio,
-  highTechAudio,
-  // gameOverOverlay,
-  reasonElement,
-  petChat,
   hungerTimer,
   funTimer,
   sleepTimer,
   powerTimer,
-  overlay,
-  overlayStartBtn,
-  buttons,
   btn,
   menu,
   container,
-  glitchOverlay,
-  glitchOverlay2,
-  transcendenceEffect,
-  glitchDiv,
-  // winOverlay,
-  bgMusic,
-  spaceEngineAudio,
-
-  // ⬇️ add these
   feedButton,
   danceButton,
   sleepButton,
   trainButton,
 } = initUI();
-
-console.log(feedButton, danceButton, sleepButton, trainButton);
 
 // --- Modular Care Action Handler ---
 const actionConfigs = {
@@ -284,7 +263,6 @@ let currentStage; //
 let myPet;
 let gameStarted = false;
 let currentAnimationTimer = null;
-let backgroundMusic;
 let actionInProgress = false;
 let careCycles = 0;
 let gameOverTriggered = false;
@@ -639,13 +617,6 @@ let statTimers = {
   sleep: null,
   power: null,
 };
-let slowedTimers = {
-  hunger: false,
-  fun: false,
-  sleep: false,
-  power: false,
-};
-
 function makePetCallbacks() {
   return {
     onStageChange: (newStage) => {
@@ -997,8 +968,6 @@ function triggerIntergalacticBeam() {
   const beamElement = document.createElement("div");
   beamElement.className = "intergalactic-beam";
 
-  // Position the beam to originate from the cat's position
-  const catData = getCatMaskData();
   // Center the beam horizontally in the viewport
   beamElement.style.left = "50%";
   beamElement.style.top = "0px";
