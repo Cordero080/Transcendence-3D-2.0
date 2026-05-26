@@ -15,7 +15,7 @@
 //   main.css → search "GLITCH STUTTER OVERLAY" → stutter orb styles
 // ████████████████████████████████████████████████████████████████████████████
 
-import { getCatMaskData } from "@/main-test.js";
+import { getCatMaskData } from "@/animRender.js";
 
 // DOM element references (set on init)
 let transcendenceEffect = null;

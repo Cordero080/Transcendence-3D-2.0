@@ -26,8 +26,8 @@ import {
   clearActiveModel,
   setWhiteStageLighting,
   getCatMaskData,
-} from "@/main-test.js";
-import animationConfig from "@/annimationConfig.js";
+} from "@/animRender.js";
+import animationConfig from "@/animationConfig.js";
 
 // Import extracted modules
 import {
@@ -964,7 +964,7 @@ function resetGame() {
   const pc = restorePetContainer(); // <- your helper, exactly as you posted
   console.log("[reset] pet-container present:", !!pc);
 
-  // If you added ensureRendererMounted() in main-test.js, re-attach the canvas
+  // If you added ensureRendererMounted() in animRender.js, re-attach the canvas
   try {
     if (typeof ensureRendererMounted === "function") {
       const mounted = ensureRendererMounted();
