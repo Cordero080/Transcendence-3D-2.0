@@ -1,24 +1,6 @@
-window.addEventListener("DOMContentLoaded", () => {
-  // Set initial background music volume
-  const bgMusic = document.getElementById("bg-music");
-  if (bgMusic) {
-    bgMusic.volume = 0.15;
-  }
-  // Initialize effect system DOM references
-  initEffectElements();
-});
-
-// safety so missing function won't crash white-stage evolution
-window.startWhiteEmissionTimer =
-  window.startWhiteEmissionTimer || function () {};
-// --- Debug resource loading ---
-// --- Debug: catch any silent async errors ---
-window.addEventListener("unhandledrejection", (e) => {
-  console.error("[UNHANDLED PROMISE]", e.reason);
-});
-
-// --- imports and code ---
-
+// ============================================================
+// 1. IMPORTS
+// ============================================================
 import { Pet } from "@core/Pet.js";
 import { initUI } from "@ui/ui.js";
 import {
@@ -27,8 +9,6 @@ import {
   setWhiteStageLighting,
 } from "@/animRender.js";
 import animationConfig from "@/animationConfig.js";
-
-// Import extracted modules
 import { gameSettings, stageMap, stageEmojis } from "@core/config.js";
 import { fadeOutBgMusic, playEvolutionSound } from "@effects/audio.js";
 import {
@@ -38,35 +18,16 @@ import {
   initEffectElements,
 } from "@effects/evolutionEffects.js";
 import { showTranscendenceOverlay, showGameOverOverlay } from "@ui/overlays.js";
-
-function showTranscendenceWithName() {
-  const nameEl = document.getElementById("transcendencePetName");
-  if (nameEl) nameEl.textContent = myPet?.name ?? "";
-  showTranscendenceOverlay();
-}
 import { setupDropdownMenu } from "@ui/dropdown.js";
 import { setupNameOverlay } from "@ui/nameOverlay.js";
 import { updatePetChat } from "@ui/petChat.js";
 import { restorePetContainer } from "@ui/petContainer.js";
 
-const {
-  hungerTimer,
-  funTimer,
-  sleepTimer,
-  powerTimer,
-  btn,
-  menu,
-  container,
-  feedButton,
-  danceButton,
-  sleepButton,
-  trainButton,
-} = initUI();
-
-// --- Modular Care Action Handler ---
+// ============================================================
+// 2. CONSTANTS  (pure config — no DOM refs, no runtime state)
+// ============================================================
 const actionConfigs = {
   feed: {
-    button: feedButton,
     action: () => myPet.feed(),
     animation: (stage) => playActionThenShareIdle("feed", stage),
     message: () =>
@@ -74,21 +35,18 @@ const actionConfigs = {
     available: (stage) => !!animationConfig[stage]?.feed,
   },
   dance: {
-    button: danceButton,
     action: () => myPet.dance(),
     animation: (stage) => playDanceAction(stage),
-    message: () => "💃 I gets BUZY! Pawz on fire!",
+    message: () => " I gets BUZY! Pawz on fire!",
     available: () => true,
   },
   sleep: {
-    button: sleepButton,
     action: () => myPet.sleepRest(),
     animation: (stage) => playActionThenShareIdle("sleep", stage),
     message: () => "😴 Got tickets to the blanket show...zzz",
     available: (stage) => !!animationConfig[stage]?.sleep,
   },
   train: {
-    button: trainButton,
     action: () => myPet.train(),
     animation: (stage) => playActionThenShareIdle("train", stage),
     message: () =>
@@ -96,6 +54,15 @@ const actionConfigs = {
     available: () => true,
   },
 };
+
+// ============================================================
+// 3. DOM REFERENCES  (declared here, assigned in INIT below)
+// ============================================================
+// These can't be assigned until the DOM exists, so they start
+// as null and get filled inside the DOMContentLoaded block.
+let feedButton, danceButton, sleepButton, trainButton;
+let hungerTimer, funTimer, sleepTimer, powerTimer;
+let btn, menu, container;
 
 function handleCareAction(actionName) {
   return async function () {
@@ -108,7 +75,13 @@ function handleCareAction(actionName) {
       return;
     }
 
-    if (actionInProgress || gameOverTriggered || config.button.disabled) return;
+    const button = {
+      feed: feedButton,
+      dance: danceButton,
+      sleep: sleepButton,
+      train: trainButton,
+    }[actionName];
+    if (actionInProgress || gameOverTriggered || button?.disabled) return;
     actionInProgress = true;
     stopWhiteEmissionTimer && stopWhiteEmissionTimer();
     try {
@@ -242,24 +215,10 @@ function handleCareAction(actionName) {
   };
 }
 
-// Attach modular handlers
-Object.keys(actionConfigs).forEach((action) => {
-  const config = actionConfigs[action];
-  if (config.button) {
-    config.button.removeEventListener &&
-      config.button.removeEventListener("click", config._handler);
-    config._handler = handleCareAction(action);
-    config.button.addEventListener("click", config._handler);
-  }
-});
-
-/*---------- Variables (state) ---------*/
-let currentStage; //
-// loadAndDisplayFBX(
-//   animationConfig[currentStage].idle.file,
-//   animationConfig[currentStage].idle.pose
-// );
-
+// ============================================================
+// 4. STATE
+// ============================================================
+let currentStage;
 let myPet;
 let gameStarted = false;
 let currentAnimationTimer = null;
@@ -268,9 +227,8 @@ let careCycles = 0;
 let gameOverTriggered = false;
 let gameOverTimeout = null;
 let whiteEmissionTimer = null;
-let petIsDead = false; // Prevents model loading after death
+let petIsDead = false;
 
-// Evolution System Variables
 let buttonTracker = {
   feed: false,
   dance: false,
@@ -282,21 +240,23 @@ let buttonTracker = {
 let evolutionTimeout = null;
 let evolutionInProgress = false;
 
-// White Stage Animation Counter (for transcendence after 2 animations)
 let whiteStageAnimationCount = 0;
-// Track which care actions have been pressed in white stage
-let whiteStageCareActions = {
-  dance: false,
-  train: false,
-};
+let whiteStageCareActions = { dance: false, train: false };
 let whiteStageTranscendenceTimeout = null;
+let danceSequenceIndex = 0;
 
-// Dance sequence tracking
-let danceSequenceIndex = 0; // 0 = dance, 1 = dance2
-
-// Per-stage animation rotation counters (which variant plays next)
 const danceIndices = { blue: 0, yellow: 0, green: 0, red: 0, white: 0 };
 const trainIndices = { blue: 0, yellow: 0, green: 0, red: 0, white: 0 };
+let statTimers = { hunger: null, fun: null, sleep: null, power: null };
+
+// ============================================================
+// 5. FUNCTIONS
+// ============================================================
+function showTranscendenceWithName() {
+  const nameEl = document.getElementById("transcendencePetName");
+  if (nameEl) nameEl.textContent = myPet?.name ?? "";
+  showTranscendenceOverlay();
+}
 
 function allCareActionsCompleted() {
   // White stage transcendence - evolve after 2 care animations
@@ -609,14 +569,6 @@ function checkForEvolution() {
     }
   }
 }
-
-// Timer System Variables
-let statTimers = {
-  hunger: null,
-  fun: null,
-  sleep: null,
-  power: null,
-};
 function makePetCallbacks() {
   return {
     onStageChange: (newStage) => {
@@ -1375,73 +1327,67 @@ async function playActionThenShareIdle(actionType, stage) {
   });
 }
 
-// *================EVENT LISTENERS ===================* \\
-// Note: overlayStartBtn is now handled by setupNameOverlay() module
-
-// Event delegation for overlay buttons
-document.addEventListener("DOMContentLoaded", () => {
-  // TRY AGAIN button
-  const tryAgainBtn = document.getElementById("tryAgainBtn");
-  if (tryAgainBtn) {
-    console.log("TRY AGAIN button found, attaching listener");
-    tryAgainBtn.addEventListener("click", () => {
-      console.log("TRY AGAIN button clicked");
-      const gameOverOverlay = document.getElementById("gameOverOverlay");
-      if (gameOverOverlay) gameOverOverlay.style.display = "none";
-      resetGame();
-    });
-  } else {
-    console.warn("TRY AGAIN button NOT found");
-  }
-
-  // PLAY AGAIN button
-  const playAgainBtn = document.getElementById("playAgainBtn");
-  if (playAgainBtn) {
-    console.log("PLAY AGAIN button found, attaching listener");
-    playAgainBtn.addEventListener("click", () => {
-      console.log("PLAY AGAIN button clicked");
-      const transcendenceOverlay = document.getElementById(
-        "transcendenceOverlay",
-      );
-      if (transcendenceOverlay) transcendenceOverlay.style.display = "none";
-      resetGame();
-    });
-  } else {
-    console.warn("PLAY AGAIN button NOT found");
-  }
-});
-
-// === Wire buttons AFTER the DOM exists ===
+// ============================================================
+// 6. INIT  (runs once when the HTML is fully loaded)
+// ============================================================
 window.addEventListener("DOMContentLoaded", () => {
-  // Setup name overlay interactions
+  // --- Assign DOM references ---
+  // initUI() finds all the buttons and containers in the HTML.
+  // It only runs here, after the DOM exists.
+  ({
+    hungerTimer,
+    funTimer,
+    sleepTimer,
+    powerTimer,
+    btn,
+    menu,
+    container,
+    feedButton,
+    danceButton,
+    sleepButton,
+    trainButton,
+  } = initUI());
+
+  // --- One-time setup ---
+  const bgMusic = document.getElementById("bg-music");
+  if (bgMusic) bgMusic.volume = 0.15;
+  initEffectElements();
+  setupDropdownMenu(btn, menu, container);
   setupNameOverlay();
 
-  const startBtn = document.querySelector(".StartButton"); // START
-  const egg = document.getElementById("colorfulGlitchDiv");
+  // --- Wire care action buttons ---
+  // Now that we have the DOM refs, attach a click handler to each button.
+  const buttonMap = {
+    feed: feedButton,
+    dance: danceButton,
+    sleep: sleepButton,
+    train: trainButton,
+  };
+  Object.keys(actionConfigs).forEach((action) => {
+    const button = buttonMap[action];
+    if (button) button.addEventListener("click", handleCareAction(action));
+  });
 
-  // 3) START: hatch the egg, then start the game
+  // --- START button ---
+  const startBtn = document.querySelector(".StartButton");
+  const egg = document.getElementById("colorfulGlitchDiv");
   if (startBtn) {
     startBtn.addEventListener("click", async () => {
-      // Show hatching message immediately
       const petName = window.petName || "Coco";
       updatePetChat(`${petName} is just hatching!`);
 
-      // Play egg hatch sound
       const eggHatchAudio = document.getElementById("egg-hatch");
       if (eggHatchAudio) {
         eggHatchAudio.playbackRate = 3;
         eggHatchAudio.currentTime = 0;
         eggHatchAudio.volume = 1;
-        eggHatchAudio.play().catch((err) => {
-          console.log("🔇 egg_hatch.wav audio play() blocked:", err);
-        });
+        eggHatchAudio.play().catch(() => {});
       }
       if (egg) {
         egg.style.display = "flex";
         egg.classList.remove("hatching");
-        void egg.offsetWidth; // force reflow
+        void egg.offsetWidth;
         egg.classList.add("hatching");
-
         const hide = () => {
           egg.style.display = "none";
           egg.classList.remove("hatching");
@@ -1450,7 +1396,6 @@ window.addEventListener("DOMContentLoaded", () => {
         setTimeout(hide, 1600);
       }
 
-      // Disable hover on reset during the slide transition so it doesn't misfire
       const resetBtn = document.querySelector(".ResetButton");
       if (resetBtn) {
         resetBtn.style.pointerEvents = "none";
@@ -1463,15 +1408,33 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3) RESET: reset the entire game state and timers
+  // --- RESET button ---
   const resetBtn = document.querySelector(".ResetButton");
   if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      console.log("🔄 RESET button clicked");
+    resetBtn.addEventListener("click", () => resetGame());
+  }
+
+  // --- TRY AGAIN button (game over overlay) ---
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
+  if (tryAgainBtn) {
+    tryAgainBtn.addEventListener("click", () => {
+      document.getElementById("gameOverOverlay").style.display = "none";
+      resetGame();
+    });
+  }
+
+  // --- PLAY AGAIN button (transcendence overlay) ---
+  const playAgainBtn = document.getElementById("playAgainBtn");
+  if (playAgainBtn) {
+    playAgainBtn.addEventListener("click", () => {
+      document.getElementById("transcendenceOverlay").style.display = "none";
       resetGame();
     });
   }
 });
 
-// Safety fallback for window functions
+// Safety shim — startWhiteEmissionTimer is injected by the white-stage effect
 window.startWhiteEmissionTimer = window.startWhiteEmissionTimer || (() => null);
+window.addEventListener("unhandledrejection", (e) => {
+  console.error("[UNHANDLED PROMISE]", e.reason);
+});
