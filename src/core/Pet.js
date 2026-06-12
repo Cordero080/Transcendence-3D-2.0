@@ -5,7 +5,10 @@ import animationConfig from "@/animationConfig.js";
 import { showGameOverOverlay } from "@ui/overlays.js";
 
 export class Pet {
-  constructor(petName = "Coco", { onStageChange, onGameOver } = {}) {
+  constructor(
+    petName = "Coco",
+    { onStageChange, onGameOver, onStatsChange } = {},
+  ) {
     this.name = petName;
     this.age = 0;
     this.hunger = 0;
@@ -22,34 +25,37 @@ export class Pet {
 
     this._onStageChange = onStageChange || (() => {});
     this._onGameOver = onGameOver || (() => {});
+    this._onStatsChange = onStatsChange || (() => {});
   }
 
   feed() {
     this.hunger = Math.max(0, this.hunger - 2);
     console.log(`${this.name} is eating. Hunger: ${this.hunger}`);
-    this.render();
+    this._onStatsChange();
   }
 
   dance() {
     this.fun = Math.min(10, this.fun + 2);
     console.log(`${this.name} is dancing. Fun: ${this.fun}`);
-    this.render();
+    this._onStatsChange();
   }
 
   sleepRest() {
     this.sleep = Math.max(0, this.sleep - 2);
     console.log(`${this.name} is sleeping. Sleep: ${this.sleep}`);
-    this.render();
+    this._onStatsChange();
   }
 
   train() {
     this.power = Math.min(10, this.power + 2);
     console.log(`${this.name} is training. Power: ${this.power}`);
-    this.render();
+    this._onStatsChange();
   }
 
   evolveToNextStage() {
-    console.log(`🔄 Evolution attempt: Current level ${this.evolutionLevel} (${this.stage})`);
+    console.log(
+      `🔄 Evolution attempt: Current level ${this.evolutionLevel} (${this.stage})`,
+    );
 
     if (this.evolutionLevel < 4) {
       const oldStage = this.stage;
@@ -60,8 +66,12 @@ export class Pet {
       this.stage = stages[this.evolutionLevel];
       this._onStageChange(this.stage);
 
-      console.log(`🌟 ${this.name} evolved from ${oldStage} (Level ${oldLevel}) to ${this.stage} (Level ${this.evolutionLevel})!`);
-      console.log(`📊 Evolution progression: blue(0) → yellow(1) → green(2) → red(3) → white(4)`);
+      console.log(
+        `🌟 ${this.name} evolved from ${oldStage} (Level ${oldLevel}) to ${this.stage} (Level ${this.evolutionLevel})!`,
+      );
+      console.log(
+        `📊 Evolution progression: blue(0) → yellow(1) → green(2) → red(3) → white(4)`,
+      );
 
       this.age += 5;
       console.log(`🐱 ${this.name} has aged to ${this.age} years old`);
@@ -72,9 +82,11 @@ export class Pet {
             `${stageEmojis[this.stage]} ${this.name}${stageMap[this.evolutionLevel].message}`,
         );
       }
-      this.render();
+      this._onStatsChange();
     } else {
-      console.log(`✨ ${this.name} has reached the final form: ${this.stage} (Level ${this.evolutionLevel})! No further evolution possible.`);
+      console.log(
+        `✨ ${this.name} has reached the final form: ${this.stage} (Level ${this.evolutionLevel})! No further evolution possible.`,
+      );
     }
   }
 
@@ -82,7 +94,7 @@ export class Pet {
     this.ageInterval = setInterval(() => {
       this.age++;
       console.log(`🐱 ${this.name} aged to ${this.age} year sold`);
-      this.render();
+      this._onStatsChange();
     }, gameSettings.ageInterval);
   }
 
@@ -95,20 +107,24 @@ export class Pet {
     console.log(`💀 GAME OVER: ${reason}`);
 
     this.stopAllTimers();
-    this.render();
+    this._onStatsChange();
 
     await this._onGameOver(reason, this.stage);
   }
 
   createStatTimer(type, interval = 7000) {
-    console.log(`⏰ Creating stat timer for ${type} with interval ${interval}ms`);
+    console.log(
+      `⏰ Creating stat timer for ${type} with interval ${interval}ms`,
+    );
     const timer = setInterval(() => {
-      console.log(`⏰ Stat timer tick: ${type} - hunger:${this.hunger} fun:${this.fun} sleep:${this.sleep} power:${this.power}`);
+      console.log(
+        `⏰ Stat timer tick: ${type} - hunger:${this.hunger} fun:${this.fun} sleep:${this.sleep} power:${this.power}`,
+      );
       if (type === "hunger") this.hunger++;
       if (type === "fun") this.fun--;
       if (type === "sleep") this.sleep++;
       if (type === "power") this.power--;
-      this.render();
+      this._onStatsChange();
 
       if (this.hunger >= 10) {
         console.log(`💀 DEATH TRIGGER: hunger >= 10 (${this.hunger})`);
@@ -138,32 +154,5 @@ export class Pet {
     clearInterval(this.sleepTimer);
     clearInterval(this.powerTimer);
     clearInterval(this.ageInterval);
-  }
-
-  render() {
-    console.log(`🧾 ${this.name} | Age: ${this.age} | Hunger: ${this.hunger} | Fun: ${this.fun} | Sleep: ${this.sleep} | Power: ${this.power} | Stage: ${this.stage}`);
-
-    const hungerBar = document.getElementById("hungerBar");
-    const hungerValue = document.getElementById("hungerValue");
-    const funBar = document.getElementById("funBar");
-    const funValue = document.getElementById("funValue");
-    const sleepBar = document.getElementById("sleepBar");
-    const sleepValue = document.getElementById("sleepValue");
-    const powerBar = document.getElementById("powerBar");
-    const powerValue = document.getElementById("powerValue");
-
-    if (this.stage !== "white" && this.hungerTimer) {
-      if (hungerBar) hungerBar.style.width = `${(this.hunger / 10) * 100}%`;
-      if (hungerValue) hungerValue.textContent = this.hunger;
-    }
-    if (this.stage !== "white" && this.sleepTimer) {
-      if (sleepBar) sleepBar.style.width = `${(this.sleep / 10) * 100}%`;
-      if (sleepValue) sleepValue.textContent = this.sleep;
-    }
-
-    if (funBar) funBar.style.width = `${(this.fun / 10) * 100}%`;
-    if (funValue) funValue.textContent = this.fun;
-    if (powerBar) powerBar.style.width = `${(this.power / 10) * 100}%`;
-    if (powerValue) powerValue.textContent = this.power;
   }
 }

@@ -59,6 +59,7 @@ downloads every imported file:
 | `petChat.js` | Updates the chat message below the pet |
 | `petContainer.js` | Restores the pet container on reset |
 | `ui.js` | Finds and returns all the DOM elements (buttons, timers) |
+| `petStats.js` | Updates the stat bars (hungerBar, funBar, etc.) on screen |
 
 Once everything is downloaded, `app.js` runs its own code top to bottom.
 Here is what executes in order, and what is just being defined:
@@ -194,6 +195,27 @@ From here, everything is event-driven. Nothing runs unless the user does somethi
 
 ---
 
+## How Data and UI Stay Separated
+
+`Pet.js` only tracks numbers — hunger, fun, sleep, power. It never touches the HTML.
+`petStats.js` only updates the bars on screen. It never changes any numbers.
+`app.js` is the middleman that connects them.
+
+Here is the chain when a stat changes:
+
+```
+Pet.js         →  rings a bell (_onStatsChange)
+app.js         →  hears the bell, calls renderPetStats(myPet)
+petStats.js    →  reads the pet's numbers, updates the bars
+```
+
+This matters because the data and the display are independent.
+If you want to change how the bars look, you edit `petStats.js`.
+If you want to change how hunger decays, you edit `Pet.js`.
+Neither file knows anything about the other.
+
+---
+
 ## The One Rule Worth Memorizing
 
 > **Functions are defined in Phase 2. They run in Phase 3 and 4.**
@@ -217,5 +239,6 @@ happens later, when something calls it.
 | The overlays (game over, transcendence) | `src/ui/overlays.js` |
 | The pet chat messages | `src/ui/petChat.js` |
 | How buttons and DOM refs are found | `src/ui/ui.js` |
+| Updating the stat bars on screen | `src/ui/petStats.js` |
 | The main wiring and game flow | `src/app.js` |
 | The battle arena (Easter egg) | `src/battle/` |

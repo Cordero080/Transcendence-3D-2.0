@@ -22,6 +22,7 @@ import { setupDropdownMenu } from "@ui/dropdown.js";
 import { setupNameOverlay } from "@ui/nameOverlay.js";
 import { updatePetChat } from "@ui/petChat.js";
 import { restorePetContainer } from "@ui/petContainer.js";
+import { renderPetStats } from "@ui/petStats.js";
 
 // ============================================================
 // 2. CONSTANTS  (pure config — no DOM refs, no runtime state)
@@ -574,6 +575,7 @@ function makePetCallbacks() {
     onStageChange: (newStage) => {
       currentStage = newStage;
     },
+    onStatsChange: () => renderPetStats(myPet),
     onGameOver: async (reason, stage) => {
       gameOverTriggered = true;
       petIsDead = true;
@@ -647,7 +649,7 @@ function startGame() {
         );
       }
 
-      myPet.render();
+      renderPetStats(myPet);
 
       statTimers.hunger = myPet.createStatTimer(
         "hunger",
