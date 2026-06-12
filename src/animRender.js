@@ -1,20 +1,43 @@
 import * as THREE from "@lib/three.module.js";
 import { FBXLoader } from "@lib/FBXLoader.js";
 
-// import { TextureLoader } from "@libs/three.module.js";
-const textureLoader = new THREE.TextureLoader();
 console.log("✅ Three.js and FBXLoader loaded successfully!");
 
-// Setup scene
+// ── Module-level state ────────────────────────────────────────────────────────
+const textureLoader = new THREE.TextureLoader();
+const clock = new THREE.Clock();
+
 let currentLoadToken = 0;
 let activeModel = null;
-let mixer = null; // <-- NEW
+let mixer = null;
 let time = 0;
 let currentPose = "";
 let catMaskCanvas = null;
 let catMaskContext = null;
 let lastBaseScale = [0.001, 0.001, 0.001];
-// === Responsive helpers ======================================
+
+// Initialized inside initRenderer()
+let scene, petRoot, camera, renderer;
+let ambientLight, directionalLight, light, topLight, sideLight, backLight;
+
+// ── White stage lights (Three.js objects — no DOM) ────────────────────────────
+const whiteStageBottomLight = new THREE.PointLight(0xff99cc, 0, 35);
+whiteStageBottomLight.position.set(0, 6, 8);
+
+const whiteStageLeftLight = new THREE.PointLight(0x00bbff, 90, 40);
+whiteStageLeftLight.position.set(-13, 6, 6);
+whiteStageLeftLight.decay = 1.2;
+
+const whiteStageTopRightLight = new THREE.PointLight(0xff00ff, 250, 90);
+whiteStageTopRightLight.position.set(0, 10, 7);
+
+const whiteStageTopLeftLight = new THREE.PointLight(0xff5500, 80, 35);
+whiteStageTopLeftLight.position.set(-7, 10, 7);
+
+const whiteStageInnerLight = new THREE.PointLight(0xffcc33, 50, 15);
+whiteStageInnerLight.position.set(7, 2, 0);
+
+// ── Responsive helpers ────────────────────────────────────────────────────────
 function resizeRendererToContainer(renderer, camera) {
   const container = document.getElementById("pet-container");
   if (!container) return;
@@ -22,7 +45,6 @@ function resizeRendererToContainer(renderer, camera) {
   const height = Math.floor(container.clientHeight);
   const canvas = renderer.domElement;
 
-  // Only resize when needed
   if (canvas.width !== width || canvas.height !== height) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
@@ -30,14 +52,11 @@ function resizeRendererToContainer(renderer, camera) {
   }
 }
 
-// Scale the active model a bit smaller on narrow screens
-// Scale the active model a bit smaller on narrow screens (multiplicative)
 function fitModelForViewport(model, baseScale = [0.001, 0.001, 0.001]) {
   if (!model) return;
 
   const isMobile = window.matchMedia("(max-width: 768px)").matches;
   if (!isMobile) {
-    // Desktop: keep your exact pose scale
     model.scale.set(baseScale[0], baseScale[1], baseScale[2]);
     return;
   }
@@ -45,19 +64,16 @@ function fitModelForViewport(model, baseScale = [0.001, 0.001, 0.001]) {
   const container = document.getElementById("pet-container");
   const w = container ? container.clientWidth : window.innerWidth;
 
-  // Mobile pet size — adjust k range to make pets larger/smaller on narrow screens.
-  // k=1.21 at 360px (narrowest), eases to k=1.0 at 900px. Raise the 1.21 to go bigger.
+  // k=1.21 at 360px (narrowest), eases to k=1.0 at 900px
   const t = Math.max(360, Math.min(900, w));
   const k = 1.21 - ((t - 360) / (900 - 360)) * 0.21;
 
-  // Multiply original pose scale, don't overwrite
   model.scale.set(baseScale[0] * k, baseScale[1] * k, baseScale[2] * k);
 }
 
+// ── Functions ─────────────────────────────────────────────────────────────────
 export function clearActiveModel() {
-  // remove the single tracked model
   if (activeModel) {
-    // was: scene.remove(activeModel);
     petRoot.remove(activeModel);
     try {
       activeModel.traverse((child) => {
@@ -75,7 +91,6 @@ export function clearActiveModel() {
     mixer = null;
   }
 
-  // also clear anything else that might have been added into the petRoot
   while (petRoot.children.length) {
     const obj = petRoot.children.pop();
     try {
@@ -90,28 +105,26 @@ export function clearActiveModel() {
         }
       });
     } catch {}
-    // was: scene.remove(obj);
     petRoot.remove(obj);
   }
 }
-const clock = new THREE.Clock();
 
-// Function to get cat position and dimensions for dynamic masking
+// DIGITS set(X, Y, Z)
+// X: Negative = left, Positive = right
+// Y: Positive = up
+// Z: Positive = toward camera, Negative = away from camera
 function getCatMaskData() {
   if (!activeModel) return null;
 
   const box = new THREE.Box3().setFromObject(activeModel);
   const center = box.getCenter(new THREE.Vector3());
 
-  // Use offsetWidth/offsetHeight (layout/pre-transform dimensions) because:
-  // - The Three.js renderer is sized from offsetWidth/offsetHeight
-  // - CSS left/top on absolutely-positioned children are in layout space
-  // - getBoundingClientRect() returns post-transform viewport coords (wrong for CSS)
+  // offsetWidth/offsetHeight used (not getBoundingClientRect) because the
+  // renderer is sized from layout dimensions, and CSS left/top are in layout space
   const container = document.getElementById("pet-container");
   const layoutW = container.offsetWidth || 990;
   const layoutH = container.offsetHeight || 600;
 
-  // Project a 3D point to layout-pixel coords matching the Three.js canvas
   const project = (vec) => {
     const v = vec.clone().project(camera);
     return {
@@ -142,8 +155,6 @@ function getCatMaskData() {
   width = Math.max(80, width);
   height = Math.max(100, height);
 
-  // xPct/yPct: NDC-derived percentages — coordinate-safe for CSS left/top
-  // regardless of any parent CSS transform (scale, translate, etc.)
   return {
     xPct: (screenCenter.x / layoutW) * 100,
     yPct: (screenCenter.y / layoutH) * 100,
@@ -157,14 +168,11 @@ function getCatMaskData() {
 function loadAndDisplayFBX(path, pose = {}, options = {}) {
   return new Promise((resolve, reject) => {
     const loader = new FBXLoader();
-
-    // bump token for this load to prevent overlap/race duplicates
     const myToken = ++currentLoadToken;
 
     loader.load(
       path,
       (fbx) => {
-        // if a newer load started while this one was in-flight, drop this one
         if (myToken !== currentLoadToken) {
           try {
             fbx.traverse((child) => {
@@ -182,10 +190,8 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
           return;
         }
 
-        // Clear old model right before adding the new one so canvas is never blank
         clearActiveModel();
 
-        // ----- apply pose -----
         const [sx, sy, sz] = pose.scale || [0.001, 0.001, 0.001];
         const [px = 0, py = -1, pz = 0] = pose.position || [];
         const rotationY = pose.rotationY || 0;
@@ -203,13 +209,11 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
           }
         });
 
-        // ----- attach under a single root, not directly to scene -----
         petRoot.add(fbx);
         activeModel = fbx;
         currentPose = path;
         fitModelForViewport(activeModel, lastBaseScale);
 
-        // ----- animation (guard if no clips) -----
         mixer = new THREE.AnimationMixer(fbx);
         const clip = fbx.animations?.[0];
         if (clip) {
@@ -217,10 +221,9 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
           if (options.loop === false) {
             action.setLoop(THREE.LoopOnce);
             action.clampWhenFinished = true;
-            // Stop mixer updates when animation finishes to freeze at death pose
             mixer.addEventListener("finished", () => {
               console.log("🛑 Animation finished, freezing at final frame");
-              mixer.timeScale = 0; // Freeze the mixer to prevent any further updates
+              mixer.timeScale = 0;
             });
           } else {
             action.setLoop(THREE.LoopRepeat);
@@ -237,35 +240,7 @@ function loadAndDisplayFBX(path, pose = {}, options = {}) {
   });
 }
 
-// DIGITS set(X, Y, Z)
-// X: Negative ----> left Positive = right
-// Y: Up / Down ----> Positive = up
-// Z: Forward / Back (toward or away from the camera)
-// White stage lighting setup (initially off)
-// Positive = toward camera, Negative = away from camera
-//--------------------------------------------------------
-// THREE.Point.Light(color, intensity, distance)
-// Intensity: higher= brighter (max 200 +) Lower = dimmer
-// Distance: This is how far the light reaches before fading out.
-// Small number = tight local glow Large number = long, wide reach and 0 = infinite (no falloff)
-const whiteStageBottomLight = new THREE.PointLight(0xff99cc, 0, 35); // Lighter pink with white/yellow tones from above
-whiteStageBottomLight.position.set(0, 6, 8); // Above and closer to camera
-
-const whiteStageLeftLight = new THREE.PointLight(0x00bbff, 90, 40); // Hyper Neon Blue-Aqua from left
-whiteStageLeftLight.position.set(-13, 6, 6); // Above and closer to camera
-whiteStageLeftLight.decay = 1.2;
-
-const whiteStageTopRightLight = new THREE.PointLight(0xff00ff, 250, 90); // Pure hot pink from top right
-whiteStageTopRightLight.position.set(0, 10, 7); // High above and closer to camera
-
-const whiteStageTopLeftLight = new THREE.PointLight(0xff5500, 80, 35); // Tangerine Neon from top left
-whiteStageTopLeftLight.position.set(-7, 10, 7); // High above and closer to camera
-
-const whiteStageInnerLight = new THREE.PointLight(0xffcc33, 50, 15); // True Golden Yellow (warm & rich)
-whiteStageInnerLight.position.set(7, 2, 0); // Slightly above center
-
 export function setWhiteStageLighting(enabled) {
-  // Apply white stage lighting as default for all stages
   ambientLight.intensity = 1.5;
   directionalLight.intensity = 1.3;
   light.intensity = 1.3;
@@ -273,7 +248,6 @@ export function setWhiteStageLighting(enabled) {
   sideLight.intensity = 2.0;
   backLight.intensity = 0.6;
 
-  // Spectral rainbow lights always on
   whiteStageBottomLight.intensity = 12;
   whiteStageLeftLight.intensity = 50;
   whiteStageTopRightLight.intensity = 18;
@@ -283,133 +257,144 @@ export function setWhiteStageLighting(enabled) {
 
 export { loadAndDisplayFBX, getCatMaskData };
 
-const scene = new THREE.Scene();
-const petRoot = new THREE.Group();
-scene.add(petRoot);
-// scene.background = new THREE.Color("black"); // Light gray background
-// Ambient light (softens all shadows, adds base brightness)
-const bgLoader = new THREE.TextureLoader();
-bgLoader.load("/4th_.jpg", function (texture) {
-  scene.background = texture;
-});
+// ── Init ──────────────────────────────────────────────────────────────────────
+export function initRenderer() {
+  // Scene
+  scene = new THREE.Scene();
+  petRoot = new THREE.Group();
+  scene.add(petRoot);
 
-const ambientLight = new THREE.AmbientLight(0x000ff, 1.4); // Soft purple ambient light
-scene.add(ambientLight);
+  const bgLoader = new THREE.TextureLoader();
+  bgLoader.load("/4th_.jpg", (texture) => {
+    scene.background = texture;
+  });
 
-// Add white stage lights to scene
-scene.add(whiteStageBottomLight);
-scene.add(whiteStageLeftLight);
-scene.add(whiteStageTopRightLight);
-scene.add(whiteStageTopLeftLight);
-scene.add(whiteStageInnerLight);
+  // Lights
+  ambientLight = new THREE.AmbientLight(0x000ff, 1.4);
+  scene.add(ambientLight);
 
-// Directional light (like sunlight)
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.castShadow = true; // Enable shadow casting
-directionalLight.position.set(5, 10, 7.5);
-scene.add(directionalLight);
+  scene.add(
+    whiteStageBottomLight,
+    whiteStageLeftLight,
+    whiteStageTopRightLight,
+    whiteStageTopLeftLight,
+    whiteStageInnerLight,
+  );
 
-// Camera
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000,
-);
-camera.position.set(0, 1.5, 3);
+  directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.castShadow = true;
+  directionalLight.position.set(-2, 10, 6.5);
 
-// Renderer
-const petContainer = document.getElementById("pet-container");
-const PET_WIDTH = petContainer.offsetWidth || 990;
-const PET_HEIGHT = petContainer.offsetHeight || 600;
-const renderer = new THREE.WebGLRenderer({ antialias: true }); // applies to canvas and DOM elements. This line was added to ensure the renderer is created correctly. No need for a canvas element in html because we are appending the renderer's DOM element directly to the petContainer.
-renderer.setSize(PET_WIDTH, PET_HEIGHT);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true; // ✅ Add this line
-renderer.shadowMap.type = THREE.PCFSoftShadowMap; // (optional but softer shadows)
-petContainer.appendChild(renderer.domElement);
+  light = new THREE.DirectionalLight(0xff00ff, 1.5);
+  light.position.set(2, 4, 2);
 
-resizeRendererToContainer(renderer, camera);
+  topLight = new THREE.DirectionalLight(0xff0099, 0.8);
+  topLight.position.set(0, 5, 0);
+  topLight.castShadow = true;
+  topLight.shadow.mapSize.width = 512;
 
-// Update camera aspect ratio to match container
-camera.aspect = PET_WIDTH / PET_HEIGHT;
-camera.updateProjectionMatrix();
+  sideLight = new THREE.DirectionalLight(0x0000ff, 0.5);
+  sideLight.position.set(-5, 2, 0);
+  sideLight.castShadow = true;
 
-// Light
-const light = new THREE.DirectionalLight(0xff00ff, 1.5); // Saturated magenta from the right - increased
-const topLight = new THREE.DirectionalLight(0xff0099, 0.8); // Saturated pink light from above - increased
-topLight.position.set(0, 5, 0); // x = left/right, y = up/down, z = front/back
+  backLight = new THREE.DirectionalLight(0x00ffff, 0.3);
+  backLight.position.set(0, 2, -5);
+  backLight.target.position.set(0, 1, 0);
+  backLight.castShadow = true;
+  backLight.shadow.camera.left = -2;
+  backLight.shadow.camera.right = 2;
+  backLight.shadow.camera.top = 2;
+  backLight.shadow.camera.bottom = -2;
+  backLight.shadow.camera.near = 0.5;
+  backLight.shadow.camera.far = 10;
+  backLight.shadow.mapSize.width = 1024;
+  backLight.shadow.mapSize.height = 1024;
+  scene.add(backLight, backLight.target);
 
-topLight.castShadow = true; // ✅ Enable shadow casting
-topLight.shadow.mapSize.width = 512; // default is 512
+  const groundGeometry = new THREE.PlaneGeometry(10, 10);
+  const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+  const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -1.7;
+  ground.receiveShadow = true;
 
-const sideLight = new THREE.DirectionalLight(0x0000ff, 0.5); // Pure saturated blue from left - increased
-sideLight.position.set(-5, 2, 0); // X = left/right, Y = up/down, Z = front/back
-sideLight.castShadow = true; // ✅ Enable shadow casting
+  scene.add(light, ground, topLight, sideLight, directionalLight);
 
-const backLight = new THREE.DirectionalLight(0x00ffff, 0.3); // Saturated cyan - increased
-backLight.position.set(0, 2, -5);
-backLight.target.position.set(0, 1, 0);
-scene.add(backLight);
-scene.add(backLight.target);
-backLight.castShadow = true;
-backLight.shadow.camera.left = -2;
-backLight.shadow.camera.right = 2;
-backLight.shadow.camera.top = 2;
-backLight.shadow.camera.bottom = -2;
-backLight.shadow.camera.near = 0.5;
-backLight.shadow.camera.far = 10;
-backLight.shadow.mapSize.width = 1024;
-backLight.shadow.mapSize.height = 1024;
+  // Camera
+  camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000,
+  );
+  camera.position.set(0, 1.5, 3);
 
-directionalLight.position.set(-2, 10, 6.5);
-directionalLight.castShadow = true; // ✅ Enable shadow casting
-scene.add(directionalLight);
-light.position.set(2, 4, 2); //  firt is the x, second is the y, third is the z
-scene.add(light);
-const groundGeometry = new THREE.PlaneGeometry(10, 10);
-const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
-const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = -1.7;
-ground.receiveShadow = true;
-scene.add(light, ground, topLight, sideLight, directionalLight);
+  // Renderer — attach canvas to DOM
+  const petContainer = document.getElementById("pet-container");
+  const PET_WIDTH = petContainer.offsetWidth || 990;
+  const PET_HEIGHT = petContainer.offsetHeight || 600;
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(PET_WIDTH, PET_HEIGHT);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  petContainer.appendChild(renderer.domElement);
+
+  resizeRendererToContainer(renderer, camera);
+  camera.aspect = PET_WIDTH / PET_HEIGHT;
+  camera.updateProjectionMatrix();
+
+  // Event listeners
+  window.addEventListener("resize", () => {
+    resizeRendererToContainer(renderer, camera);
+    fitModelForViewport(activeModel, lastBaseScale);
+  });
+
+  window.addEventListener("orientationchange", () => {
+    // Wait for CSS media queries to settle before resizing
+    setTimeout(() => {
+      resizeRendererToContainer(renderer, camera);
+      fitModelForViewport(activeModel, lastBaseScale);
+    }, 150);
+  });
+
+  // Force resize after full page load — CSS media queries may not have applied
+  // when the renderer was first sized, causing a blurry canvas on mobile
+  window.addEventListener("load", () => {
+    resizeRendererToContainer(renderer, camera);
+    fitModelForViewport(activeModel, lastBaseScale);
+  });
+
+  animate();
+}
 
 function animate() {
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
-  time += delta; // Increment time
+  time += delta;
 
   if (activeModel && currentPose.includes("yellow_capo_wind")) {
-    activeModel.position.x = Math.sin(time * 1) * 1; //slide left-right
+    activeModel.position.x = Math.sin(time * 1) * 1;
   }
-  //  💚 ✅ Green salsa dancing- side to side 💚 ✅
   if (activeModel && currentPose.includes("green_salsa")) {
-    activeModel.position.x = Math.sin(time * 0.5) * 2; // tweak rang/speed
-    activeModel.position.y = -1.55; // Lock Y if needed
+    activeModel.position.x = Math.sin(time * 0.5) * 2;
+    activeModel.position.y = -1.55;
   }
-  //  💚 ✅ Green Thriller - side to side 💚 ✅
   if (activeModel && currentPose.includes("green_thriller")) {
-    activeModel.position.x = Math.sin(time * -0.8) * 0.8; // tweak rang/speed
-    activeModel.position.y = -2; // Lock Y if needed
+    activeModel.position.x = Math.sin(time * -0.8) * 0.8;
+    activeModel.position.y = -2;
   }
-  // move the model if it's dancing
   if (activeModel && currentPose.includes("White_thriller")) {
-    //===============TUT SETTING
-    // activeModel.position.x = Math.sin(time) * 0.1;
-    // activeModel.position.z = Math.cos(time * 0.4) * -0.1;
-    // activeModel.position.y = -0.1;
     activeModel.position.x = 0.1;
     activeModel.position.z = -3.5;
     activeModel.position.y = -1;
 
-    // 🔁 Reposition light slightly above and in front to cast shadow behind
-    directionalLight.position.set(-2, 6, 8); // ↑ Y for overhead, -Z for front
-    directionalLight.target.position.set(0, 1, 0); // aim at cat
+    directionalLight.position.set(-2, 6, 8);
+    directionalLight.target.position.set(0, 1, 0);
     directionalLight.target.updateMatrixWorld();
   } else {
-    // Reset after dancing
-    directionalLight.position.set(-2, 10, 6.5); // original
+    directionalLight.position.set(-2, 10, 6.5);
     directionalLight.target.position.set(0, 0, 0);
     directionalLight.target.updateMatrixWorld();
   }
@@ -418,25 +403,3 @@ function animate() {
 
   renderer.render(scene, camera);
 }
-
-// Refit on window resizes and orientation changes
-window.addEventListener("resize", () => {
-  resizeRendererToContainer(renderer, camera);
-  fitModelForViewport(activeModel, lastBaseScale);
-});
-
-window.addEventListener("orientationchange", () => {
-  setTimeout(() => {
-    resizeRendererToContainer(renderer, camera);
-    fitModelForViewport(activeModel, lastBaseScale);
-  }, 150); // let CSS media queries settle
-});
-
-// Force resize after full page load — CSS media queries may not have applied
-// when the renderer was first sized, causing a blurry/distorted canvas on mobile.
-window.addEventListener("load", () => {
-  resizeRendererToContainer(renderer, camera);
-  fitModelForViewport(activeModel, lastBaseScale);
-});
-
-animate();

@@ -1,0 +1,147 @@
+/* Dramatic Intergalactic Beam Effect for White Pet Transcendence */
+.intergalactic-beam {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 100px;
+  height: 100vh;
+  pointer-events: none;
+  transform: translateX(-50%);
+  z-index: 9999;
+  opacity: 0;
+  background: linear-gradient(
+    0deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 105, 180, 0.3) 30%,
+    rgba(138, 43, 226, 0.4) 40%,
+    rgba(75, 0, 130, 0.3) 50%,
+    rgba(0, 255, 255, 0.4) 60%,
+    rgba(255, 215, 0, 0.3) 70%,
+    rgba(255, 255, 255, 0.6) 80%,
+    transparent 100%
+  );
+  animation: intergalacticBeamAnimation 4s ease-out forwards;
+}
+
+.intergalactic-beam::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 20px;
+  height: 100%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    0deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 20%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.8) 80%,
+    transparent 100%
+  );
+  animation: beamCoreAnimation 4s ease-out forwards;
+}
+
+.intergalactic-beam::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 105, 180, 0.3) 20%,
+    rgba(138, 43, 226, 0.2) 40%,
+    rgba(0, 255, 255, 0.3) 60%,
+    transparent 80%
+  );
+  animation: beamSpiralAnimation 4s ease-out forwards;
+}
+
+@keyframes intergalacticBeamAnimation {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0);
+    filter: blur(20px) brightness(0.5);
+  }
+  15% {
+    opacity: 0.3;
+    transform: translateX(-50%) scaleY(0.3);
+    filter: blur(15px) brightness(0.7);
+  }
+  30% {
+    opacity: 0.6;
+    transform: translateX(-50%) scaleY(0.7);
+    filter: blur(10px) brightness(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) scaleY(1);
+    filter: blur(5px) brightness(1.5);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1.2);
+    filter: blur(2px) brightness(2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(1.5);
+    filter: blur(30px) brightness(0.2);
+  }
+}
+
+@keyframes beamCoreAnimation {
+  0% {
+    width: 2px;
+    opacity: 0;
+    filter: blur(5px);
+  }
+  20% {
+    width: 10px;
+    opacity: 0.5;
+    filter: blur(3px);
+  }
+  50% {
+    width: 20px;
+    opacity: 1;
+    filter: blur(1px);
+  }
+  80% {
+    width: 30px;
+    opacity: 0.8;
+    filter: blur(2px);
+  }
+  100% {
+    width: 50px;
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+@keyframes beamSpiralAnimation {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(0);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(90deg) scale(0.5);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(270deg) scale(1.2);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1.8);
+    opacity: 0;
+  }
+}

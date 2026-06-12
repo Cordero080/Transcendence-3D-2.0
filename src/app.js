@@ -7,6 +7,7 @@ import {
   loadAndDisplayFBX,
   clearActiveModel,
   setWhiteStageLighting,
+  initRenderer,
 } from "@/animRender.js";
 import animationConfig from "@/animationConfig.js";
 import { gameSettings, stageMap, stageEmojis } from "@core/config.js";
@@ -1351,6 +1352,7 @@ window.addEventListener("DOMContentLoaded", () => {
   } = initUI());
 
   // --- One-time setup ---
+  initRenderer();
   const bgMusic = document.getElementById("bg-music");
   if (bgMusic) bgMusic.volume = 0.15;
   initEffectElements();
